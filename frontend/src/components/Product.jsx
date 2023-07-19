@@ -5,7 +5,7 @@ export default function Product(children) {
 
   return (
     <div className="card" key={product.id}>
-      <a href="product.html">
+      <a href={`/product/${product._id}`}>
         <img className="medium" src={product.image} alt={product.name} />
       </a>
       <div className="card-body">
