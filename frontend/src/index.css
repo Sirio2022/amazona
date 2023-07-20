@@ -190,7 +190,23 @@ img.large {
     font-weight: bold;
 }
 
-.error {
+.danger {
     color: #e06060;
     font-weight: bold;
+}
+
+.alert {
+    border: 0.1rem #c0c0c0 solid;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.alert-info {
+    color: #60a060;
+    background-color: #d0f0d0;
+}
+
+.alert-danger {
+    color: #e06060;
+    background-color: #f0d0d0;
 }
