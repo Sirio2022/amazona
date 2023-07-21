@@ -9,8 +9,6 @@ import { useEffect } from 'react';
 
 export default function ProductScreen() {
   const params = useParams();
-  
-  
 
   const { error, loading, product } = useSelector(
     (state) => state.productDetails
