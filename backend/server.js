@@ -1,6 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import data from './data.js';
+
+import {
+  productList,
+  productDetails,
+} from './controllers/productController.js';
 
 const app = express();
 
@@ -19,18 +23,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.get('/api/products/:id', (req, res) => {
-  const product = data.products.find((x) => x._id === Number(req.params.id));
-  if (product) {
-    res.send(product);
-  } else {
-    res.status(404).send({ message: 'Product Not Found' });
-  }
-});
+app.get('/api/products/:id', productDetails);
 
-app.get('/api/products', (req, res) => {
-  res.send(data.products);
-});
+app.get('/api/products', productList);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
