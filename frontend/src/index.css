@@ -210,3 +210,8 @@ img.large {
     color: #e06060;
     background-color: #f0d0d0;
 }
+
+.loading {
+    text-align: center;
+    font-size: 5rem;
+}
