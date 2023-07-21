@@ -1,5 +1,9 @@
 import data from '../data.js';
 
+const productList = async (req, res) => {
+  res.json(data.products);
+};
+
 const productDetails = async (req, res) => {
   const product = data.products.find((x) => x._id === Number(req.params.id));
   if (product) {
@@ -7,10 +11,6 @@ const productDetails = async (req, res) => {
   } else {
     res.status(404).json({ message: 'Product Not Found' });
   }
-};
-
-const productList = async (req, res) => {
-  res.json(data.products);
 };
 
 export { productList, productDetails };
