@@ -10,8 +10,6 @@ export default function CartScreen() {
 
   const qty = searchParams.get('qty');
 
-  //const { cartItems } = useSelector((state) => state.cart.cart); // useSelector debe de tener un nivel mas de profundidad por el persistor state.state (ver redux devtools).
-
   const dispatch = useDispatch();
 
   useEffect(() => {
