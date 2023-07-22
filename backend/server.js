@@ -1,15 +1,26 @@
 import express from 'express';
+import dotenv from 'dotenv';
+import connectDB from './config/db.js';
 import cors from 'cors';
 
 import {
   productList,
   productDetails,
 } from './controllers/productController.js';
+import userRouter from './routes/userRouter.js';
 
 const app = express();
+dotenv.config();
+
+// Connecting to MongoDB
+connectDB();
 
 // Configuring CORS
-const whitelist = ['http://localhost:5173', 'http://localhost:5000'];
+const whitelist = [
+  'http://localhost:5173',
+  'http://localhost:5000',
+  'http://127.0.0.1:3000',
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -22,6 +33,9 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+// Configuring routes
+app.use('/api/users', userRouter);
 
 app.get('/api/products/:id', productDetails);
 
