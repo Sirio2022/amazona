@@ -25,11 +25,17 @@ export const cartSlice = createSlice({
           cartItems: [...state.cartItems, item],
         };
       }
-    }, 
+    },
+    removeFromCart: (state, action) => {
+      return {
+        ...state,
+        cartItems: state.cartItems.filter((x) => x.product !== action.payload),
+      };
+    },
   },
 });
 
-export const { addToCart } = cartSlice.actions;
+export const { addToCart, removeFromCart } = cartSlice.actions;
 
 export default cartSlice.reducer;
 
@@ -47,4 +53,8 @@ export const addToCartAction = (id, qty) => async (dispatch) => {
       qty,
     })
   );
+};
+
+export const removeFromCartAction = (id) => async (dispatch) => {
+  dispatch(removeFromCart(id));
 };
