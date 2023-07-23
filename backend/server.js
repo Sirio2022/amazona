@@ -7,7 +7,6 @@ import {
   productList,
   productDetails,
 } from './controllers/productController.js';
-import userRouter from './routes/userRouter.js';
 
 const app = express();
 dotenv.config();
@@ -15,7 +14,7 @@ dotenv.config();
 // Connecting to MongoDB
 connectDB();
 
-// Configuring CORS
+//Configuring CORS
 const whitelist = [
   'http://localhost:5173',
   'http://localhost:5000',
@@ -34,8 +33,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Configuring routes
-app.use('/api/users', userRouter);
+//Configuring routes
 
 app.get('/api/products/:id', productDetails);
 
