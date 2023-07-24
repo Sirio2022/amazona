@@ -2,13 +2,11 @@ import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 //import cors from 'cors';
-
-import {
-  productList,
-  productDetails,
-} from './controllers/productController.js';
+import userRoutes from './routes/userRouter.js';
+import productRoutes from './routes/productRouter.js';
 
 const app = express();
+app.use(express.json());
 dotenv.config();
 
 // Connecting to MongoDB
@@ -35,9 +33,9 @@ connectDB();
 
 //Configuring routes
 
-app.get('/api/products/:id', productDetails);
+app.use('/api/users', userRoutes);
 
-app.get('/api/products', productList);
+app.use('/api/products', productRoutes);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
