@@ -47,7 +47,7 @@ const userAuthentication = async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
-      token: generateJWT(user._id),
+      token: generateJWT(user),
     });
   }
 };
