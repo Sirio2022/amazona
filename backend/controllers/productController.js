@@ -1,15 +1,17 @@
-import data from '../data.js';
+import Product from '../models/productModel.js';
 
 const productList = async (req, res) => {
-  res.json(data.products);
+  const products = await Product.find({});
+  res.status(200).json(products);
 };
 
 const productDetails = async (req, res) => {
-  const product = data.products.find((x) => x._id === Number(req.params.id));
+  const product = await Product.findById(req.params.id);
   if (product) {
-    res.send(product);
+    res.status(200).json(product);
   } else {
-    res.status(404).json({ message: 'Product Not Found' });
+    const error = new Error('Product not found');
+    res.status(404).json({ msg: error.message });
   }
 };
 

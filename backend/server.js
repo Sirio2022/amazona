@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
-//import cors from 'cors';
+import cors from 'cors';
 import userRoutes from './routes/userRouter.js';
 import productRoutes from './routes/productRouter.js';
 
@@ -13,23 +13,19 @@ dotenv.config();
 connectDB();
 
 //Configuring CORS
-// const whitelist = [
-//   'http://localhost:5173',
-//   'http://localhost:5000',
-//   'http://127.0.0.1:3000',
-// ];
+const whitelist = ['http://localhost:5173'];
 
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     if (whitelist.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-// };
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
 
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 //Configuring routes
 
