@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux';
 
 function App() {
   const { cartItems } = useSelector((state) => state.cart.cart); // useSelector debe de tener un nivel mas de profundidad por el persistor state.state (ver redux devtools).
+  const { userInfo } = useSelector((state) => state.signin.signin);
+ 
 
   return (
     <BrowserRouter>
@@ -26,7 +28,11 @@ function App() {
                 <span className="badge">{cartItems.length}</span>
               )}
             </Link>
-            <Link to="/signin">Sign In</Link>
+            {userInfo.name ? (
+              <Link to="#">{userInfo.name}</Link>
+            ) : (
+              <Link to="/signin">Sign In</Link>
+            )}
           </div>
         </header>
 

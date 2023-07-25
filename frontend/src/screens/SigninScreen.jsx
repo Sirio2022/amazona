@@ -1,17 +1,34 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
+import { useSearchParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { signin } from '../redux/signinSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function SigninScreen() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const [searchParams] = useSearchParams();
 
+  const redirect = searchParams.get('redirect');
+
+  const { userInfo } = useSelector((state) => state.signin.signin);
+
+  const dispatch = useDispatch();
 
   const submitHandler = (e) => {
     e.preventDefault();
-    //TODO: sign in action
+    dispatch(signin(email, password));
   };
+
+  useEffect(() => {
+    if (userInfo.name) {
+      navigate(redirect || '/');
+    }
+  }, [userInfo, navigate, redirect]);
+
   return (
     <div>
       <form className="form" onSubmit={submitHandler}>
@@ -45,11 +62,10 @@ export default function SigninScreen() {
           </button>
         </div>
         <div>
-            <label />
-            <div>
-                New Customer? {' '}
-                <Link to="/register">Create new account</Link>
-            </div>
+          <label />
+          <div>
+            New Customer? <Link to="/register">Create new account</Link>
+          </div>
         </div>
       </form>
     </div>
