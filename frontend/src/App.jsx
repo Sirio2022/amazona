@@ -6,6 +6,7 @@ import CartScreen from './screens/CartScreen';
 import SigninScreen from './screens/SigninScreen';
 import { signout } from './redux/signinSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import ForgotPassword from './screens/ForgotPassword';
 
 function App() {
   const { cartItems } = useSelector((state) => state.cart.cart); // useSelector debe de tener un nivel mas de profundidad por el persistor state.state (ver redux devtools).
@@ -56,6 +57,7 @@ function App() {
             <Route path="/cart/:id?" element={<CartScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/signin" element={<SigninScreen />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/" element={<HomeScreen />} />
           </Routes>
         </main>

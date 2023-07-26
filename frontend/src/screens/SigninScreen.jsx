@@ -67,10 +67,13 @@ export default function SigninScreen() {
             Sign In
           </button>
         </div>
-        <div>
+        <div className='row'>
           <label />
           <div>
             New Customer? <Link to="/register">Create new account</Link>
+          </div>
+          <div>
+            <Link to="/forgot-password">Forgot Password? </Link>
           </div>
         </div>
       </form>
