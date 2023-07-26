@@ -16,7 +16,9 @@ export default function SigninScreen() {
 
   const redirect = searchParams.get('redirect');
 
-  const { userInfo, loading, error } = useSelector((state) => state.signin.signin);
+  const { userInfo, loading, error } = useSelector(
+    (state) => state.signin.signin
+  );
 
   const dispatch = useDispatch();
 
@@ -27,7 +29,7 @@ export default function SigninScreen() {
 
   useEffect(() => {
     if (userInfo.name) {
-      navigate(`/${redirect}`);
+      navigate(`/${redirect || ''}`);
     }
   }, [userInfo, navigate, redirect]);
 
@@ -38,7 +40,7 @@ export default function SigninScreen() {
           <h1>Sign In</h1>
         </div>
         {loading && <LoadingBox></LoadingBox>}
-        {error && <MessageBox variant="danger">{error}</MessageBox> }
+        {error && <MessageBox variant="danger">{error}</MessageBox>}
         <div>
           <label htmlFor="email">Email address</label>
           <input

@@ -49,8 +49,8 @@ export const signin = (email, password) => async (dispatch) => {
     dispatch(loadingSigninEnd());
     dispatch(
       loadingSigninError(
-        error.response && error.response.data.message
-          ? error.response.data.message
+        error.response && error.response.data.msg
+          ? error.response.data.msg
           : error.message
       )
     );
@@ -58,7 +58,7 @@ export const signin = (email, password) => async (dispatch) => {
 };
 
 export const signout = () => (dispatch) => {
-    localStorage.removeItem('userInfo');
-    dispatch(userInfo({}));
-    localStorage.removeItem('cartItems');
+  localStorage.removeItem('userInfo');
+  dispatch(userInfo({}));
+  localStorage.removeItem('cartItems');
 };
