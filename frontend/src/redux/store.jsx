@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import productsReducer from './productsSlice';
 import productDetailReducer from './productSlice';
 import signinReducer from './signinSlice';
+import registerReducer from './registerSlice';
 import cartReducer from './cartSlice';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer } from 'redux-persist';
@@ -28,6 +29,7 @@ export const store = configureStore({
     productDetails: productDetailReducer,
     cart: persistedReducer,
     signin: persistedReducer,
+    register: registerReducer,
   },
   middleware: [thunk],
 });

@@ -213,6 +213,10 @@ img.large {
 }
 
 /* Alert */
+.loading {
+    display: block !important;
+}
+
 .success {
     color: #60a060;
     font-weight: bold;
@@ -283,4 +287,10 @@ img.large {
 
 .dropdown:hover .dropdown-content {
     display: block;
+}
+
+.confirm {
+    margin-top: 10rem;
+    font-size: larger;
+    
 }
