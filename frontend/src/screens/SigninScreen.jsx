@@ -4,6 +4,8 @@ import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signin } from '../redux/signinSlice';
 import { useNavigate } from 'react-router-dom';
+import LoadingBox from '../components/LoadingBox';
+import MessageBox from '../components/MessageBox';
 
 export default function SigninScreen() {
   const navigate = useNavigate();
@@ -14,7 +16,7 @@ export default function SigninScreen() {
 
   const redirect = searchParams.get('redirect');
 
-  const { userInfo } = useSelector((state) => state.signin.signin);
+  const { userInfo, loading, error } = useSelector((state) => state.signin.signin);
 
   const dispatch = useDispatch();
 
@@ -25,7 +27,7 @@ export default function SigninScreen() {
 
   useEffect(() => {
     if (userInfo.name) {
-      navigate(redirect || '/');
+      navigate(`/${redirect}`);
     }
   }, [userInfo, navigate, redirect]);
 
@@ -35,6 +37,8 @@ export default function SigninScreen() {
         <div>
           <h1>Sign In</h1>
         </div>
+        {loading && <LoadingBox></LoadingBox>}
+        {error && <MessageBox variant="danger">{error}</MessageBox> }
         <div>
           <label htmlFor="email">Email address</label>
           <input

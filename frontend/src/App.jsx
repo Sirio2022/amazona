@@ -4,12 +4,18 @@ import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
 import CartScreen from './screens/CartScreen';
 import SigninScreen from './screens/SigninScreen';
-import { useSelector } from 'react-redux';
+import { signout } from './redux/signinSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function App() {
   const { cartItems } = useSelector((state) => state.cart.cart); // useSelector debe de tener un nivel mas de profundidad por el persistor state.state (ver redux devtools).
   const { userInfo } = useSelector((state) => state.signin.signin);
- 
+
+  const dispatch = useDispatch();
+
+  const signoutHandler = () => {
+    dispatch(signout());
+  };
 
   return (
     <BrowserRouter>
@@ -29,7 +35,16 @@ function App() {
               )}
             </Link>
             {userInfo.name ? (
-              <Link to="#">{userInfo.name}</Link>
+              <div className="dropdown">
+                <Link to="#">
+                  {userInfo.name} <i className="fa fa-caret-down"></i>
+                </Link>
+                <ul className="dropdown-content">
+                  <Link to="#signout" onClick={signoutHandler}>
+                    Sign Out
+                  </Link>
+                </ul>
+              </div>
             ) : (
               <Link to="/signin">Sign In</Link>
             )}
