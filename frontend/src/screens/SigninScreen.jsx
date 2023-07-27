@@ -12,7 +12,6 @@ export default function SigninScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMSG, setErrorMSG] = useState('');
-  console.log(errorMSG);
 
   const [searchParams] = useSearchParams();
 
@@ -21,7 +20,7 @@ export default function SigninScreen() {
   const { userInfo, loading, error } = useSelector(
     (state) => state.signin.signin
   );
-    console.log(loading, error);
+
   const dispatch = useDispatch();
 
   const submitHandler = (e) => {
