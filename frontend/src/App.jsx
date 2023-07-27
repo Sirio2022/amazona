@@ -12,8 +12,8 @@ import NewPassword from './screens/NewPassword';
 import AccountConfirm from './screens/AccountConfirm';
 
 function App() {
-  const { cartItems } = useSelector((state) => state.cart.cart); // useSelector debe de tener un nivel mas de profundidad por el persistor state.state (ver redux devtools).
-  const { userInfo } = useSelector((state) => state.signin.signin);
+  const { cartItems } = useSelector((state) => state.cart); // useSelector debe de tener un nivel mas de profundidad por el persistor state.state (ver redux devtools).
+  const { userInfo } = useSelector((state) => state.signin);
 
   const dispatch = useDispatch();
 

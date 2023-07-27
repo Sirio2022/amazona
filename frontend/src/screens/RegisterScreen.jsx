@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../redux/registerSlice';
@@ -12,6 +12,8 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confimPassword, setConfimPassword] = useState('');
+  const [errorMSG, setErrorMSG] = useState('');
+  const [infoMSG, setInfoMSG] = useState('');
 
   const { userInfo, loading, error } = useSelector((state) => state.register);
 
@@ -23,13 +25,23 @@ export default function RegisterScreen() {
       alert('Password and Confirm Password Are Not Matched');
     } else {
       dispatch(register(name, email, password));
-      setTimeout(() => {
-        navigate('/signin');
-      }, 3000);
     }
   };
 
-  const { msg } = userInfo;
+  useEffect(() => {
+    if (userInfo.msg) {
+      setInfoMSG(userInfo.msg);
+    }
+  }, [userInfo, loading]);
+
+  useEffect(() => {
+    if (error) {
+      setErrorMSG(error);
+      setTimeout(() => {
+        setErrorMSG('');
+      }, 5000);
+    }
+  }, [loading, error]);
 
   return (
     <div>
@@ -38,8 +50,8 @@ export default function RegisterScreen() {
           <h1>Register</h1>
         </div>
         {loading && <LoadingBox></LoadingBox>}
-        {msg && <MessageBox variant="info">{msg}</MessageBox>}
-        {error && <MessageBox variant="danger">{error}</MessageBox>}
+        {infoMSG && <MessageBox variant="info">{infoMSG}</MessageBox>}
+        {errorMSG && <MessageBox variant="danger">{errorMSG}</MessageBox>}
         <div>
           <label htmlFor="name">Name</label>
           <input

@@ -13,7 +13,7 @@ export default function CartScreen() {
   const [searchParams] = useSearchParams();
   const qty = searchParams.get('qty');
 
-  const { cartItems } = useSelector((state) => state.cart.cart);
+  const { cartItems } = useSelector((state) => state.cart);
 
   const dispatch = useDispatch();
 

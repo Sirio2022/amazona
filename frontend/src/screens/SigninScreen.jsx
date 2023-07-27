@@ -18,7 +18,7 @@ export default function SigninScreen() {
   const redirect = searchParams.get('redirect');
 
   const { userInfo, loading, error } = useSelector(
-    (state) => state.signin.signin
+    (state) => state.signin
   );
 
   const dispatch = useDispatch();
