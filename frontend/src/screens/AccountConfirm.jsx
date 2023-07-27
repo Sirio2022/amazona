@@ -4,8 +4,7 @@ import axios from 'axios';
 import MessageBox from '../components/MessageBox';
 
 export default function AccountConfirm() {
-  const [msg, setMsg] = useState('');
-  const [error, setError] = useState('');
+  const [alert, setAlert] = useState({});
   const [cuentaConfirmada, setCuentaConfirmada] = useState(false);
 
   const params = useParams();
@@ -20,19 +19,20 @@ export default function AccountConfirm() {
         }/api/users/confirmation/${id}`;
         const { data } = await axios.get(url);
 
-        setMsg(data.msg);
+        setAlert({
+          msg: data.msg,
+          error: false,
+        });
 
         setCuentaConfirmada(true);
       } catch (error) {
-        setError(
-          error.response && error.response.data.msg
-            ? error.response.data.msg
-            : error.message
-        );
+        setAlert({ msg: error.response.data.msg, error: true });
       }
     };
     confirmAccount();
-  }, []);
+  }, [id]);
+
+  const { msg } = alert;
 
   return (
     <>
@@ -40,8 +40,8 @@ export default function AccountConfirm() {
         <h1>Confirm account</h1>
       </div>
 
-      {msg && <MessageBox variant="info">{msg}</MessageBox>}
-      {error && <MessageBox variant="danger">{error}</MessageBox>}
+      {msg && <MessageBox alert={alert} />}
+
       {cuentaConfirmada && (
         <div className="row center confirm">
           <Link to="/signin">Sign In</Link>
