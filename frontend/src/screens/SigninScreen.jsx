@@ -11,6 +11,8 @@ export default function SigninScreen() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMSG, setErrorMSG] = useState('');
+  console.log(errorMSG);
 
   const [searchParams] = useSearchParams();
 
@@ -19,13 +21,22 @@ export default function SigninScreen() {
   const { userInfo, loading, error } = useSelector(
     (state) => state.signin.signin
   );
-
+    console.log(loading, error);
   const dispatch = useDispatch();
 
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(signin(email, password));
   };
+
+  useEffect(() => {
+    if (error) {
+      setErrorMSG(error);
+      setTimeout(() => {
+        setErrorMSG('');
+      }, 5000);
+    }
+  }, [loading, error]);
 
   useEffect(() => {
     if (userInfo.name) {
@@ -40,7 +51,7 @@ export default function SigninScreen() {
           <h1>Sign In</h1>
         </div>
         {loading && <LoadingBox></LoadingBox>}
-        {error && <MessageBox variant="danger">{error}</MessageBox>}
+        {errorMSG && <MessageBox variant="danger">{errorMSG}</MessageBox>}
         <div>
           <label htmlFor="email">Email address</label>
           <input
