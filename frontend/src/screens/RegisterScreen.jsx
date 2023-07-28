@@ -15,7 +15,7 @@ export default function RegisterScreen() {
   const [alert, setAlert] = useState({});
 
   const { userInfo, loading, error } = useSelector((state) => state.register);
-  console.log(error);
+  console.log('userInfo', userInfo);
 
   const dispatch = useDispatch();
 
@@ -47,10 +47,18 @@ export default function RegisterScreen() {
     setAlert({});
 
     dispatch(register(name, email, password));
+
     setAlert({
-      msg: error,
-      error: true,
+      msg: userInfo.msg,
+      error: false,
     });
+
+    if (error) {
+      setAlert({
+        msg: error,
+        error: true,
+      });
+    }
   };
 
   const { msg } = alert;
