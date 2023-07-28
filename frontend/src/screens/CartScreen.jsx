@@ -36,9 +36,13 @@ export default function CartScreen() {
       <div className="col-2">
         <h1>Shopping Cart</h1>
         {cartItems.length === 0 ? (
-          <MessageBox>
-            Cart is empty. <Link to="/">Go Shopping</Link>
-          </MessageBox>
+          <MessageBox
+            alert={{
+              msg: 'Cart is empty. Add some products!',
+              error: false,
+              link: '/',
+            }}
+          />
         ) : (
           <ul>
             {cartItems.map((item) => (

@@ -11,37 +11,52 @@ export default function SigninScreen() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMSG, setErrorMSG] = useState('');
+  const [alert, setAlert] = useState({});
 
   const [searchParams] = useSearchParams();
 
   const redirect = searchParams.get('redirect');
 
-  const { userInfo, loading, error } = useSelector(
-    (state) => state.signin
-  );
+  const { userInfo, loading, error } = useSelector((state) => state.signin);
 
   const dispatch = useDispatch();
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(signin(email, password));
-  };
 
-  useEffect(() => {
-    if (error) {
-      setErrorMSG(error);
-      setTimeout(() => {
-        setErrorMSG('');
-      }, 5000);
+    if ([email, password].includes('')) {
+      setAlert({
+        msg: 'All fields are required',
+        error: true,
+      });
+      return;
     }
-  }, [loading, error]);
+
+    try {
+      dispatch(signin(email, password));
+      setAlert({
+        msg: userInfo.msg,
+        error: false,
+      });
+
+      if (error) {
+        setAlert({
+          msg: error,
+          error: true,
+        });
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
 
   useEffect(() => {
     if (userInfo.name) {
       navigate(`/${redirect || ''}`);
     }
   }, [userInfo, navigate, redirect]);
+
+  const { msg } = alert;
 
   return (
     <div>
@@ -50,7 +65,7 @@ export default function SigninScreen() {
           <h1>Sign In</h1>
         </div>
         {loading && <LoadingBox></LoadingBox>}
-        {errorMSG && <MessageBox variant="danger">{errorMSG}</MessageBox>}
+        {msg && <MessageBox alert={alert} />}
         <div>
           <label htmlFor="email">Email address</label>
           <input
