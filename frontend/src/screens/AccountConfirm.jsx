@@ -29,7 +29,10 @@ export default function AccountConfirm() {
         setAlert({ msg: error.response.data.msg, error: true });
       }
     };
-    confirmAccount();
+    //TODO: confirmar cuenta despues de pasar producción quitar ese return, solo dejar el llamado a la función, esto fue por el doble render.
+    return () => {
+      confirmAccount(); 
+    };
   }, [id]);
 
   const { msg } = alert;
@@ -39,12 +42,11 @@ export default function AccountConfirm() {
       <div>
         <h1>Confirm account</h1>
       </div>
-
       {msg && <MessageBox alert={alert} />}
 
       {cuentaConfirmada && (
         <div className="row center confirm">
-          <Link to="/signin">Sign In</Link>
+          <Link to="/signin">Back to Sign In</Link>
         </div>
       )}
     </>

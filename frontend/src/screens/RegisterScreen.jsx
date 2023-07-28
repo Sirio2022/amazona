@@ -2,20 +2,16 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../redux/registerSlice';
-import { useNavigate } from 'react-router-dom';
-import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 
 export default function RegisterScreen() {
-  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confimPassword, setConfimPassword] = useState('');
   const [alert, setAlert] = useState({});
 
-  const { userInfo, loading, error } = useSelector((state) => state.register);
-  console.log('userInfo', userInfo);
+  const { userInfo, error } = useSelector((state) => state.register);
 
   const dispatch = useDispatch();
 
@@ -48,10 +44,20 @@ export default function RegisterScreen() {
 
     dispatch(register(name, email, password));
 
-    setAlert({
-      msg: userInfo.msg,
-      error: false,
-    });
+    try {
+      setAlert({
+        msg: userInfo.msg,
+        error: false,
+      });
+      if (error) {
+        setAlert({
+          msg: error,
+          error: true,
+        });
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
 
     if (error) {
       setAlert({
@@ -128,7 +134,7 @@ export default function RegisterScreen() {
               <Link to="/signin">Create new account</Link>
             </div>
             <div>
-              <Link to="/forgot-password">Sign In</Link>
+              <Link to="/signin">Back to Sign In</Link>
             </div>
           </div>
         </form>
