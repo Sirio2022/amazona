@@ -59,12 +59,12 @@ export default function NewPassword() {
 
   return (
     <div>
-      <div>
-        <h1>Create new password</h1>
-      </div>
-      {msg && <MessageBox alert={alert} />}
       {validToken && (
         <form className="form" onSubmit={submitHandler}>
+          <div>
+            <h1>Create new password</h1>
+            {msg && <MessageBox alert={alert} />}
+          </div>
           <div>
             <label htmlFor="password">Password</label>
             <input
