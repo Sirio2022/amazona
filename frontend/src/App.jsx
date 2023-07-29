@@ -5,6 +5,7 @@ import ProductScreen from './screens/ProductScreen';
 import CartScreen from './screens/CartScreen';
 import SigninScreen from './screens/SigninScreen';
 import { signout } from './redux/signinSlice';
+import { clearItems } from './redux/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import ForgotPassword from './screens/ForgotPassword';
 import RegisterScreen from './screens/RegisterScreen';
@@ -19,6 +20,7 @@ function App() {
 
   const signoutHandler = () => {
     dispatch(signout());
+    dispatch(clearItems());
   };
 
   return (

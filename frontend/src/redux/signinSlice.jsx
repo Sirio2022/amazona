@@ -4,7 +4,9 @@ import axios from 'axios';
 const initialState = {
   loading: false,
   error: false,
-  userInfo: {},
+  userInfo: localStorage.getItem('userInfo')
+    ? JSON.parse(localStorage.getItem('userInfo'))
+    : {},
 };
 
 export const signinSlice = createSlice({
@@ -44,6 +46,7 @@ export const signin = (email, password) => async (dispatch) => {
     );
 
     dispatch(userInfo(data));
+    localStorage.setItem('userInfo', JSON.stringify(data));
     dispatch(loadingSigninEnd());
   } catch (error) {
     dispatch(loadingSigninEnd());
@@ -61,4 +64,5 @@ export const signout = () => (dispatch) => {
   localStorage.removeItem('userInfo');
   dispatch(userInfo({}));
   localStorage.removeItem('cartItems');
+  
 };

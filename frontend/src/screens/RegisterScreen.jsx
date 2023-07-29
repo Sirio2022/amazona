@@ -74,7 +74,7 @@ export default function RegisterScreen() {
       <div>
         <form className="form" onSubmit={submitHandler}>
           <div>
-            <h1>Register</h1>
+            <h1>Create Account</h1>
           </div>
           {msg && <MessageBox alert={alert} />}
           <div>

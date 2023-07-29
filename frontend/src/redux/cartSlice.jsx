@@ -2,7 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const initialState = {
-  cartItems: [],
+  cartItems: localStorage.getItem('cartItems')
+    ? JSON.parse(localStorage.getItem('cartItems'))
+    : [],
 };
 
 export const cartSlice = createSlice({
@@ -32,14 +34,20 @@ export const cartSlice = createSlice({
         cartItems: state.cartItems.filter((x) => x.product !== action.payload),
       };
     },
+    clearItems: (state) => {
+      return {
+        ...state,
+        cartItems: [],
+      };
+    },
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearItems } = cartSlice.actions;
 
 export default cartSlice.reducer;
 
-export const addToCartAction = (id, qty) => async (dispatch) => {
+export const addToCartAction = (id, qty) => async (dispatch, getState) => {
   const { data } = await axios.get(
     import.meta.env.VITE_BACKEND_URL + `/api/products/${id}`
   );
@@ -53,8 +61,13 @@ export const addToCartAction = (id, qty) => async (dispatch) => {
       qty,
     })
   );
+  localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems));
 };
 
 export const removeFromCartAction = (id) => async (dispatch) => {
   dispatch(removeFromCart(id));
+};
+
+export const clearItemsAction = () => async (dispatch) => {
+  dispatch(clearItems());
 };
