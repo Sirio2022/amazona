@@ -49,7 +49,7 @@ export default function ShippingAddressScreen() {
 
   return (
     <div>
-      <CheckoutSteps step1 step2></CheckoutSteps>
+      <CheckoutSteps step1 step2 />
       <form className="form" onSubmit={submitHandler}>
         <div>
           <h1>Shipping Address</h1>

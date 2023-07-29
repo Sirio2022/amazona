@@ -1,3 +1,9 @@
+import CheckoutSteps from '../components/CheckoutSteps';
+
 export default function PaymentMethodScreen() {
-  return <div>Payment Method Screen</div>;
+  return (
+    <div>
+      <CheckoutSteps step1 step2 step3 />
+    </div>
+  );
 }
