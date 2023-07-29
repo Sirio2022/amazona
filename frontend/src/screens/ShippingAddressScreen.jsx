@@ -40,7 +40,6 @@ export default function ShippingAddressScreen() {
       }, 3000);
       return;
     }
-    //TODO: dispatch save shipping address action
 
     dispatch(
       saveShippingAddress({ fullName, address, city, postalCode, country })
