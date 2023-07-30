@@ -34,8 +34,10 @@ export const {
 
 export default paymentMethodSlice.reducer;
 
-export const savePaymentMethod = (paymentMethod) => async (dispatch) => {
+export const savePaymentMethod = (data) => async (dispatch) => {
   dispatch(loadingPaymentMethodStart());
-  dispatch(paymentMethod(paymentMethod));
+
+  dispatch(paymentMethod(data));
+
   dispatch(loadingPaymentMethodEnd());
 };
