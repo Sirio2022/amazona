@@ -5,6 +5,7 @@ import signinReducer from './signinSlice';
 import registerReducer from './registerSlice';
 import cartReducer from './cartSlice';
 import shippingAddressReducer from './shippingAddressSlice';
+import paymentMethodReducer from './paymentMethodSlice';
 
 export const store = configureStore({
   reducer: {
@@ -15,5 +16,6 @@ export const store = configureStore({
     signin: signinReducer,
     register: registerReducer,
     shippingAddress: shippingAddressReducer,
+    paymentMethod: paymentMethodReducer,
   },
 });

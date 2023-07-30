@@ -14,6 +14,7 @@ import AccountConfirm from './screens/AccountConfirm';
 import ShippingAddressScreen from './screens/ShippingAddressScreen';
 import PaymentMethodScreen from './screens/PaymentMethodScreen';
 
+
 function App() {
   const { cartItems } = useSelector((state) => state.cart); // useSelector debe de tener un nivel mas de profundidad por el persistor state.state (ver redux devtools).
   const { userInfo } = useSelector((state) => state.signin);
