@@ -1,4 +1,4 @@
-import Order from '../models/orderModel';
+import Order from '../models/orderModel.js';
 
 const addOrderItems = async (req, res) => {
   if (req.body.orderItems.length === 0) {
@@ -19,7 +19,10 @@ const addOrderItems = async (req, res) => {
 
     const createdOrder = await order.save();
 
-    res.status(201).json(createdOrder);
+    res.status(201).json({
+      msg: 'Order created',
+      order: createdOrder,
+    });
   }
 };
 
