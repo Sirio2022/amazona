@@ -76,7 +76,7 @@ export default function PlaceOrderScreen() {
 
                         <div>
                           <strong>
-                            {item.qty} Items * ${item.price} = Total: $
+                            {item.qty} Items * ${item.price} = $
                             {item.qty * item.price}
                           </strong>
                         </div>
