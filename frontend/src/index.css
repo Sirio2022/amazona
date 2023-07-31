@@ -263,7 +263,6 @@ img.large {
 .form label {
     font-weight: bold;
     padding: 1rem 0;
-    
 }
 
 /* Dropdown */
@@ -292,11 +291,11 @@ img.large {
 .confirm {
     margin-top: 10rem;
     font-size: larger;
-    
+
 }
 
 /*Checkout Steps*/
-.checkout-steps > div {
+.checkout-steps>div {
     border-top: 0.3rem #c0c0c0 solid;
     color: #c0c0c0;
     flex: 1;
@@ -304,7 +303,7 @@ img.large {
     font-weight: bold;
 }
 
-.checkout-steps > div.active {
+.checkout-steps>div.active {
     border-top: 0.3rem #f0c040 solid;
     color: #f0c040;
 }
