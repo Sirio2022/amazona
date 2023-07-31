@@ -6,6 +6,7 @@ import registerReducer from './registerSlice';
 import cartReducer from './cartSlice';
 import shippingAddressReducer from './shippingAddressSlice';
 import paymentMethodReducer from './paymentMethodSlice';
+import placeOrderReducer from './orderSlice';
 
 export const store = configureStore({
   reducer: {
@@ -17,5 +18,6 @@ export const store = configureStore({
     register: registerReducer,
     shippingAddress: shippingAddressReducer,
     paymentMethod: paymentMethodReducer,
+    placeOrder: placeOrderReducer,
   },
 });

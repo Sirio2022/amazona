@@ -1,7 +1,8 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { createOrder } from '../redux/orderSlice';
 
 export default function PlaceOrderScreen() {
   const navigate = useNavigate();
@@ -24,7 +25,22 @@ export default function PlaceOrderScreen() {
   const taxPrice = toPrice(0.15 * itemsPrice);
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
-  const placeOrderHandler = () => {};
+  const dispatch = useDispatch();
+
+  const placeOrderHandler = () => {
+    // create an order
+    dispatch(
+      createOrder({
+        orderItems: cartItems,
+        shippingAddress,
+        paymentMethod,
+        itemsPrice,
+        shippingPrice,
+        taxPrice,
+        totalPrice,
+      })
+    );
+  };
   return (
     <>
       <div>

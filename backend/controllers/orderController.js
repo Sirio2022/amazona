@@ -12,7 +12,7 @@ const addOrderItems = async (req, res) => {
       paymentMethod: req.body.paymentMethod,
       itemsPrice: req.body.itemsPrice,
       shippingPrice: req.body.shippingPrice,
-      taxPtrice: req.body.taxPtrice,
+      taxPrice: req.body.taxPrice,
       totalPrice: req.body.totalPrice,
       user: req.user._id,
     });
