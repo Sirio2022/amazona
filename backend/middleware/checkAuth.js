@@ -1,7 +1,7 @@
 import User from '../models/userModel.js';
 import jwt from 'jsonwebtoken';
 
-const chechAuth = async (req, res, next) => {
+const checkAuth = async (req, res, next) => {
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
@@ -26,4 +26,4 @@ const chechAuth = async (req, res, next) => {
   next();
 };
 
-export default chechAuth;
+export default checkAuth;
