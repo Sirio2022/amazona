@@ -2,9 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const initialState = {
-  loading: false,
+  loading: true,
   error: false,
-  orderDetails: {},
+  success: false,
+  orderdetails: {},
 };
 
 const orderDetailsSlice = createSlice({
@@ -22,8 +23,9 @@ const orderDetailsSlice = createSlice({
       state.error = action.payload;
     },
     orderDetailsSuccess: (state, action) => {
+      state.orderdetails = action.payload;
+      state.success = true;
       state.loading = false;
-      state.orderDetails = action.payload;
     },
   },
 });
@@ -37,14 +39,14 @@ const {
 
 export default orderDetailsSlice.reducer;
 
-export const OrderDetailsAction = (orderId) => async (dispatch, getState) => {
+export const OrderDetailsAction = (id) => async (dispatch, getState) => {
   dispatch(loadingOrderDetailsStart());
   try {
     const {
       signin: { userInfo },
     } = getState();
     const { data } = await axios.get(
-      import.meta.env.VITE_BACKEND_URL + `/api/orders/${orderId}`,
+      import.meta.env.VITE_BACKEND_URL + `/api/orders/${id}`,
       {
         headers: {
           Authorization: `Bearer ${userInfo.token}`,
@@ -52,6 +54,7 @@ export const OrderDetailsAction = (orderId) => async (dispatch, getState) => {
       }
     );
     dispatch(orderDetailsSuccess(data));
+
     dispatch(loadingOrderDetailsEnd());
   } catch (error) {
     dispatch(

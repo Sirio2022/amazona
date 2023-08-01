@@ -14,7 +14,7 @@ import AccountConfirm from './screens/AccountConfirm';
 import ShippingAddressScreen from './screens/ShippingAddressScreen';
 import PaymentMethodScreen from './screens/PaymentMethodScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
-
+import OrderScreen from './screens/orderScreen';
 
 function App() {
   const { cartItems } = useSelector((state) => state.cart); // useSelector debe de tener un nivel mas de profundidad por el persistor state.state (ver redux devtools).
@@ -70,6 +70,7 @@ function App() {
             <Route path="/shipping" element={<ShippingAddressScreen />} />
             <Route path="/payment" element={<PaymentMethodScreen />} />
             <Route path="/placeorder" element={<PlaceOrderScreen />} />
+            <Route path="/order/:id" element={<OrderScreen />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/forgot-password/:token" element={<NewPassword />} />
             <Route path="/confirm/:id" element={<AccountConfirm />} />

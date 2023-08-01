@@ -33,9 +33,9 @@ const getOrderById = async (req, res) => {
   );
 
   if (order) {
-    res.status(200).json({
+    res.json({
       msg: 'Order found',
-      order,
+      order: order,
     });
   } else {
     res.status(404).json({
