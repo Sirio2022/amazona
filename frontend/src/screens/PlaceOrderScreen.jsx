@@ -1,14 +1,23 @@
 import { useDispatch, useSelector } from 'react-redux';
 import CheckoutSteps from '../components/CheckoutSteps';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createOrder } from '../redux/orderSlice';
+import { clearOrderAction } from '../redux/orderSlice';
+import  LoadingBox  from '../components/LoadingBox';
+import  MessageBox  from '../components/MessageBox';
 
 export default function PlaceOrderScreen() {
+
+  const [alert, setAlert] = useState('');
+
   const navigate = useNavigate();
   const { shippingAddress } = useSelector((state) => state.shippingAddress);
   const { paymentMethod } = useSelector((state) => state.paymentMethod);
   const { cartItems } = useSelector((state) => state.cart);
+  const { order, loading, error, success } = useSelector(
+    (state) => state.placeOrder
+  );
 
   useEffect(() => {
     if (!paymentMethod) {
@@ -29,18 +38,40 @@ export default function PlaceOrderScreen() {
 
   const placeOrderHandler = () => {
     // create an order
-    dispatch(
-      createOrder({
-        orderItems: cartItems,
-        shippingAddress,
-        paymentMethod,
-        itemsPrice,
-        shippingPrice,
-        taxPrice,
-        totalPrice,
-      })
-    );
+    try {
+      dispatch(
+        createOrder({
+          orderItems: cartItems,
+          shippingAddress,
+          paymentMethod,
+          itemsPrice,
+          shippingPrice,
+          taxPrice,
+          totalPrice,
+        })
+      );
+      setAlert({
+        msg: order.msg,
+        error: false,
+      });
+      if (error) {
+        setAlert({
+          msg: error,
+          error: true,
+        });
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
   };
+
+  useEffect(() => {
+    if(success) {
+      navigate(`/order/${order._id}`)
+      dispatch(clearOrderAction())
+    }
+  }, [ dispatch, navigate, success, order])
+
   return (
     <>
       <div>
@@ -148,6 +179,10 @@ export default function PlaceOrderScreen() {
                   Place Order
                 </button>
               </li>
+              {loading && <LoadingBox></LoadingBox>}
+              {error && <MessageBox 
+                alert={alert}
+              />}
             </ul>
           </div>
         </div>

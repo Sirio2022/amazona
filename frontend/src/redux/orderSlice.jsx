@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { clearItemsAction } from './cartSlice';
 
 const initialState = {
   loading: false,
   error: false,
+  success: false,
   order: {},
 };
 
@@ -22,6 +24,11 @@ const orderSlice = createSlice({
     },
     orderCreateSuccess: (state, action) => {
       state.order = action.payload;
+      state.success = true;
+    },
+    orderCreateReset: (state) => {
+      state.order = {};
+      state.success = false;
     },
   },
 });
@@ -31,6 +38,7 @@ export const {
   loadingCreateOrderEnd,
   loadingCreateOrderError,
   orderCreateSuccess,
+  orderCreateReset,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;
@@ -52,6 +60,8 @@ export const createOrder = (order) => async (dispatch, getState) => {
     );
     dispatch(orderCreateSuccess(data.order));
     dispatch(loadingCreateOrderEnd());
+    dispatch(clearItemsAction());
+    localStorage.removeItem('cartItems');
   } catch (error) {
     dispatch(
       loadingCreateOrderError(
@@ -61,4 +71,8 @@ export const createOrder = (order) => async (dispatch, getState) => {
       )
     );
   }
+};
+
+export const clearOrderAction = () => async (dispatch) => {
+  dispatch(orderCreateReset());
 };
