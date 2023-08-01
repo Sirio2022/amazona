@@ -55,6 +55,15 @@ export default function OrderScreen() {
                           {orderdetails.order.shippingAddress.country}
                         </strong>
                       </p>
+                      {orderdetails.order.isDelivered ? (
+                        <MessageBox
+                          alert={{ msg: 'Delivered', error: false }}
+                        />
+                      ) : (
+                        <MessageBox
+                          alert={{ msg: 'Not Delivered', error: true }}
+                        />
+                      )}
                     </div>
                   </li>
                   <li>
@@ -65,6 +74,11 @@ export default function OrderScreen() {
                           Method: {orderdetails.order.paymentMethod}
                         </strong>
                       </p>
+                      {orderdetails.order.isPaid ? (
+                        <MessageBox alert={{ msg: 'Paid', error: false }} />
+                      ) : (
+                        <MessageBox alert={{ msg: 'Not Paid', error: true }} />
+                      )}
                     </div>
                   </li>
                   <li>
