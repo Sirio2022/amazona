@@ -26,7 +26,7 @@ export const productDetailsSlice = createSlice({
   },
 });
 
-export const {
+const {
   loadingProductStart,
   loadingProductEnd,
   loadingProductError,

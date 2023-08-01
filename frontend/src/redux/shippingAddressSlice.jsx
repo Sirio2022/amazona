@@ -18,19 +18,15 @@ export const shippingAddressSlice = createSlice({
     loadingShippingAddressEnd: (state) => {
       state.loading = false;
     },
-    loadingShippingAddressError: (state, action) => {
-      state.error = action.payload;
-    },
     shippingAddress: (state, action) => {
       state.shippingAddress = action.payload;
     },
   },
 });
 
-export const {
+const {
   loadingShippingAddressStart,
   loadingShippingAddressEnd,
-  loadingShippingAddressError,
   shippingAddress,
 } = shippingAddressSlice.actions;
 

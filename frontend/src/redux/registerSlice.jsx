@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-
 const initialState = {
   loading: false,
   error: false,
@@ -27,12 +26,8 @@ export const registerSlice = createSlice({
   },
 });
 
-export const {
-  loadingSigninStart,
-  loadingSigninEnd,
-  loadingSigninError,
-  userInfo,
-} = registerSlice.actions;
+const { loadingSigninStart, loadingSigninEnd, loadingSigninError, userInfo } =
+  registerSlice.actions;
 
 export default registerSlice.reducer;
 
@@ -41,7 +36,7 @@ export const register = (name, email, password) => async (dispatch) => {
   try {
     const { data } = await axios.post(
       import.meta.env.VITE_BACKEND_URL + '/api/users',
-      {name, email, password }
+      { name, email, password }
     );
 
     dispatch(userInfo(data));
@@ -57,5 +52,3 @@ export const register = (name, email, password) => async (dispatch) => {
     );
   }
 };
-
-

@@ -28,12 +28,8 @@ export const signinSlice = createSlice({
   },
 });
 
-export const {
-  loadingSigninStart,
-  loadingSigninEnd,
-  loadingSigninError,
-  userInfo,
-} = signinSlice.actions;
+const { loadingSigninStart, loadingSigninEnd, loadingSigninError, userInfo } =
+  signinSlice.actions;
 
 export default signinSlice.reducer;
 

@@ -33,7 +33,7 @@ const orderSlice = createSlice({
   },
 });
 
-export const {
+const {
   loadingCreateOrderStart,
   loadingCreateOrderEnd,
   loadingCreateOrderError,

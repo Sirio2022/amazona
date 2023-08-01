@@ -26,7 +26,7 @@ export const productsSlice = createSlice({
   },
 });
 
-export const {
+const {
   listProducts,
   loadingProductsStart,
   loadingProductsEnd,

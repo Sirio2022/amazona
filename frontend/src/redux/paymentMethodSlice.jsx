@@ -16,21 +16,15 @@ export const paymentMethodSlice = createSlice({
     loadingPaymentMethodEnd: (state) => {
       state.loading = false;
     },
-    loadingPaymentMethodError: (state, action) => {
-      state.error = action.payload;
-    },
+
     paymentMethod: (state, action) => {
       return { ...state, paymentMethod: action.payload };
     },
   },
 });
 
-export const {
-  loadingPaymentMethodStart,
-  loadingPaymentMethodEnd,
-  loadingPaymentMethodError,
-  paymentMethod,
-} = paymentMethodSlice.actions;
+const { loadingPaymentMethodStart, loadingPaymentMethodEnd, paymentMethod } =
+  paymentMethodSlice.actions;
 
 export default paymentMethodSlice.reducer;
 
