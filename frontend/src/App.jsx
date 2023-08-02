@@ -1,4 +1,5 @@
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
@@ -28,59 +29,66 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
-      <div className="grid-container">
-        <header className="row">
-          <div>
-            <Link className="brand" to="/">
-              amazona
-            </Link>
-          </div>
+    <PayPalScriptProvider
+      options={{
+        'client-id': import.meta.env.VITE_PAYPAL_CLIENT_ID,
+      }}
+    
+    >
+      <BrowserRouter>
+        <div className="grid-container">
+          <header className="row">
+            <div>
+              <Link className="brand" to="/">
+                amazona
+              </Link>
+            </div>
 
-          <div>
-            <Link to="/cart">
-              Cart
-              {cartItems.length > 0 && (
-                <span className="badge">{cartItems.length}</span>
-              )}
-            </Link>
-            {userInfo.name ? (
-              <div className="dropdown">
-                <Link to="#">
-                  {userInfo.name} <i className="fa fa-caret-down"></i>
-                </Link>
-                <ul className="dropdown-content">
-                  <Link to="#signout" onClick={signoutHandler}>
-                    Sign Out
+            <div>
+              <Link to="/cart">
+                Cart
+                {cartItems.length > 0 && (
+                  <span className="badge">{cartItems.length}</span>
+                )}
+              </Link>
+              {userInfo.name ? (
+                <div className="dropdown">
+                  <Link to="#">
+                    {userInfo.name} <i className="fa fa-caret-down"></i>
                   </Link>
-                </ul>
-              </div>
-            ) : (
-              <Link to="/signin">Sign In</Link>
-            )}
-          </div>
-        </header>
+                  <ul className="dropdown-content">
+                    <Link to="#signout" onClick={signoutHandler}>
+                      Sign Out
+                    </Link>
+                  </ul>
+                </div>
+              ) : (
+                <Link to="/signin">Sign In</Link>
+              )}
+            </div>
+          </header>
 
-        <main>
-          <Routes>
-            <Route path="/cart/:id?" element={<CartScreen />} />
-            <Route path="/product/:id" element={<ProductScreen />} />
-            <Route path="/signin" element={<SigninScreen />} />
-            <Route path="/register" element={<RegisterScreen />} />
-            <Route path="/shipping" element={<ShippingAddressScreen />} />
-            <Route path="/payment" element={<PaymentMethodScreen />} />
-            <Route path="/placeorder" element={<PlaceOrderScreen />} />
-            <Route path="/order/:id" element={<OrderScreen />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/forgot-password/:token" element={<NewPassword />} />
-            <Route path="/confirm/:id" element={<AccountConfirm />} />
-            <Route path="/" element={<HomeScreen />} />
-          </Routes>
-        </main>
+          <main>
+            <Routes>
+              <Route path="/cart/:id?" element={<CartScreen />} />
+              <Route path="/product/:id" element={<ProductScreen />} />
+              <Route path="/signin" element={<SigninScreen />} />
+              <Route path="/register" element={<RegisterScreen />} />
+              <Route path="/shipping" element={<ShippingAddressScreen />} />
+              <Route path="/payment" element={<PaymentMethodScreen />} />
+              <Route path="/placeorder" element={<PlaceOrderScreen />} />
+              <Route path="/order/:id" element={<OrderScreen />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/forgot-password/:token" element={<NewPassword />} />
+              <Route path="/confirm/:id" element={<AccountConfirm />} />
+              <Route path="/" element={<HomeScreen />} />
+            </Routes>
+          </main>
 
-        <footer className="row center">All rights reserved 2023.</footer>
-      </div>
-    </BrowserRouter>
+          <footer className="row center">All rights reserved 2023.</footer>
+        </div>
+      </BrowserRouter>
+    </PayPalScriptProvider>
   );
 }
 

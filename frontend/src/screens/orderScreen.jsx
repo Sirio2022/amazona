@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { OrderDetailsAction } from '../redux/orderDetailsSlice';
+import PaypalCheckoutButton from '../components/PaypalCheckoutButton';
+
 export default function OrderScreen() {
   const [alert, setAlert] = useState('');
   const params = useParams();
@@ -151,6 +153,11 @@ export default function OrderScreen() {
                           </strong>
                         </div>
                       </div>
+                    </li>
+                    <li>
+                      {!orderdetails.order.isPaid && (
+                        <PaypalCheckoutButton order={orderdetails.order} />
+                      )}
                     </li>
                   </ul>
                 </div>
