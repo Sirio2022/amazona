@@ -13,10 +13,18 @@ export default function OrderScreen() {
     (state) => state.orderDetails
   );
 
+  const {
+    loading: loadingPay,
+    error: errorPay,
+    success: successPay,
+    payOrderDetails,
+  } = useSelector((state) => state.payOrder);
+
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(OrderDetailsAction(params.id));
-    if (success) {
+    if (payOrderDetails || payOrderDetails._id !== params.id) {
+      dispatch(OrderDetailsAction(params.id));
       setAlert({
         msg: orderdetails.msg,
         error: false,
@@ -28,7 +36,16 @@ export default function OrderScreen() {
         error: true,
       });
     }
-  }, [dispatch, params.id, success, error, orderdetails.msg]);
+  }, [
+    dispatch,
+    params.id,
+    success,
+    error,
+    orderdetails.msg,
+    successPay,
+    payOrderDetails._id,
+    payOrderDetails,
+  ]);
 
   return loading ? (
     <LoadingBox />
@@ -77,7 +94,12 @@ export default function OrderScreen() {
                         </strong>
                       </p>
                       {orderdetails.order.isPaid ? (
-                        <MessageBox alert={{ msg: 'Paid', error: false }} />
+                        <MessageBox
+                          alert={{
+                            msg: `Paid at: ${orderdetails.order.paidAt}`,
+                            error: false,
+                          }}
+                        />
                       ) : (
                         <MessageBox alert={{ msg: 'Not Paid', error: true }} />
                       )}
@@ -155,6 +177,10 @@ export default function OrderScreen() {
                       </div>
                     </li>
                     <li>
+                      {errorPay && (
+                        <MessageBox alert={{ msg: errorPay, error: true }} />
+                      )}
+                      {loadingPay && <LoadingBox />}
                       {!orderdetails.order.isPaid && (
                         <PaypalCheckoutButton order={orderdetails.order} />
                       )}

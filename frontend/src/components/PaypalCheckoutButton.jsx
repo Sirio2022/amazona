@@ -1,17 +1,20 @@
 import PropTypes from 'prop-types';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { payOrder } from '../redux/payOrderSlice';
+import Swal from 'sweetalert2';
 
 export default function PaypalCheckoutButton(props) {
   const { order } = props;
+  const dispatch = useDispatch();
 
   const [paidFor, setPaidFor] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleApprove = (id) => {
-    
+  const handleApprove = (paymentResult) => {
     // Call your server to save the transaction
-    console.log(id);
+    dispatch(payOrder(order, paymentResult));
 
     // Set paidFor to true, so the PayPal button disappears
     setPaidFor(true);
@@ -23,18 +26,28 @@ export default function PaypalCheckoutButton(props) {
 
   if (paidFor) {
     // Display a success message, modal, or redirect to a success page
-    alert('Thank you for your purchase!');
+    Swal.fire({
+      title: 'Payment Successful!',
+      text: 'Your payment was successful!. However, we were unable to update your account status. Please contact us.',
+      icon: 'success',
+      confirmButtonText: 'OK',
+    });
   }
 
   if (error) {
     // Display an error message, modal, or redirect to an error page.
-    alert(error);
+    Swal.fire({
+      title: 'Payment Failed!',
+      text: 'Your payment was not successful!. Please try again.',
+      icon: 'error',
+      confirmButtonText: 'OK',
+    });
   }
 
   return (
     <>
       <PayPalButtons
-        onClick={(data, actions) => {
+        onClick={(actions) => {
           // Validate on button click , client or server side
           const hasAlreadyBought = false;
           if (hasAlreadyBought) {
@@ -46,7 +59,7 @@ export default function PaypalCheckoutButton(props) {
             return actions.resolve();
           }
         }}
-        createOrder={(data, actions) => {
+        createOrder={(actions) => {
           return actions.order.create({
             purchase_units: [
               {
@@ -58,14 +71,14 @@ export default function PaypalCheckoutButton(props) {
             ],
           });
         }}
-        onApprove={async (data, actions) => {
+        onApprove={async (actions) => {
           const order = await actions.order.capture();
-          console.log(order);
 
           handleApprove(order.id);
         }}
-        onCancel={(data) => {
+        onCancel={() => {
           // Display a cancel message, modal, or redirect to the checkout page
+          setError('You have cancelled the payment.');
         }}
         onError={(error) => {
           setError(error);

@@ -15,9 +15,7 @@ const orderDetailsSlice = createSlice({
     loadingOrderDetailsStart: (state) => {
       state.loading = true;
     },
-    loadingOrderDetailsEnd: (state) => {
-      state.loading = false;
-    },
+
     loadingOrderDetailsError: (state, action) => {
       state.loading = false;
       state.error = action.payload;
@@ -32,7 +30,6 @@ const orderDetailsSlice = createSlice({
 
 const {
   loadingOrderDetailsStart,
-  loadingOrderDetailsEnd,
   loadingOrderDetailsError,
   orderDetailsSuccess,
 } = orderDetailsSlice.actions;
@@ -54,8 +51,6 @@ export const OrderDetailsAction = (id) => async (dispatch, getState) => {
       }
     );
     dispatch(orderDetailsSuccess(data));
-
-    dispatch(loadingOrderDetailsEnd());
   } catch (error) {
     dispatch(
       loadingOrderDetailsError(

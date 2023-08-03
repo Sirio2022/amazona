@@ -30,6 +30,12 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    paymentResult: {
+      id: String,
+      status: String,
+      update_time: String,
+      email_address: String,
+    },
     itemsPrice: {
       type: Number,
       required: true,
@@ -56,16 +62,14 @@ const orderSchema = new mongoose.Schema(
       default: false,
     },
     paidAt: {
-      type: Boolean,
-      default: false,
+      type: Date,
     },
     isDelivered: {
       type: Boolean,
       default: false,
     },
     deliveredAt: {
-      type: Boolean,
-      default: false,
+      type: Date,
     },
   },
   {
