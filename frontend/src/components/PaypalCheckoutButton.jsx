@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { payOrder } from '../redux/payOrderSlice';
+import { PayOrder } from '../redux/orderDetailsSlice';
 import Swal from 'sweetalert2';
 
 export default function PaypalCheckoutButton(props) {
@@ -12,9 +12,9 @@ export default function PaypalCheckoutButton(props) {
   const [paidFor, setPaidFor] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleApprove = (paymentResult) => {
+  const handleApprove = async (paymentResult) => {
     // Call your server to save the transaction
-    dispatch(payOrder(order, paymentResult));
+    dispatch(PayOrder(order, paymentResult));
 
     // Set paidFor to true, so the PayPal button disappears
     setPaidFor(true);

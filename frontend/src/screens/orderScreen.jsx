@@ -10,21 +10,14 @@ export default function OrderScreen() {
   const [alert, setAlert] = useState('');
   const params = useParams();
 
-  const { orderdetails, loading, error } = useSelector(
+  const { orderdetails, success, loading, error } = useSelector(
     (state) => state.orderDetails
   );
-
-  const {
-    loading: loadingPay,
-    error: errorPay,
-
-    payOrderDetails,
-  } = useSelector((state) => state.payOrder);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (payOrderDetails || payOrderDetails._id !== params.id) {
+    if (success || orderdetails._id !== params.id) {
       dispatch(OrderDetailsAction(params.id));
       setAlert({
         msg: orderdetails.msg,
@@ -37,14 +30,7 @@ export default function OrderScreen() {
         error: true,
       });
     }
-  }, [
-    dispatch,
-    params.id,
-    error,
-    orderdetails.msg,
-    payOrderDetails._id,
-    payOrderDetails,
-  ]);
+  }, [dispatch, params.id, error, orderdetails.msg, orderdetails._id, success]);
 
   return loading ? (
     <LoadingBox />
@@ -176,10 +162,10 @@ export default function OrderScreen() {
                       </div>
                     </li>
                     <li>
-                      {errorPay && (
-                        <MessageBox alert={{ msg: errorPay, error: true }} />
+                      {error && (
+                        <MessageBox alert={{ msg: error, error: true }} />
                       )}
-                      {loadingPay && <LoadingBox />}
+                      {loading && <LoadingBox />}
                       {!orderdetails.order.isPaid && (
                         <PaypalCheckoutButton order={orderdetails.order} />
                       )}

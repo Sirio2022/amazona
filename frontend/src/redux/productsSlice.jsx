@@ -13,15 +13,14 @@ export const productsSlice = createSlice({
   reducers: {
     listProducts: (state, action) => {
       state.products = action.payload;
+      state.loading = false;
     },
     loadingProductsStart: (state) => {
       state.loading = true;
     },
-    loadingProductsEnd: (state) => {
-      state.loading = false;
-    },
     loadingProductsError: (state, action) => {
       state.error = action.payload;
+      state.loading = false;
     },
   },
 });
@@ -29,7 +28,7 @@ export const productsSlice = createSlice({
 const {
   listProducts,
   loadingProductsStart,
-  loadingProductsEnd,
+
   loadingProductsError,
 } = productsSlice.actions;
 
@@ -41,11 +40,8 @@ export const fetchProducts = () => async (dispatch) => {
     const { data } = await axios.get(
       import.meta.env.VITE_BACKEND_URL + '/api/products'
     );
-
     dispatch(listProducts(data));
-    dispatch(loadingProductsEnd());
   } catch (error) {
-    dispatch(loadingProductsEnd());
     dispatch(loadingProductsError(error.message));
   }
 };
