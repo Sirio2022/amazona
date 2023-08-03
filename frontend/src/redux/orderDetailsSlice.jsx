@@ -4,7 +4,6 @@ import axios from 'axios';
 const initialState = {
   loading: true,
   error: false,
-  success: false,
   orderdetails: {},
 };
 
@@ -22,7 +21,6 @@ const orderDetailsSlice = createSlice({
     },
     orderDetailsSuccess: (state, action) => {
       state.orderdetails = action.payload;
-      state.success = true;
       state.loading = false;
     },
   },

@@ -47,7 +47,7 @@ export default function PaypalCheckoutButton(props) {
   return (
     <>
       <PayPalButtons
-        onClick={(actions) => {
+        onClick={(data, actions) => {
           // Validate on button click , client or server side
           const hasAlreadyBought = false;
           if (hasAlreadyBought) {
@@ -59,7 +59,7 @@ export default function PaypalCheckoutButton(props) {
             return actions.resolve();
           }
         }}
-        createOrder={(actions) => {
+        createOrder={(data, actions) => {
           return actions.order.create({
             purchase_units: [
               {
@@ -71,12 +71,12 @@ export default function PaypalCheckoutButton(props) {
             ],
           });
         }}
-        onApprove={async (actions) => {
+        onApprove={async (data, actions) => {
           const order = await actions.order.capture();
 
           handleApprove(order.id);
         }}
-        onCancel={() => {
+        onCancel={(data) => {
           // Display a cancel message, modal, or redirect to the checkout page
           setError('You have cancelled the payment.');
         }}

@@ -9,7 +9,9 @@ import PaypalCheckoutButton from '../components/PaypalCheckoutButton';
 export default function OrderScreen() {
   const [alert, setAlert] = useState('');
   const params = useParams();
-  const { orderdetails, loading, error, success } = useSelector(
+
+
+  const { orderdetails, loading, error} = useSelector(
     (state) => state.orderDetails
   );
 
@@ -39,7 +41,6 @@ export default function OrderScreen() {
   }, [
     dispatch,
     params.id,
-    success,
     error,
     orderdetails.msg,
     successPay,
