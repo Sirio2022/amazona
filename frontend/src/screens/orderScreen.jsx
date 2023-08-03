@@ -10,15 +10,14 @@ export default function OrderScreen() {
   const [alert, setAlert] = useState('');
   const params = useParams();
 
-
-  const { orderdetails, loading, error} = useSelector(
+  const { orderdetails, loading, error } = useSelector(
     (state) => state.orderDetails
   );
 
   const {
     loading: loadingPay,
     error: errorPay,
-    success: successPay,
+
     payOrderDetails,
   } = useSelector((state) => state.payOrder);
 
@@ -43,7 +42,6 @@ export default function OrderScreen() {
     params.id,
     error,
     orderdetails.msg,
-    successPay,
     payOrderDetails._id,
     payOrderDetails,
   ]);
