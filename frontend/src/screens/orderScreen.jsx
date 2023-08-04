@@ -19,10 +19,6 @@ export default function OrderScreen() {
   useEffect(() => {
     if (success || orderdetails._id !== params.id) {
       dispatch(OrderDetailsAction(params.id));
-      setAlert({
-        msg: orderdetails.msg,
-        error: false,
-      });
     }
     if (error) {
       setAlert({
@@ -30,7 +26,15 @@ export default function OrderScreen() {
         error: true,
       });
     }
-  }, [dispatch, params.id, error, orderdetails.msg, orderdetails._id, success]);
+  }, [
+    dispatch,
+    params.id,
+    error,
+    orderdetails.msg,
+    orderdetails._id,
+    success,
+    orderdetails.isPaid,
+  ]);
 
   return loading ? (
     <LoadingBox />

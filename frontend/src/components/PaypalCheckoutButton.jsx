@@ -1,16 +1,18 @@
 import PropTypes from 'prop-types';
 import { PayPalButtons } from '@paypal/react-paypal-js';
-import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { PayOrder } from '../redux/orderDetailsSlice';
-import Swal from 'sweetalert2';
+import { useState } from 'react';
 
 export default function PaypalCheckoutButton(props) {
+  const [error, setError] = useState(null);
+  const [paidFor, setPaidFor] = useState(false);
   const { order } = props;
   const dispatch = useDispatch();
 
-  const [paidFor, setPaidFor] = useState(false);
-  const [error, setError] = useState(null);
+  //const [paidFor, setPaidFor] = useState(false);
+  // [paidFor, setPaidFor] = useState(false);
+  //const [error, setError] = useState(null);
 
   const handleApprove = (paymentResult) => {
     // Call your server to save the transaction
@@ -18,29 +20,23 @@ export default function PaypalCheckoutButton(props) {
 
     // Set paidFor to true, so the PayPal button disappears
     setPaidFor(true);
-    // Refresh user´s account or subscription status, etc.
-    if (paidFor) {
-      // Display a success message, modal, or redirect to a success page
-      Swal.fire({
-        title: 'Payment Successful!',
-        text: 'Your payment was successful!. However, we were unable to update your account status. Please contact us.',
-        icon: 'success',
-        confirmButtonText: 'OK',
-      });
-    }
-
-    // If the response is error
-    // setError("Your payment was successful!. However, we were unable to update your account status. Please contact us.")
-    if (error) {
-      // Display an error message, modal, or redirect to an error page.
-      Swal.fire({
-        title: 'Payment Failed!',
-        text: 'Your payment was not successful!. Please try again.',
-        icon: 'error',
-        confirmButtonText: 'OK',
-      });
-    }
   };
+  // Set paidFor to true, so the PayPal button disappears
+  //setPaidFor(true);
+  // Refresh user´s account or subscription status, etc.
+  if (paidFor) {
+    // Display a success message, modal, or redirect to a success page
+    alert(
+      'Your payment was successful!. However, we were unable to update your account status. Please contact us.'
+    );
+  }
+
+  // If the response is error
+  // setError("Your payment was successful!. However, we were unable to update your account status. Please contact us.")
+  // if (error) {
+  // Display an error message, modal, or redirect to an error page.
+  // alert('Your payment was successful!. However, we were unable to update your account status. Please contact us.');
+  //}
 
   return (
     <>
@@ -71,8 +67,8 @@ export default function PaypalCheckoutButton(props) {
         }}
         onApprove={async (data, actions) => {
           const order = await actions.order.capture();
-
-          handleApprove(order.id);
+          
+          handleApprove(order, data.orderID);
         }}
         onCancel={(data) => {
           // Display a cancel message, modal, or redirect to the checkout page
