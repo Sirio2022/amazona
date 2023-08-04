@@ -26,6 +26,11 @@ const addOrderItems = async (req, res) => {
   }
 };
 
+const getMyOrders = async (req, res) => {
+  const orders = await Order.find().where({ user: req.user._id });
+  res.json(orders);
+};
+
 const getOrderById = async (req, res) => {
   const order = await Order.findById(req.params.id).populate(
     'user',
@@ -46,7 +51,7 @@ const getOrderById = async (req, res) => {
 
 const updateOrderToPaid = async (req, res) => {
   const order = await Order.findById(req.params.id);
-  
+
   if (order) {
     order.isPaid = true;
     order.paidAt = Date.now();
@@ -60,7 +65,7 @@ const updateOrderToPaid = async (req, res) => {
     res.status(200).json({
       msg: 'Order paid',
       order: updatedOrder,
-    })
+    });
   } else {
     res.status(404).json({
       msg: 'Order not found',
@@ -68,4 +73,4 @@ const updateOrderToPaid = async (req, res) => {
   }
 };
 
-export { addOrderItems, getOrderById, updateOrderToPaid };
+export { addOrderItems, getOrderById, updateOrderToPaid, getMyOrders };

@@ -7,9 +7,9 @@ import {
   forgotPassword,
   confirmToken,
   newPassword,
-  profile,
+  userDetails,
 } from '../controllers/userController.js';
-import chechAuth from '../middleware/checkAuth.js';
+
 
 // Create, register and login users
 
@@ -19,6 +19,6 @@ router.get('/confirmation/:token', confirmUser); // Confirm user
 router.post('/forgot-password', forgotPassword);
 router.route('/forgot-password/:token').get(confirmToken).post(newPassword);
 
-router.get('/profile', chechAuth, profile); // Get user profile
+router.get('/:id', userDetails); // Get user profile
 
 export default router;

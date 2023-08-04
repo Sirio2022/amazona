@@ -16,6 +16,8 @@ import ShippingAddressScreen from './screens/ShippingAddressScreen';
 import PaymentMethodScreen from './screens/PaymentMethodScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/orderScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import OrderHistoryScreen from './screens/OrderHistoryScreen';
 
 function App() {
   const { cartItems } = useSelector((state) => state.cart); // useSelector debe de tener un nivel mas de profundidad por el persistor state.state (ver redux devtools).
@@ -33,7 +35,6 @@ function App() {
       options={{
         'client-id': import.meta.env.VITE_PAYPAL_CLIENT_ID,
       }}
-    
     >
       <BrowserRouter>
         <div className="grid-container">
@@ -57,9 +58,18 @@ function App() {
                     {userInfo.name} <i className="fa fa-caret-down"></i>
                   </Link>
                   <ul className="dropdown-content">
-                    <Link to="#signout" onClick={signoutHandler}>
-                      Sign Out
-                    </Link>
+                    <li>
+                      <Link to="/profile">User Profile</Link>
+                    </li>
+
+                    <li>
+                      <Link to="/orderhistory">Order History</Link>
+                    </li>
+                    <li>
+                      <Link to="#signout" onClick={signoutHandler}>
+                        Sign Out
+                      </Link>
+                    </li>
                   </ul>
                 </div>
               ) : (
@@ -81,6 +91,8 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/forgot-password/:token" element={<NewPassword />} />
               <Route path="/confirm/:id" element={<AccountConfirm />} />
+              <Route path="/profile/" element={<ProfileScreen />} />
+              <Route path="/orderhistory" element={<OrderHistoryScreen />} />
               <Route path="/" element={<HomeScreen />} />
             </Routes>
           </main>
