@@ -11,8 +11,8 @@ export default function ProfileScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
-  const { userInfo } = useSelector((state) => state.userSignin);
-  const { user, loading, error } = useSelector((state) => state.userDetail);
+  const { userInfo } = useSelector((state) => state.signin);
+  const { user, loading, error } = useSelector((state) => state.userDetails);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function ProfileScreen() {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    // dispatch(updateUser({ userId: user._id, name, email, password }));
+    // dispatch(updateUser({ userId: user._id, name, email}));
   };
 
   return (
@@ -73,6 +73,9 @@ export default function ProfileScreen() {
                 }}
               />
             </div>
+            <button className="primary block" type="submit">
+              Update
+            </button>
           </>
         )}
         <div className="row">

@@ -91,8 +91,8 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/forgot-password/:token" element={<NewPassword />} />
               <Route path="/confirm/:id" element={<AccountConfirm />} />
-              <Route path="/profile/" element={<ProfileScreen />} />
               <Route path="/orderhistory" element={<OrderHistoryScreen />} />
+              <Route path="/profile/" element={<ProfileScreen />} />
               <Route path="/" element={<HomeScreen />} />
             </Routes>
           </main>
