@@ -27,8 +27,8 @@ export default function ProfileScreen() {
     if (!user.name) {
       dispatch(detailsUser(userInfo._id));
     } else {
-      setName(user.name);
-      setEmail(user.email);
+      setName(userProfile.name);
+      setEmail(userProfile.email);
     }
     if (error) {
       setAlert({
@@ -36,7 +36,15 @@ export default function ProfileScreen() {
         error: true,
       });
     }
-  }, [dispatch, userInfo._id, user.name, user.email, error]);
+  }, [
+    dispatch,
+    userInfo._id,
+    error,
+    userProfile.name,
+    userProfile.email,
+    user,
+    userProfile,
+  ]);
 
   const submitHandler = (e) => {
     e.preventDefault();
