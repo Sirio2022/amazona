@@ -10,6 +10,7 @@ import placeOrderReducer from './orderSlice';
 import orderDetailsReducer from './orderDetailsSlice';
 import userDetails from './userDetailSlice';
 import orderHistory from './orderHistorySlice';
+import userUpdateProfile from './updateUserProfileSlice';
 
 export const store = configureStore({
   reducer: {
@@ -25,5 +26,6 @@ export const store = configureStore({
     orderDetails: orderDetailsReducer,
     userDetails: userDetails,
     orderHistory: orderHistory,
+    userUpdateProfile: userUpdateProfile,
   },
 });

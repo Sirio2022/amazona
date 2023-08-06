@@ -4,37 +4,64 @@ import { detailsUser } from '../redux/userDetailSlice';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { Link } from 'react-router-dom';
+import { updateUserProfileAction } from '../redux/updateUserProfileSlice';
 
 export default function ProfileScreen() {
-  const [alert, setAlert] = useState(false);
+  const [alert, setAlert] = useState({});
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const { userInfo } = useSelector((state) => state.signin);
   const { user, loading, error } = useSelector((state) => state.userDetails);
   const dispatch = useDispatch();
+  const {
+    loading: loadingUpdate,
+    error: errorUpdate,
+    userProfile,
+  } = useSelector((state) => state.userUpdateProfile);
 
   useEffect(() => {
-    if ([name, email].includes('')) {
-      setAlert({
-        msg: 'Please fill all fields',
-        error: true,
-      });
-    }
-    if (userInfo) {
+    if (!user.name) {
       dispatch(detailsUser(userInfo._id));
     } else {
+      setName(user.name);
+      setEmail(user.email);
+    }
+    if (error) {
       setAlert({
-        msg: 'You need to login first',
+        msg: error,
         error: true,
       });
     }
-  }, [dispatch, userInfo, name, email]);
+  }, [dispatch, userInfo._id, user.name, user.email, error]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    // dispatch(updateUser({ userId: user._id, name, email}));
+    if (password !== confirmPassword) {
+      setAlert({
+        msg: 'Password and Confirm Password are not match',
+        error: true,
+      });
+    } else {
+      dispatch(
+        updateUserProfileAction({
+          userId: user._id,
+          name,
+          email,
+          password,
+        })
+      );
+
+      if (errorUpdate) {
+        setAlert({
+          msg: errorUpdate,
+          error: true,
+        });
+      }
+    }
   };
 
   return (
@@ -45,10 +72,11 @@ export default function ProfileScreen() {
         </div>
         {loading ? (
           <LoadingBox />
-        ) : error ? (
-          <MessageBox alert={alert} />
         ) : (
           <>
+            {loadingUpdate && <LoadingBox />}
+            {alert.msg && <MessageBox alert={alert} />}
+            {userProfile.name && <MessageBox alert={alert} />}
             <div>
               <label htmlFor="name">Name</label>
               <input
@@ -70,6 +98,28 @@ export default function ProfileScreen() {
                 value={user.email}
                 onChange={(e) => {
                   setEmail(e.target.value);
+                }}
+              />
+            </div>
+            <div>
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+              />
+            </div>
+            <div>
+              <label htmlFor="confirm-password">Confirm Password</label>
+              <input
+                id="confirm-password"
+                type="password"
+                placeholder="Confirm your password"
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
                 }}
               />
             </div>
