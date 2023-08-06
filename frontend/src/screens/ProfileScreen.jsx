@@ -40,6 +40,7 @@ export default function ProfileScreen() {
 
   const submitHandler = (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       setAlert({
         msg: 'Password and Confirm Password are not match',
