@@ -65,6 +65,8 @@ export default function ProfileScreen() {
     }
   };
 
+  const { msg } = alert;
+
   return (
     <div>
       <form className="form" onSubmit={submitHandler}>
@@ -76,7 +78,7 @@ export default function ProfileScreen() {
         ) : (
           <>
             {loadingUpdate && <LoadingBox />}
-            {alert.msg && <MessageBox alert={alert} />}
+            {msg && <MessageBox alert={alert} />}
             {userProfile.name && <MessageBox alert={alert} />}
             <div>
               <label htmlFor="name">Name</label>
