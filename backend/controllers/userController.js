@@ -152,6 +152,30 @@ const userDetails = async (req, res) => {
   }
 };
 
+const updateUserProfile = async (req, res) => {
+  const{  name, email, password } = req.body;
+  const user = await User.findById(req.user._id);
+  if (user) {
+    user.name = name || user.name;
+    user.email = email || user.email
+    user.password = password || user.password;
+  }
+  try {
+    await user.save();
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      token: generateJWT(user),
+     });
+  } catch (error) {
+    console.log(error);
+  }
+
+
+};
+
 export {
   userRegister,
   userAuthentication,
@@ -160,4 +184,5 @@ export {
   confirmToken,
   newPassword,
   userDetails,
+  updateUserProfile,
 };

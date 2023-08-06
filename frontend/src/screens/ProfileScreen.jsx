@@ -55,6 +55,12 @@ export default function ProfileScreen() {
           password,
         })
       );
+      if (userProfile.name) {
+        setAlert({
+          msg: 'Profile Updated Successfully',
+          error: false,
+        });
+      }
 
       if (errorUpdate) {
         setAlert({
@@ -79,14 +85,14 @@ export default function ProfileScreen() {
           <>
             {loadingUpdate && <LoadingBox />}
             {msg && <MessageBox alert={alert} />}
-            {userProfile.name && <MessageBox alert={alert} />}
+
             <div>
               <label htmlFor="name">Name</label>
               <input
                 id="name"
                 type="text"
                 placeholder="Enter name"
-                value={user.name}
+                value={name}
                 onChange={(e) => {
                   setName(e.target.value);
                 }}
@@ -98,7 +104,7 @@ export default function ProfileScreen() {
                 id="email"
                 type="email"
                 placeholder="Enter email"
-                value={user.email}
+                value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
                 }}

@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { setUserInfo } from './signinSlice';
 
 const initialState = {
   loading: false,
@@ -55,7 +56,8 @@ export const updateUserProfileAction = (user) => async (dispatch, getState) => {
       }
     );
     dispatch(updateUserProfile(data));
-    dispatch(clearUserProfile());
+    dispatch(setUserInfo(data));
+    localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
     dispatch(
       loadingUpdateUserProfileError(

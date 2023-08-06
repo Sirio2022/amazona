@@ -20,14 +20,14 @@ export const signinSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
-    userInfo: (state, action) => {
+    setUserInfo: (state, action) => {
       state.userInfo = action.payload;
       state.loading = false;
     },
   },
 });
 
-const { loadingSigninStart, loadingSigninError, userInfo } =
+export const { loadingSigninStart, loadingSigninError, setUserInfo } =
   signinSlice.actions;
 
 export default signinSlice.reducer;
@@ -40,7 +40,7 @@ export const signin = (email, password) => async (dispatch) => {
       { email, password }
     );
 
-    dispatch(userInfo(data));
+    dispatch(setUserInfo(data));
     localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
     dispatch(
@@ -57,5 +57,5 @@ export const signout = () => (dispatch) => {
   localStorage.removeItem('userInfo');
   localStorage.removeItem('cartItems');
   localStorage.removeItem('shippingAddress');
-  dispatch(userInfo({}));
+  dispatch(setUserInfo({}));
 };
