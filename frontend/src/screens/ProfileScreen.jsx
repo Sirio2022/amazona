@@ -4,6 +4,7 @@ import { detailsUser } from '../redux/userDetailSlice';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { updateUserProfileAction } from '../redux/updateUserProfileSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProfileScreen() {
   const [alert, setAlert] = useState({});
@@ -15,6 +16,7 @@ export default function ProfileScreen() {
 
   const { userInfo } = useSelector((state) => state.signin);
   const { user, loading, error } = useSelector((state) => state.userDetails);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
     loading: loadingUpdate,
@@ -59,6 +61,9 @@ export default function ProfileScreen() {
           msg: 'Profile Updated Successfully',
           error: false,
         });
+        setTimeout(() => {
+          navigate('/');
+        }, 5000);
       }
 
       if (errorUpdate) {
