@@ -19,9 +19,11 @@ import OrderScreen from './screens/orderScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import PrivateRoute from './components/PrivateRoute';
+import AdminRoute from './components/AdminRoute';
+import ProductListScreen from './screens/ProductListScreen';
 
 function App() {
-  const { cartItems } = useSelector((state) => state.cart); // useSelector debe de tener un nivel mas de profundidad por el persistor state.state (ver redux devtools).
+  const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.signin);
 
   const dispatch = useDispatch();
@@ -116,6 +118,9 @@ function App() {
               <Route path="/orderhistory" element={<OrderHistoryScreen />} />
               <Route path="/profile/" element={<PrivateRoute />}>
                 <Route index element={<ProfileScreen />} />
+              </Route>
+              <Route path="/productlist" element={<AdminRoute />}>
+                <Route index element={<ProductListScreen />} />
               </Route>
               <Route path="/" element={<HomeScreen />} />
             </Routes>

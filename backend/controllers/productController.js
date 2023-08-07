@@ -15,4 +15,24 @@ const productDetails = async (req, res) => {
   }
 };
 
-export { productList, productDetails };
+const productCreate = async (req, res) => {
+  const product = new Product({
+    name: 'Sample name',
+    image: '/images/p5.jpg',
+    price: 0,
+    category: 'Sample category',
+    brand: 'Sample brand',
+    countInStock: 0,
+    rating: 0,
+    numReviews: 0,
+    description: 'Sample description',
+    user: req.user._id,
+  });
+  const createdProduct = await product.save();
+  res.status(201).json({
+    msg: 'Product created successfully',
+    product: createdProduct,
+  });
+};
+
+export { productList, productDetails, productCreate };
