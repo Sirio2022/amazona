@@ -18,6 +18,7 @@ import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/orderScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   const { cartItems } = useSelector((state) => state.cart); // useSelector debe de tener un nivel mas de profundidad por el persistor state.state (ver redux devtools).
@@ -75,6 +76,27 @@ function App() {
               ) : (
                 <Link to="/signin">Sign In</Link>
               )}
+              {userInfo.name && userInfo.isAdmin && (
+                <div className="dropdown">
+                  <Link to="#admin">
+                    Admin <i className="fa fa-caret-down"></i>
+                  </Link>
+                  <ul className="dropdown-content">
+                    <li>
+                      <Link to="/dashboard">Dashboard</Link>
+                    </li>
+                    <li>
+                      <Link to="/productlist">Products</Link>
+                    </li>
+                    <li>
+                      <Link to="/orderlist">Orders</Link>
+                    </li>
+                    <li>
+                      <Link to="userList">Users</Link>
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
           </header>
 
@@ -92,7 +114,9 @@ function App() {
               <Route path="/forgot-password/:token" element={<NewPassword />} />
               <Route path="/confirm/:id" element={<AccountConfirm />} />
               <Route path="/orderhistory" element={<OrderHistoryScreen />} />
-              <Route path="/profile/" element={<ProfileScreen />} />
+              <Route path="/profile/" element={<PrivateRoute />}>
+                <Route index element={<ProfileScreen />} />
+              </Route>
               <Route path="/" element={<HomeScreen />} />
             </Routes>
           </main>
