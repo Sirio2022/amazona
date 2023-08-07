@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { detailsUser } from '../redux/userDetailSlice';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { Link } from 'react-router-dom';
 import { updateUserProfileAction } from '../redux/updateUserProfileSlice';
 
 export default function ProfileScreen() {
@@ -145,11 +144,6 @@ export default function ProfileScreen() {
             </button>
           </>
         )}
-        <div className="row">
-          <div>
-            <Link to="/forgot-password">Forgot Password? </Link>
-          </div>
-        </div>
       </form>
     </div>
   );
