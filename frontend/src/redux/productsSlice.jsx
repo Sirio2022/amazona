@@ -11,7 +11,7 @@ export const productsSlice = createSlice({
   name: 'productsList',
   initialState,
   reducers: {
-    listProducts: (state, action) => {
+    setListProducts: (state, action) => {
       state.products = action.payload;
       state.loading = false;
     },
@@ -25,11 +25,8 @@ export const productsSlice = createSlice({
   },
 });
 
-export const {
-  listProducts,
-  loadingProductsStart,
-  loadingProductsError,
-} = productsSlice.actions;
+export const { setListProducts, loadingProductsStart, loadingProductsError } =
+  productsSlice.actions;
 
 export default productsSlice.reducer;
 
@@ -39,7 +36,7 @@ export const fetchProducts = () => async (dispatch) => {
     const { data } = await axios.get(
       import.meta.env.VITE_BACKEND_URL + '/api/products'
     );
-    dispatch(listProducts(data));
+    dispatch(setListProducts(data));
   } catch (error) {
     dispatch(loadingProductsError(error.message));
   }
