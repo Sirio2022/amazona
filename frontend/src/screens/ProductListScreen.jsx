@@ -30,8 +30,6 @@ export default function ProductListScreen() {
     if (successCreate) {
       dispatch(productReset());
       navigate(`/product/${product._id}/edit`);
-
-      setAlert({ msg: 'Product Created', error: false });
     }
     dispatch(fetchProducts());
 

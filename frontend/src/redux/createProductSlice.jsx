@@ -57,7 +57,6 @@ export const createProduct = () => async (dispatch, getState) => {
       }
     );
     dispatch(setCreateProductSuccess(data));
-    
   } catch (error) {
     dispatch(
       setCreateProductFail(
