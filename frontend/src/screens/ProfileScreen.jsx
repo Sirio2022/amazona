@@ -63,7 +63,7 @@ export default function ProfileScreen() {
         });
         setTimeout(() => {
           navigate('/');
-        }, 5000);
+        }, 3000);
       }
 
       if (errorUpdate) {

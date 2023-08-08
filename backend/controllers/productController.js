@@ -34,4 +34,26 @@ const productCreate = async (req, res) => {
   });
 };
 
-export { productList, productDetails, productCreate };
+const productUpdate = async (req, res) => {
+  const productId = req.params.id;
+  const product = await Product.findById(productId);
+  if (product) {
+    product.name = req.body.name;
+    product.price = req.body.price;
+    product.image = req.body.image;
+    product.category = req.body.category;
+    product.brand = req.body.brand;
+    product.countInStock = req.body.countInStock;
+    product.description = req.body.description;
+    const updatedProduct = await product.save();
+    res.status(200).json({
+      msg: 'Product updated successfully',
+      productUpdate: updatedProduct,
+    });
+  } else {
+    const error = new Error('Product not found');
+    res.status(404).json({ msg: error.message });
+  }
+};
+
+export { productList, productDetails, productCreate, productUpdate };

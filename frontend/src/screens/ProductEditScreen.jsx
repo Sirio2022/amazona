@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { fetchProductDetails } from '../redux/productSlice';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
+import { updateProduct } from '../redux/updateProductSlice';
+import { productUpdateReset } from '../redux/updateProductSlice';
 
 export default function ProductEditScreen() {
   const { id } = useParams();
@@ -11,7 +13,7 @@ export default function ProductEditScreen() {
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState('');
-  const [categoty, setCategory] = useState('');
+  const [category, setCategory] = useState('');
   const [countInStock, setCountInStock] = useState(0);
   const [brand, setBrand] = useState('');
   const [description, setDescription] = useState('');
@@ -21,9 +23,22 @@ export default function ProductEditScreen() {
     (state) => state.productDetails
   );
 
+  const {
+    update,
+    loading: loadingUpdate,
+    success: successUpdate,
+    error: errorUpdate,
+  } = useSelector((state) => state.updateProduct);
+
+  const { productUpdate, msg: msgUpdate } = update;
+
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (successUpdate) {
+      dispatch(productUpdateReset());
+    }
     if (!product || product._id !== id) {
       dispatch(fetchProductDetails(id));
 
@@ -31,19 +46,40 @@ export default function ProductEditScreen() {
         setAlert({ msg: error, error: true });
       }
     } else {
-      setName(product.name);
-      setPrice(product.price);
-      setImage(product.image);
-      setCategory(product.category);
-      setCountInStock(product.countInStock);
-      setBrand(product.brand);
-      setDescription(product.description);
+      setName(productUpdate.name);
+      setPrice(productUpdate.price);
+      setImage(productUpdate.image);
+      setCategory(productUpdate.category);
+      setCountInStock(productUpdate.countInStock);
+      setBrand(productUpdate.brand);
+      setDescription(productUpdate.description);
     }
-  }, [dispatch, id, product, error]);
+  }, [dispatch, id, product, successUpdate, error, productUpdate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    //TODO: dispatch update product
+    dispatch(
+      updateProduct({
+        _id: id,
+        name,
+        price,
+        image,
+        category,
+        countInStock,
+        brand,
+        description,
+      })
+    );
+    if (productUpdate._id) {
+      setAlert({ msg: msgUpdate, error: false });
+      setTimeout(() => {
+        setAlert('');
+        navigate('/productlist');
+      }, 3000);
+    }
+    if (errorUpdate) {
+      setAlert({ msg: errorUpdate, error: true });
+    }
   };
 
   const { msg } = alert;
@@ -54,6 +90,8 @@ export default function ProductEditScreen() {
         <div>
           <h1>Edit Product {id}</h1>
         </div>
+        {loadingUpdate && <LoadingBox />}
+        {errorUpdate && <MessageBox alert={alert} />}
         {loading ? (
           <LoadingBox />
         ) : msg ? (
@@ -96,7 +134,7 @@ export default function ProductEditScreen() {
                 type="text"
                 id="category"
                 placeholder="Enter category"
-                value={categoty}
+                value={category}
                 onChange={(e) => setCategory(e.target.value)}
               />
             </div>
