@@ -18,7 +18,7 @@ const productDetails = async (req, res) => {
 const productCreate = async (req, res) => {
   const product = new Product({
     name: 'Sample name' + Date.now(),
-    image: '/images/p5.jpg',
+    image: '/images/p4.jpg',
     price: 0,
     category: 'Sample category',
     brand: 'Sample brand',
