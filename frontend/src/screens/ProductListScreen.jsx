@@ -23,7 +23,6 @@ export default function ProductListScreen() {
   } = useSelector((state) => state.createProduct);
 
   const { product } = productCreated;
-  console.log(product);
 
   const dispatch = useDispatch();
 
