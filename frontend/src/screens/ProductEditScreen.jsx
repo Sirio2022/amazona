@@ -36,10 +36,8 @@ export default function ProductEditScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (successUpdate) {
+    if (!product || product._id !== id || successUpdate) {
       dispatch(productUpdateReset());
-    }
-    if (!product || product._id !== id) {
       dispatch(fetchProductDetails(id));
 
       if (error) {
@@ -70,7 +68,7 @@ export default function ProductEditScreen() {
         description,
       })
     );
-    if (productUpdate._id) {
+    if (productUpdate.name) {
       setAlert({ msg: msgUpdate, error: false });
       setTimeout(() => {
         setAlert('');
