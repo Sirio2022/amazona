@@ -27,7 +27,7 @@ const createProductSlice = createSlice({
     productReset: (state) => {
       state.loading = false;
       state.error = null;
-      state.product = {};
+      state.success = false;
     },
   },
 });
