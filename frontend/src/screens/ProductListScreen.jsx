@@ -1,29 +1,70 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../redux/productsSlice';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { useNavigate } from 'react-router-dom';
+import { createProduct } from '../redux/createProductSlice';
+import { productReset } from '../redux/createProductSlice';
 
 export default function ProductListScreen() {
+  const [alert, setAlert] = useState('');
+
   const navigate = useNavigate();
   const { products, loading, error } = useSelector(
     (state) => state.productsList
   );
 
+  const {
+    product: productCreated,
+    success: successCreate,
+    loading: loadingCreate,
+    error: errorCreate,
+  } = useSelector((state) => state.createProduct);
+
+  const { product } = productCreated;
+  console.log(product);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (successCreate) {
+      dispatch(productReset());
+      navigate(`/product/${product._id}/edit`);
+
+      setAlert({ msg: 'Product Created', error: false });
+    }
     dispatch(fetchProducts());
-  }, [dispatch]);
+
+    if (errorCreate) {
+      setAlert({ msg: errorCreate, error: true });
+    }
+  }, [dispatch, navigate, successCreate, productCreated, errorCreate, product]);
 
   const deleteHandler = () => {
     //TODO: dispatch delete action
   };
 
+  const createProductHandler = () => {
+    dispatch(createProduct());
+  };
+
+  const { msg } = alert;
+
   return (
     <div>
-      <h1>Products</h1>
+      <div className="row">
+        <h1>Products</h1>
+        <button
+          type="button"
+          className="primary"
+          onClick={createProductHandler}
+        >
+          Create Product
+        </button>
+      </div>
+      {loadingCreate && <LoadingBox />}
+      {msg && <MessageBox alert={alert} />}
       {loading ? (
         <LoadingBox />
       ) : error ? (

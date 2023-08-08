@@ -17,7 +17,7 @@ const productDetails = async (req, res) => {
 
 const productCreate = async (req, res) => {
   const product = new Product({
-    name: 'Sample name',
+    name: 'Sample name' + Date.now(),
     image: '/images/p5.jpg',
     price: 0,
     category: 'Sample category',
@@ -26,7 +26,6 @@ const productCreate = async (req, res) => {
     rating: 0,
     numReviews: 0,
     description: 'Sample description',
-    user: req.user._id,
   });
   const createdProduct = await product.save();
   res.status(201).json({

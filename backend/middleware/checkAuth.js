@@ -10,7 +10,7 @@ const checkAuth = async (req, res, next) => {
       const token = req.headers.authorization.split(' ')[1];
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decodedToken._id).select(
-        '-password -token -isConfirmed -__v -createdAt -updatedAt -isAdmin'
+        '-password -token -isConfirmed -__v -createdAt -updatedAt'
       );
       return next();
     } catch (error) {

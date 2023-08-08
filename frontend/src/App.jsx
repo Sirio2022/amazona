@@ -105,7 +105,7 @@ function App() {
           <main>
             <Routes>
               <Route path="/cart/:id?" element={<CartScreen />} />
-              <Route path="/product/:id" element={<ProductScreen />} />
+              <Route path="/product/:id" element={<ProductScreen />} exact />
               <Route path="/signin" element={<SigninScreen />} />
               <Route path="/register" element={<RegisterScreen />} />
               <Route path="/shipping" element={<ShippingAddressScreen />} />
