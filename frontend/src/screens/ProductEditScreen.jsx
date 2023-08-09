@@ -6,6 +6,7 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { updateProduct } from '../redux/updateProductSlice';
 import { productUpdateReset } from '../redux/updateProductSlice';
+import axios from 'axios';
 
 export default function ProductEditScreen() {
   const { id } = useParams();
@@ -19,9 +20,13 @@ export default function ProductEditScreen() {
   const [description, setDescription] = useState('');
   const [alert, setAlert] = useState('');
 
+  const [loadingUpload, setLoadingUpload] = useState(false);
+
   const { product, loading, error } = useSelector(
     (state) => state.productDetails
   );
+
+  const { userInfo } = useSelector((state) => state.signin);
 
   const {
     update,
@@ -30,7 +35,7 @@ export default function ProductEditScreen() {
     error: errorUpdate,
   } = useSelector((state) => state.updateProduct);
 
-  const { productUpdate, msg: msgUpdate } = update;
+  const { msg: msgUpdate } = update;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -44,15 +49,15 @@ export default function ProductEditScreen() {
         setAlert({ msg: error, error: true });
       }
     } else {
-      setName(productUpdate.name);
-      setPrice(productUpdate.price);
-      setImage(productUpdate.image);
-      setCategory(productUpdate.category);
-      setCountInStock(productUpdate.countInStock);
-      setBrand(productUpdate.brand);
-      setDescription(productUpdate.description);
+      setName(product.name);
+      setPrice(product.price);
+      setImage(product.image);
+      setCategory(product.category);
+      setCountInStock(product.countInStock);
+      setBrand(product.brand);
+      setDescription(product.description);
     }
-  }, [dispatch, id, product, successUpdate, error, productUpdate]);
+  }, [dispatch, id, product, successUpdate, error, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -68,15 +73,40 @@ export default function ProductEditScreen() {
         description,
       })
     );
-    if (productUpdate.name) {
-      setAlert({ msg: msgUpdate, error: false });
-      setTimeout(() => {
-        setAlert('');
-        navigate('/productlist');
-      }, 3000);
-    }
+
+    setAlert({ msg: msgUpdate, error: false });
+    setTimeout(() => {
+      setAlert('');
+      navigate('/productlist');
+    }, 3000);
+
     if (errorUpdate) {
       setAlert({ msg: errorUpdate, error: true });
+    }
+  };
+
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('image', file);
+    setLoadingUpload(true);
+    try {
+      const { data } = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + '/api/uploads',
+        bodyFormData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+
+      setImage(data);
+      setLoadingUpload(false);
+    } catch (error) {
+      setAlert({ msg: error.message, error: true });
+      setLoadingUpload(false);
     }
   };
 
@@ -135,6 +165,17 @@ export default function ProductEditScreen() {
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               />
+            </div>
+            <div>
+              <label htmlFor="imageFile">Image File</label>
+              <input
+                type="file"
+                id="imageFile"
+                label="Choose Image"
+                onChange={uploadFileHandler}
+              />
+              {loadingUpload && <LoadingBox />}
+              {msg && <MessageBox alert={alert} />}
             </div>
             <div>
               <label htmlFor="countinstock">Count In Stock</label>

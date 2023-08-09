@@ -6,6 +6,8 @@ import userRoutes from './routes/userRouter.js';
 import productRoutes from './routes/productRouter.js';
 import orderRoutes from './routes/orderRouter.js';
 import checkAuth from './middleware/checkAuth.js';
+import uploadRouter from './routes/uploadRouter.js';
+import path from 'path';
 
 const app = express();
 app.use(express.json());
@@ -30,12 +32,22 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 //Configuring routes
+app.use('/api/uploads', checkAuth, uploadRouter);
 
 app.use('/api/users', userRoutes);
 
 app.use('/api/products', productRoutes);
 
 app.use('/api/orders', checkAuth, orderRoutes);
+
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(
+  __dirname, '/uploads'
+)));
+
+app.get('/', (req, res) => {
+  res.send('Server is ready');
+});
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
