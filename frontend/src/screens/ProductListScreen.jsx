@@ -25,7 +25,7 @@ export default function ProductListScreen() {
     error: errorCreate,
   } = useSelector((state) => state.createProduct);
   const { product } = productCreated;
-
+  
   const {
     success: successDelete,
     loading: loadingDelete,
@@ -41,12 +41,12 @@ export default function ProductListScreen() {
     } else {
       dispatch(fetchProducts());
     }
-
+    
     if (successDelete) {
       dispatch(deleteProductReset());
     }
-  }, [dispatch, successDelete, product, successCreate, navigate]);
-
+  }, [dispatch, successDelete, successCreate, navigate, product]);
+  
   const deleteHandler = (product) => {
     Swal.fire({
       title: 'Are you sure?',
