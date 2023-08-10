@@ -28,6 +28,7 @@ const createProductSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.success = false;
+      state.product = {};
     },
   },
 });
