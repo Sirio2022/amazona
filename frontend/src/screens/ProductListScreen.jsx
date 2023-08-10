@@ -37,7 +37,8 @@ export default function ProductListScreen() {
   useEffect(() => {
     if (successCreate) {
       dispatch(productCreateReset());
-      navigate(`/product/${product._id}/edit`);
+
+       navigate(`/product/${product._id}/edit`);
     }
     dispatch(fetchProducts());
 

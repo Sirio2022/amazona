@@ -26,7 +26,7 @@ export default function ProductEditScreen() {
     (state) => state.productDetails
   );
 
-  const { msg: msgUpdate } = product
+  const { msg: msgUpdate } = product;
 
   const { userInfo } = useSelector((state) => state.signin);
 
@@ -43,7 +43,6 @@ export default function ProductEditScreen() {
     if (!product || product._id !== id || successUpdate) {
       dispatch(productUpdateReset());
       dispatch(fetchProductDetails(id));
-      navigate('/productlist');
 
       if (error) {
         setAlert({ msg: error, error: true });
@@ -57,7 +56,7 @@ export default function ProductEditScreen() {
       setBrand(product.brand);
       setDescription(product.description);
     }
-  }, [dispatch, id, product, successUpdate, error, navigate]);
+  }, [dispatch, error, id, navigate, product, successUpdate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -73,6 +72,7 @@ export default function ProductEditScreen() {
         description,
       })
     );
+    navigate('/productlist');
 
     if (msgUpdate) {
       setAlert({ msg: product.msg, error: false });
