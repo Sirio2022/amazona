@@ -40,6 +40,9 @@ export default function ProductEditScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (successUpdate) {
+      navigate('/productlist');
+    }
     if (!product || product._id !== id || successUpdate) {
       dispatch(productUpdateReset());
       dispatch(fetchProductDetails(id));
@@ -56,7 +59,7 @@ export default function ProductEditScreen() {
       setBrand(product.brand);
       setDescription(product.description);
     }
-  }, [dispatch, error, id, navigate, product, successUpdate]);
+  }, [dispatch, error, id, product, successUpdate, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -72,7 +75,6 @@ export default function ProductEditScreen() {
         description,
       })
     );
-    navigate('/productlist');
 
     if (msgUpdate) {
       setAlert({ msg: product.msg, error: false });

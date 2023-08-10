@@ -38,7 +38,7 @@ export default function ProductListScreen() {
     if (successCreate) {
       dispatch(productCreateReset());
 
-       navigate(`/product/${product._id}/edit`);
+      navigate(`/product/${product._id}/edit`);
     }
     dispatch(fetchProducts());
 
