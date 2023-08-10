@@ -26,6 +26,20 @@ const addOrderItems = async (req, res) => {
   }
 };
 
+const getOrders = async (req, res) => {
+  const orders = await Order.find({}).populate('user','name');
+  if (orders) {
+    res.json({
+      msg: 'Orders found',
+      orders: orders,
+    });
+  } else {
+    res.status(404).json({
+      msg: 'Orders not found',
+    });
+  }
+};
+
 const getMyOrders = async (req, res) => {
   const orders = await Order.find().where({ user: req.user._id });
   res.json(orders);
@@ -73,4 +87,4 @@ const updateOrderToPaid = async (req, res) => {
   }
 };
 
-export { addOrderItems, getOrderById, updateOrderToPaid, getMyOrders };
+export { addOrderItems, getOrderById, updateOrderToPaid, getMyOrders, getOrders };

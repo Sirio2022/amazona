@@ -8,11 +8,12 @@ import shippingAddressReducer from './shippingAddressSlice';
 import paymentMethodReducer from './paymentMethodSlice';
 import placeOrderReducer from './orderSlice';
 import orderDetailsReducer from './orderDetailsSlice';
-import userDetails from './userDetailSlice';
-import orderHistory from './orderHistorySlice';
-import userUpdateProfile from './updateUserProfileSlice';
-import createProduct from './createProductSlice';
-import updateProduct from './updateProductSlice';
+import userDetailsReducer from './userDetailSlice';
+import orderHistoryReducer from './orderHistorySlice';
+import userUpdateProfileReducer from './updateUserProfileSlice';
+import createProductReducer from './createProductSlice';
+import updateProductReducer from './updateProductSlice';
+import orderListReducer from './orderListSlice';
 
 export const store = configureStore({
   reducer: {
@@ -26,10 +27,11 @@ export const store = configureStore({
     paymentMethod: paymentMethodReducer,
     placeOrder: placeOrderReducer,
     orderDetails: orderDetailsReducer,
-    userDetails: userDetails,
-    orderHistory: orderHistory,
-    userUpdateProfile: userUpdateProfile,
-    createProduct: createProduct,
-    updateProduct: updateProduct,
+    userDetails: userDetailsReducer,
+    orderHistory: orderHistoryReducer,
+    userUpdateProfile: userUpdateProfileReducer,
+    createProduct: createProductReducer,
+    updateProduct: updateProductReducer,
+    orderList: orderListReducer,
   },
 });
