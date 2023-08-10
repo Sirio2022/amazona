@@ -38,16 +38,14 @@ export default function ProductListScreen() {
     if (successCreate) {
       dispatch(productCreateReset());
       navigate(`/product/${product._id}/edit`);
+    } else {
+      dispatch(fetchProducts());
     }
-    dispatch(fetchProducts());
 
-    if (errorCreate) {
-      setAlert({ msg: errorCreate, error: true });
-    }
     if (successDelete) {
       dispatch(deleteProductReset());
     }
-  }, [dispatch, successCreate, navigate, errorCreate, successDelete, product]);
+  }, [dispatch, successDelete, product, successCreate, navigate]);
 
   const deleteHandler = (product) => {
     Swal.fire({

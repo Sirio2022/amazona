@@ -17,8 +17,8 @@ const createProductSlice = createSlice({
     },
     setCreateProductSuccess: (state, action) => {
       state.loading = false;
-      state.success = true;
       state.product = action.payload;
+      state.success = true;
     },
     setCreateProductFail: (state, action) => {
       state.loading = false;
