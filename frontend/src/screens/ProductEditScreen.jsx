@@ -26,6 +26,8 @@ export default function ProductEditScreen() {
     (state) => state.productDetails
   );
 
+  const { msg: msgUpdate } = product
+
   const { userInfo } = useSelector((state) => state.signin);
 
   const {
@@ -72,6 +74,13 @@ export default function ProductEditScreen() {
       })
     );
 
+    if (successUpdate) {
+      setAlert({ msg: product.msg, error: false });
+      setTimeout(() => {
+        setAlert('');
+      }, 3000);
+    }
+
     if (errorUpdate) {
       setAlert({ msg: errorUpdate, error: true });
     }
@@ -114,7 +123,7 @@ export default function ProductEditScreen() {
         {errorUpdate && <MessageBox alert={alert} />}
         {loading ? (
           <LoadingBox />
-        ) : msg ? (
+        ) : msgUpdate ? (
           <MessageBox alert={alert} />
         ) : (
           <>
