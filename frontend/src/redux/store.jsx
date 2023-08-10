@@ -14,6 +14,7 @@ import userUpdateProfileReducer from './updateUserProfileSlice';
 import createProductReducer from './createProductSlice';
 import updateProductReducer from './updateProductSlice';
 import orderListReducer from './orderListSlice';
+import productDelete from './deleteProductSlice';
 
 export const store = configureStore({
   reducer: {
@@ -33,5 +34,6 @@ export const store = configureStore({
     createProduct: createProductReducer,
     updateProduct: updateProductReducer,
     orderList: orderListReducer,
+    productDelete: productDelete,
   },
 });

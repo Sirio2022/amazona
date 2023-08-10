@@ -5,7 +5,10 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { useNavigate } from 'react-router-dom';
 import { createProduct } from '../redux/createProductSlice';
-import { productReset } from '../redux/createProductSlice';
+import { productCreateReset } from '../redux/createProductSlice';
+import { deleteProduct } from '../redux/deleteProductSlice';
+import { deleteProductReset } from '../redux/deleteProductSlice';
+import Swal from 'sweetalert2';
 
 export default function ProductListScreen() {
   const [alert, setAlert] = useState('');
@@ -21,14 +24,19 @@ export default function ProductListScreen() {
     loading: loadingCreate,
     error: errorCreate,
   } = useSelector((state) => state.createProduct);
-
   const { product } = productCreated;
+
+  const {
+    success: successDelete,
+    loading: loadingDelete,
+    error: errorDelete,
+  } = useSelector((state) => state.productDelete);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (successCreate) {
-      dispatch(productReset());
+      dispatch(productCreateReset());
       navigate(`/product/${product._id}/edit`);
     }
     dispatch(fetchProducts());
@@ -36,17 +44,38 @@ export default function ProductListScreen() {
     if (errorCreate) {
       setAlert({ msg: errorCreate, error: true });
     }
-  }, [dispatch, navigate, successCreate, productCreated, errorCreate, product]);
+    if (successDelete) {
+      dispatch(deleteProductReset());
+    }
+  }, [dispatch, successCreate, navigate, errorCreate, successDelete, product]);
 
-  const deleteHandler = () => {
-    //TODO: dispatch delete action
+  const deleteHandler = (product) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `You will not be able to recover ${product.name}!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it!',
+      confirmButtonColor: '#f50057',
+      cancelButtonColor: '#3f51b5',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire('Deleted!', `${product.name} has been deleted.`, 'success');
+        dispatch(deleteProduct(product._id));
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire('Cancelled', `${product.name} is safe :)`, 'error');
+      }
+    });
+
+    if (errorDelete) {
+      setAlert({ msg: errorDelete, error: true });
+    }
   };
 
   const createProductHandler = () => {
     dispatch(createProduct());
   };
-
-  const { msg } = alert;
 
   return (
     <div>
@@ -60,8 +89,11 @@ export default function ProductListScreen() {
           Create Product
         </button>
       </div>
+      {loadingDelete && <LoadingBox />}
+      {errorDelete && <MessageBox alert={alert} />}
+
       {loadingCreate && <LoadingBox />}
-      {msg && <MessageBox alert={alert} />}
+      {errorCreate && <MessageBox alert={alert} />}
       {loading ? (
         <LoadingBox />
       ) : error ? (

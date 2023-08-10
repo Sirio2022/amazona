@@ -24,7 +24,7 @@ const createProductSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    productReset: (state) => {
+    productCreateReset: (state) => {
       state.loading = false;
       state.error = null;
       state.success = false;
@@ -36,7 +36,7 @@ export const {
   createProductRequest,
   setCreateProductSuccess,
   setCreateProductFail,
-  productReset,
+  productCreateReset,
 } = createProductSlice.actions;
 
 export default createProductSlice.reducer;
