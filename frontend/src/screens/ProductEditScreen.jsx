@@ -74,7 +74,7 @@ export default function ProductEditScreen() {
       })
     );
 
-    if (successUpdate) {
+    if (msgUpdate) {
       setAlert({ msg: product.msg, error: false });
       setTimeout(() => {
         setAlert('');
