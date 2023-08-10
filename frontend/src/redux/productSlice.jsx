@@ -25,7 +25,7 @@ export const productDetailsSlice = createSlice({
   },
 });
 
-const { loadingProductStart, loadingProductError, productDetails } =
+export const { loadingProductStart, loadingProductError, productDetails } =
   productDetailsSlice.actions;
 
 export default productDetailsSlice.reducer;

@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { productDetails } from './productSlice';
 
 const initialState = {
   loading: false,
   error: false,
   success: false,
-  update: {},
 };
 
 const updateProductSlice = createSlice({
@@ -15,9 +15,9 @@ const updateProductSlice = createSlice({
     updateProductRequest: (state) => {
       state.loading = true;
     },
-    updateProductSuccess: (state, action) => {
+    updateProductSuccess: (state) => {
       state.loading = false;
-      state.update = action.payload;
+      state.success = true;
     },
     updateProductFail: (state, action) => {
       state.loading = false;
@@ -55,7 +55,8 @@ export const updateProduct = (product) => async (dispatch, getState) => {
         },
       }
     );
-    dispatch(updateProductSuccess(data));
+    dispatch(productDetails(data));
+    dispatch(updateProductSuccess());
   } catch (error) {
     dispatch(
       updateProductFail(

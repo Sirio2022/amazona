@@ -29,13 +29,10 @@ export default function ProductEditScreen() {
   const { userInfo } = useSelector((state) => state.signin);
 
   const {
-    update,
     loading: loadingUpdate,
     success: successUpdate,
     error: errorUpdate,
   } = useSelector((state) => state.updateProduct);
-
-  const { msg: msgUpdate } = update;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -44,6 +41,7 @@ export default function ProductEditScreen() {
     if (!product || product._id !== id || successUpdate) {
       dispatch(productUpdateReset());
       dispatch(fetchProductDetails(id));
+      navigate('/productlist');
 
       if (error) {
         setAlert({ msg: error, error: true });
@@ -73,12 +71,6 @@ export default function ProductEditScreen() {
         description,
       })
     );
-
-    setAlert({ msg: msgUpdate, error: false });
-    setTimeout(() => {
-      setAlert('');
-      navigate('/productlist');
-    }, 3000);
 
     if (errorUpdate) {
       setAlert({ msg: errorUpdate, error: true });
