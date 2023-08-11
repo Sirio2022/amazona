@@ -52,7 +52,7 @@ export default function OrderHistoryScreen() {
                     </td>
                     <td>
                       {order.isDelivered
-                        ? order.deliverdAt.substring(0, 10)
+                        ? order.deliveredAt.substring(0, 10)
                         : 'No'}
                     </td>
                     <td>
