@@ -5,6 +5,7 @@ import {
   updateOrderToPaid,
   getMyOrders,
   getOrders,
+  deleteOrder,
 } from '../controllers/orderController.js';
 import adminAuth from '../middleware/adminAuth.js';
 
@@ -19,5 +20,7 @@ router.get('/', adminAuth, getOrders );
 router.get('/:id', getOrderById);
 
 router.put('/:id/pay', updateOrderToPaid);
+
+router.delete('/:id', adminAuth, deleteOrder);
 
 export default router;

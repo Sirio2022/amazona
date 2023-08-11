@@ -87,4 +87,19 @@ const updateOrderToPaid = async (req, res) => {
   }
 };
 
-export { addOrderItems, getOrderById, updateOrderToPaid, getMyOrders, getOrders };
+const deleteOrder = async (req, res) => {
+  const order = await Order.findById(req.params.id);
+  if (order) {
+    await order.deleteOne();
+    res.json({
+      msg: 'Order deleted',
+      order: order,
+    });
+  } else {
+    res.status(404).json({
+      msg: 'Order not found',
+    });
+  }
+};
+
+export { addOrderItems, getOrderById, updateOrderToPaid, getMyOrders, getOrders, deleteOrder};

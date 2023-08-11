@@ -1,29 +1,62 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { listOrders } from '../redux/orderListSlice';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { deleteOrder, deleteOrderReset } from '../redux/deleteOrderSlice';
 
 export default function OrderListScreen() {
+  const [alert, setAlert] = useState({});
+
   const { orderList, loading, error } = useSelector((state) => state.orderList);
   const { orders } = orderList;
+
+  const {
+    success: successDelete,
+    loading: loadindDelete,
+    error: errorDelete,
+  } = useSelector((state) => state.orderDelete);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(deleteOrderReset());
     dispatch(listOrders());
-  }, [dispatch]);
+
+    if (errorDelete) {
+      setAlert({ msg: errorDelete, error: true });
+    }
+  }, [dispatch, successDelete, errorDelete]);
 
   const deleteHandler = (order) => {
-    // TODO: dispatch delete action
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this order!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it!',
+      confirmButtonColor: '#f44336',
+      cancelButtonColor: '#2196f3',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire('Deleted!', `${order._id} has been deleted.`, 'success');
+        dispatch(deleteOrder(order._id));
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire('Cancelled', `${order._id} is safe.`, 'error');
+      }
+    });
   };
 
   return (
     <div>
       <div>
         <h1>Orders</h1>
+        {loadindDelete && <LoadingBox />}
+        {errorDelete && <MessageBox alert={alert} />}
 
         {loading ? (
           <LoadingBox />
