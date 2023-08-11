@@ -75,7 +75,7 @@ export default function OrderListScreen() {
                     <th>DATE</th>
                     <th>TOTAL</th>
                     <th>PAID</th>
-                    <th>DELIVERED</th>
+                    <th>DELIVERED AT</th>
                     <th>ACTIONS</th>
                   </tr>
                 </thead>
@@ -91,8 +91,8 @@ export default function OrderListScreen() {
                       </td>
                       <td>
                         {order.isDelivered
-                          ? order.deliverdAt.substring(0, 10)
-                          : 'No'}
+                          ? order.deliveredAt.substring(0, 10)
+                          : 'Not Delivered'}
                       </td>
                       <td>
                         <button

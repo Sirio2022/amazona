@@ -46,7 +46,7 @@ const orderDetailsSlice = createSlice({
   },
 });
 
-const {
+export const {
   loadingOrderDetailsStart,
   loadingOrderDetailsError,
   orderDetailsSuccess,
@@ -101,7 +101,7 @@ export const PayOrder =
         }
       );
       dispatch(payOrderSuccess(data));
-      dispatch(payOrderReset());
+      
     } catch (error) {
       dispatch(
         payOrderFail(

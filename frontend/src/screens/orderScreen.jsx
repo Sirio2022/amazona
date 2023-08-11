@@ -3,21 +3,33 @@ import { Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { OrderDetailsAction } from '../redux/orderDetailsSlice';
+import { OrderDetailsAction, payOrderReset } from '../redux/orderDetailsSlice';
 import PaypalCheckoutButton from '../components/PaypalCheckoutButton';
+import { deliverOrder, deliverOrderReset } from '../redux/deliverOrderSlice';
 
 export default function OrderScreen() {
   const [alert, setAlert] = useState('');
   const params = useParams();
 
-  const { orderdetails, success, loading, error } = useSelector(
+  const { orderdetails, success, successPay, loading, error } = useSelector(
     (state) => state.orderDetails
   );
+  const { order } = orderdetails;
+
+  const {
+    loading: loadingDeliver,
+    success: successDeliver,
+    error: errorDeliver,
+  } = useSelector((state) => state.orderDeliver);
+
+  const { userInfo } = useSelector((state) => state.signin);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (success || orderdetails._id !== params.id) {
+    if (!order || successPay || successDeliver || order._id !== params.id) {
+      dispatch(payOrderReset());
+      dispatch(deliverOrderReset());
       dispatch(OrderDetailsAction(params.id));
     }
     if (error) {
@@ -28,13 +40,18 @@ export default function OrderScreen() {
     }
   }, [
     dispatch,
+    order,
     params.id,
-    error,
-    orderdetails.msg,
-    orderdetails._id,
     success,
-    orderdetails.isPaid,
+    orderdetails._id,
+    error,
+    successDeliver,
+    successPay,
   ]);
+
+  const deliverHandler = () => {
+    dispatch(deliverOrder(order._id));
+  };
 
   return loading ? (
     <LoadingBox />
@@ -42,9 +59,9 @@ export default function OrderScreen() {
     <MessageBox alert={alert} />
   ) : (
     <div>
-      {orderdetails && orderdetails.order && (
+      {order && (
         <div>
-          <h1>Order {orderdetails.order._id}</h1>
+          <h1>Order {order._id}</h1>
           <div>
             <div className="row top">
               <div className="col-2">
@@ -54,18 +71,22 @@ export default function OrderScreen() {
                       <h2>Shipping</h2>
                       <p>
                         <strong>
-                          Name: {orderdetails.order.shippingAddress.fullName}{' '}
-                          <br />
-                          Address: {
-                            orderdetails.order.shippingAddress.address
-                          }, {orderdetails.order.shippingAddress.city},{' '}
-                          {orderdetails.order.shippingAddress.postalCode},{' '}
-                          {orderdetails.order.shippingAddress.country}
+                          Name: {order.shippingAddress.fullName} <br />
+                          Address: {order.shippingAddress.address},{' '}
+                          {order.shippingAddress.city},{' '}
+                          {order.shippingAddress.postalCode},{' '}
+                          {order.shippingAddress.country}
                         </strong>
                       </p>
-                      {orderdetails.order.isDelivered ? (
+                      {order.isDelivered ? (
                         <MessageBox
-                          alert={{ msg: 'Delivered', error: false }}
+                          alert={{
+                            msg: `Delivered at: ${order.deliveredAt.substring(
+                              0,
+                              10
+                            )}`,
+                            error: false,
+                          }}
                         />
                       ) : (
                         <MessageBox
@@ -78,14 +99,12 @@ export default function OrderScreen() {
                     <div className="card card-body">
                       <h2>Payment</h2>
                       <p>
-                        <strong>
-                          Method: {orderdetails.order.paymentMethod}
-                        </strong>
+                        <strong>Method: {order.paymentMethod}</strong>
                       </p>
-                      {orderdetails.order.isPaid ? (
+                      {order.isPaid ? (
                         <MessageBox
                           alert={{
-                            msg: `Paid at: ${orderdetails.order.paidAt}`,
+                            msg: `Paid at: ${order.paidAt.substring(0, 10)}`,
                             error: false,
                           }}
                         />
@@ -98,7 +117,7 @@ export default function OrderScreen() {
                     <div className="card card-body">
                       <h2>Order Items</h2>
                       <ul>
-                        {orderdetails.order.orderItems.map((item) => (
+                        {order.orderItems.map((item) => (
                           <li key={item.product}>
                             <div className="row">
                               <div>
@@ -136,21 +155,19 @@ export default function OrderScreen() {
                     <li>
                       <div className="row">
                         <div>Items</div>
-                        <div>${orderdetails.order.itemsPrice.toFixed(2)}</div>
+                        <div>${order.itemsPrice.toFixed(2)}</div>
                       </div>
                     </li>
                     <li>
                       <div className="row">
                         <div>Shipping</div>
-                        <div>
-                          ${orderdetails.order.shippingPrice.toFixed(2)}
-                        </div>
+                        <div>${order.shippingPrice.toFixed(2)}</div>
                       </div>
                     </li>
                     <li>
                       <div className="row">
                         <div>Tax</div>
-                        <div>${orderdetails.order.taxPrice.toFixed(2)}</div>
+                        <div>${order.taxPrice.toFixed(2)}</div>
                       </div>
                     </li>
                     <li>
@@ -159,9 +176,7 @@ export default function OrderScreen() {
                           <strong>Order Total</strong>
                         </div>
                         <div>
-                          <strong>
-                            ${orderdetails.order.totalPrice.toFixed(2)}
-                          </strong>
+                          <strong>${order.totalPrice.toFixed(2)}</strong>
                         </div>
                       </div>
                     </li>
@@ -170,10 +185,25 @@ export default function OrderScreen() {
                         <MessageBox alert={{ msg: error, error: true }} />
                       )}
                       {loading && <LoadingBox />}
-                      {!orderdetails.order.isPaid && (
-                        <PaypalCheckoutButton order={orderdetails.order} />
-                      )}
+                      {!order.isPaid && <PaypalCheckoutButton order={order} />}
                     </li>
+                    {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                      <li>
+                        {loadingDeliver && <LoadingBox />}
+                        {errorDeliver && (
+                          <MessageBox
+                            alert={{ msg: errorDeliver, error: true }}
+                          />
+                        )}
+                        <button
+                          type="button"
+                          className="primary block"
+                          onClick={deliverHandler}
+                        >
+                          Deliver Order
+                        </button>
+                      </li>
+                    )}
                   </ul>
                 </div>
               </div>
