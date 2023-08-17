@@ -52,6 +52,7 @@ export const deleteUser = (id) => async (dispatch, getState) => {
       }
     );
     dispatch(deleteUserSuccess(data));
+    dispatch(deleteUserReset());
   } catch (error) {
     dispatch(
       deleteUserFail(

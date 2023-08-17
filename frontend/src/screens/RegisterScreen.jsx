@@ -11,7 +11,7 @@ export default function RegisterScreen() {
   const [confimPassword, setConfimPassword] = useState('');
   const [alert, setAlert] = useState({});
 
-  const { userInfo, error } = useSelector((state) => state.register);
+  const { userInfo, error, success } = useSelector((state) => state.register);
 
   const dispatch = useDispatch();
 
@@ -43,7 +43,10 @@ export default function RegisterScreen() {
     setAlert({});
 
     dispatch(register(name, email, password));
-    setAlert({ msg: userInfo.msg, error: false });
+
+    if (success) {
+      setAlert({ msg: userInfo.msg, error: false });
+    }
 
     if (error) {
       setAlert({ msg: error, error: true });
@@ -59,6 +62,7 @@ export default function RegisterScreen() {
           <div>
             <h1>Create Account</h1>
           </div>
+
           {msg && <MessageBox alert={alert} />}
           <div>
             <label htmlFor="name">Name</label>
