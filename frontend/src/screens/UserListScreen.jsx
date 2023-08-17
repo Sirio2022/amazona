@@ -3,27 +3,84 @@ import { useDispatch, useSelector } from 'react-redux';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { listUsers } from '../redux/userListSlice';
+import Swal from 'sweetalert2';
+import { deleteUser } from '../redux/deleteUserSlice';
+
 
 export default function UserListScreen() {
   const [alert, setAlert] = useState({});
 
-  const { loading, error, success, users } = useSelector(
-    (state) => state.userList
-  );
+  const { loading, error, users } = useSelector((state) => state.userList);
+
+  const {
+    deletedUser,
+    loading: LoadingDelete,
+    error: errorDelete,
+    success: successDelete,
+  } = useSelector((state) => state.userDelete);
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(listUsers());
+    if (deletedUser) {
+        setAlert({ msg: deletedUser.msg, error: false });
+        setTimeout(() => {
+            setAlert({});
+        }, 3000);
+    }
+    if (errorDelete) {
+        setAlert({ msg: errorDelete, error: true });
+        setTimeout(() => {
+            setAlert({});
+        }, 3000);
+    }
+
     if (error) {
       setAlert({ msg: error, error: true });
     }
-  }, [dispatch, error, success]);
+  }, [dispatch, error, successDelete, deletedUser, errorDelete]);
+
+  const deleteHandler = (user) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `You will not be able to recover ${user.name}'s account!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it!',
+      confirmButtonColor: '#f44336',
+      cancelButtonColor: '#2196f3',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'Deleted!',
+          text: `${user.name}'s account has been deleted.`,
+          icon: 'success',
+          confirmButtonColor: '#2196f3',
+        });
+        dispatch(deleteUser(user._id));        
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire({
+          title: 'Cancelled',
+          text: `${user.name}'s account is safe :)`,
+          icon: 'error',
+          confirmButtonColor: '#2196f3',
+        });
+      }
+    });
+  };
+
+  const { msg } = alert;
 
   return (
     <>
       <div>
         <h1>Users</h1>
       </div>
+      {LoadingDelete && <LoadingBox />}
+
+      {msg && <MessageBox alert={alert} />}
+
       {loading ? (
         <LoadingBox />
       ) : error ? (
@@ -49,8 +106,16 @@ export default function UserListScreen() {
                 <td>{user.isSeller ? 'YES' : 'NO'}</td>
                 <td>{user.isAdmin ? 'YES' : 'NO'}</td>
                 <td>
-                  <button>Edit</button>
-                  <button>Delete</button>
+                  <button type="button" className="small">
+                    Edit
+                  </button>
+                  <button
+                    className="small"
+                    type="button"
+                    onClick={() => deleteHandler(user)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}

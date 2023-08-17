@@ -43,27 +43,10 @@ export default function RegisterScreen() {
     setAlert({});
 
     dispatch(register(name, email, password));
-
-    try {
-      setAlert({
-        msg: userInfo.msg,
-        error: false,
-      });
-      if (error) {
-        setAlert({
-          msg: error,
-          error: true,
-        });
-      }
-    } catch (error) {
-      console.log('error', error);
-    }
+    setAlert({ msg: userInfo.msg, error: false });
 
     if (error) {
-      setAlert({
-        msg: error,
-        error: true,
-      });
+      setAlert({ msg: error, error: true });
     }
   };
 

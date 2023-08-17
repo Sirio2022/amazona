@@ -183,6 +183,25 @@ const userList = async (req, res) => {
   }
 };
 
+const userDelete = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      if (user.isAdmin) {
+        const error = new Error('Admin cannot be deleted');
+        return res.status(403).json({ msg: error.message });
+      }
+      await user.deleteOne();
+      res.status(200).json({ msg: 'User deleted', user });
+    } else {
+      const error = new Error('User not found');
+      return res.status(404).json({ msg: error.message });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export {
   userRegister,
   userAuthentication,
@@ -193,4 +212,5 @@ export {
   userDetails,
   updateUserProfile,
   userList,
+  userDelete,
 };
