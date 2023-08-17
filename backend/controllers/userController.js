@@ -153,11 +153,11 @@ const userDetails = async (req, res) => {
 };
 
 const updateUserProfile = async (req, res) => {
-  const{  name, email, password } = req.body;
+  const { name, email, password } = req.body;
   const user = await User.findById(req.user._id);
   if (user) {
     user.name = name || user.name;
-    user.email = email || user.email
+    user.email = email || user.email;
     user.password = password || user.password;
   }
   try {
@@ -168,12 +168,19 @@ const updateUserProfile = async (req, res) => {
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateJWT(user),
-     });
+    });
   } catch (error) {
     console.log(error);
   }
+};
 
-
+const userList = async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export {
@@ -185,4 +192,5 @@ export {
   newPassword,
   userDetails,
   updateUserProfile,
+  userList,
 };

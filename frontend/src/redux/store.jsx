@@ -17,6 +17,7 @@ import orderListReducer from './orderListSlice';
 import productDeleteReducer from './deleteProductSlice';
 import orderDeleteReducer from './deleteOrderSlice';
 import orderDeliverReducer from './deliverOrderSlice';
+import userListReducer from './userListSlice';
 
 export const store = configureStore({
   reducer: {
@@ -39,5 +40,6 @@ export const store = configureStore({
     productDelete: productDeleteReducer,
     orderDelete: orderDeleteReducer,
     orderDeliver: orderDeliverReducer,
+    userList: userListReducer,
   },
 });
