@@ -5,9 +5,10 @@ import MessageBox from '../components/MessageBox';
 import { listUsers } from '../redux/userListSlice';
 import Swal from 'sweetalert2';
 import { deleteUser } from '../redux/deleteUserSlice';
-
+import { useNavigate } from 'react-router-dom';
 
 export default function UserListScreen() {
+  const navigate = useNavigate();
   const [alert, setAlert] = useState({});
 
   const { loading, error, users } = useSelector((state) => state.userList);
@@ -23,16 +24,16 @@ export default function UserListScreen() {
   useEffect(() => {
     dispatch(listUsers());
     if (deletedUser) {
-        setAlert({ msg: deletedUser.msg, error: false });
-        setTimeout(() => {
-            setAlert({});
-        }, 3000);
+      setAlert({ msg: deletedUser.msg, error: false });
+      setTimeout(() => {
+        setAlert({});
+      }, 3000);
     }
     if (errorDelete) {
-        setAlert({ msg: errorDelete, error: true });
-        setTimeout(() => {
-            setAlert({});
-        }, 3000);
+      setAlert({ msg: errorDelete, error: true });
+      setTimeout(() => {
+        setAlert({});
+      }, 3000);
     }
 
     if (error) {
@@ -58,7 +59,7 @@ export default function UserListScreen() {
           icon: 'success',
           confirmButtonColor: '#2196f3',
         });
-        dispatch(deleteUser(user._id));        
+        dispatch(deleteUser(user._id));
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire({
           title: 'Cancelled',
@@ -106,7 +107,11 @@ export default function UserListScreen() {
                 <td>{user.isSeller ? 'YES' : 'NO'}</td>
                 <td>{user.isAdmin ? 'YES' : 'NO'}</td>
                 <td>
-                  <button type="button" className="small">
+                  <button
+                    type="button"
+                    className="small"
+                    onClick={() => navigate(`/user/${user._id}/edit`)}
+                  >
                     Edit
                   </button>
                   <button

@@ -13,6 +13,7 @@ import {
   updateUserProfile,
   userList,
   userDelete,
+  userUpdate,
 } from '../controllers/userController.js';
 import adminAuth from '../middleware/adminAuth.js';
 
@@ -31,5 +32,7 @@ router.put('/profile', checkAuth, updateUserProfile); // Update user profile
 router.get('/', checkAuth, adminAuth, userList); // Get all users (admin only)
 
 router.delete('/:id', checkAuth, adminAuth, userDelete); // Delete a user (admin only)
+
+router.put('/:id', checkAuth, adminAuth, userUpdate ); // Update a user (admin only)
 
 export default router;

@@ -57,6 +57,7 @@ export const listUsers = () => async (dispatch, getState) => {
     );
 
     dispatch(listUsersSuccess(data));
+    dispatch(listUsersReset());
   } catch (error) {
     dispatch(
       listUsersFail(
