@@ -21,6 +21,7 @@ export default function UserListScreen() {
   } = useSelector((state) => state.userDelete);
 
   const dispatch = useDispatch();
+  
   useEffect(() => {
     dispatch(listUsers());
     if (deletedUser) {
