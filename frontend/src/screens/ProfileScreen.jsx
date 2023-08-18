@@ -14,6 +14,10 @@ export default function ProfileScreen() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const [sellerName, setSellerName] = useState('');
+  const [sellerLogo, setSellerLogo] = useState('');
+  const [sellerDescription, setSellerDescription] = useState('');
+
   const { userInfo } = useSelector((state) => state.signin);
   const { user, loading, error } = useSelector((state) => state.userDetails);
   const navigate = useNavigate();
@@ -30,6 +34,11 @@ export default function ProfileScreen() {
     } else {
       setName(userInfo.name);
       setEmail(userInfo.email);
+      if (user.seller) {
+        setSellerName(user.seller.name);
+        setSellerLogo(user.seller.logo);
+        setSellerDescription(user.seller.description);
+      }
     }
     if (error) {
       setAlert({
@@ -54,6 +63,9 @@ export default function ProfileScreen() {
           name,
           email,
           password,
+          sellerName,
+          sellerLogo,
+          sellerDescription,
         })
       );
       if (userProfile.name) {
@@ -136,6 +148,41 @@ export default function ProfileScreen() {
                 }}
               />
             </div>
+            {user.isSeller && (
+              <>
+                <h2>Seller</h2>
+                <div>
+                  <label htmlFor="seller-name">Seller Name</label>
+                  <input
+                    id="seller-name"
+                    type="text"
+                    placeholder="Enter Seller Name"
+                    value={sellerName}
+                    onChange={(e) => setSellerName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="seller-logo">Seller Logo</label>
+                  <input
+                    id="seller-logo"
+                    type="text"
+                    placeholder="Enter Seller Logo"
+                    value={sellerLogo}
+                    onChange={(e) => setSellerLogo(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="seller-description">Seller Description</label>
+                  <input
+                    id="seller-description"
+                    type="text"
+                    placeholder="Enter Seller Description"
+                    value={sellerDescription}
+                    onChange={(e) => setSellerDescription(e.target.value)}
+                  />
+                </div>
+              </>
+            )}
             <button className="primary block" type="submit">
               Update
             </button>

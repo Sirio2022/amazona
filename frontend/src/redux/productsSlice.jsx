@@ -30,11 +30,13 @@ export const { setListProducts, loadingProductsStart, loadingProductsError } =
 
 export default productsSlice.reducer;
 
-export const fetchProducts = () => async (dispatch) => {
+export const fetchProducts = ({
+  seller = '',
+}) => async (dispatch) => {
   dispatch(loadingProductsStart());
   try {
     const { data } = await axios.get(
-      import.meta.env.VITE_BACKEND_URL + '/api/products'
+      import.meta.env.VITE_BACKEND_URL + '/api/products?seller=' + seller,
     );
     dispatch(setListProducts(data));
   } catch (error) {

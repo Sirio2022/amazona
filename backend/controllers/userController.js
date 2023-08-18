@@ -57,6 +57,7 @@ const userAuthentication = async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      isSeller: user.isSeller,
       token: generateJWT(user),
     });
   }
@@ -159,6 +160,12 @@ const updateUserProfile = async (req, res) => {
     user.name = name || user.name;
     user.email = email || user.email;
     user.password = password || user.password;
+    if (user.isSeller) {
+      user.seller.name = req.body.sellerName || user.seller.name;
+      user.seller.logo = req.body.sellerLogo || user.seller.logo;
+      user.seller.description =
+        req.body.sellerDescription || user.seller.description;
+    }
   }
   try {
     await user.save();
@@ -167,6 +174,7 @@ const updateUserProfile = async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      isSeller: user.isSeller,
       token: generateJWT(user),
     });
   } catch (error) {

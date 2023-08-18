@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../redux/productsSlice';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { createProduct } from '../redux/createProductSlice';
 import { productCreateReset } from '../redux/createProductSlice';
 import { deleteProduct } from '../redux/deleteProductSlice';
@@ -11,6 +11,14 @@ import { deleteProductReset } from '../redux/deleteProductSlice';
 import Swal from 'sweetalert2';
 
 export default function ProductListScreen() {
+
+  const { userInfo } = useSelector((state) => state.signin);
+
+  const [searchParams] = useSearchParams();
+
+  const sellerMode =  searchParams.get('sellerMode') === 'true' ? true : false;
+
+
   const [alert, setAlert] = useState('');
 
   const navigate = useNavigate();
@@ -39,12 +47,12 @@ export default function ProductListScreen() {
       navigate(`/product/${product._id}/edit`);
       dispatch(productCreateReset());
     }
-    dispatch(fetchProducts());
+    dispatch(fetchProducts({ seller: sellerMode?userInfo._id:''}));
 
     if (successDelete) {
       dispatch(deleteProductReset());
     }
-  }, [dispatch, successCreate, successDelete, navigate, product]);
+  }, [dispatch, successCreate, successDelete, navigate, product, sellerMode, userInfo._id]);
 
   const deleteHandler = (product) => {
     Swal.fire({

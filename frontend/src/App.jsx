@@ -25,6 +25,7 @@ import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
+import SellerRoute from './components/SellerRoute';
 
 function App() {
   const { cartItems } = useSelector((state) => state.cart);
@@ -82,6 +83,21 @@ function App() {
               ) : (
                 <Link to="/signin">Sign In</Link>
               )}
+              {userInfo.name && userInfo.isSeller && (
+                <div className="dropdown">
+                  <Link to="#seller">
+                    Seller <i className="fa fa-caret-down"></i>
+                  </Link>
+                  <ul className="dropdown-content">
+                    <li>
+                      <Link to="/productlist/seller">Products</Link>
+                      <li>
+                        <Link to="/orderlist/seller">Orders</Link>
+                      </li>
+                    </li>
+                  </ul>
+                </div>
+              )}
               {userInfo.name && userInfo.isAdmin && (
                 <div className="dropdown">
                   <Link to="#admin">
@@ -138,6 +154,15 @@ function App() {
                 <Route index element={<UserEditScreen />} />
               </Route>
               {/* End of Admin Routes*/}
+
+              {/* Seller Routes*/}
+              <Route path="/productlist/seller" element={<SellerRoute />}>
+                <Route index element={<ProductListScreen />} />
+              </Route>
+              <Route path="/orderlist/seller" element={<SellerRoute />}>
+                <Route index element={<OrderListScreen />} />
+              </Route>
+              {/* End of Seller Routes*/}
 
               <Route path="/" element={<HomeScreen />} />
             </Routes>

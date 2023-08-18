@@ -1,7 +1,11 @@
 import Product from '../models/productModel.js';
 
 const productList = async (req, res) => {
-  const products = await Product.find({});
+  const seller = req.query.seller || '';
+  const sellerFilter = seller ? { seller } : {};
+  const products = await Product.find({
+    ...sellerFilter,
+  });
   res.status(200).json(products);
 };
 
@@ -18,6 +22,7 @@ const productDetails = async (req, res) => {
 const productCreate = async (req, res) => {
   const product = new Product({
     name: 'Sample name' + Date.now(),
+    seller: req.user._id,
     image: '/images/p4.jpg',
     price: 0,
     category: 'Sample category',
