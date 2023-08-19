@@ -20,12 +20,13 @@ import ProfileScreen from './screens/ProfileScreen';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
-import ProductListScreen from './screens/ProductListScreen';
+import ProductListSellerScreen from './screens/ProductListSellerScreen';
 import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import SellerRoute from './components/SellerRoute';
+import ProductListAdminScreen from './screens/ProductListAdminScreen';
 
 function App() {
   const { cartItems } = useSelector((state) => state.cart);
@@ -142,7 +143,7 @@ function App() {
               </Route>
               {/* Admin Routes*/}
               <Route path="/productlist" element={<AdminRoute />}>
-                <Route index element={<ProductListScreen />} />
+                <Route index element={<ProductListAdminScreen />} />
               </Route>
               <Route path="/orderlist" element={<AdminRoute />}>
                 <Route index element={<OrderListScreen />} />
@@ -157,7 +158,7 @@ function App() {
 
               {/* Seller Routes*/}
               <Route path="/productlist/seller" element={<SellerRoute />}>
-                <Route index element={<ProductListScreen />} />
+                <Route index element={<ProductListSellerScreen />} />
               </Route>
               <Route path="/orderlist/seller" element={<SellerRoute />}>
                 <Route index element={<OrderListScreen />} />
