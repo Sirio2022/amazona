@@ -11,13 +11,11 @@ import { deleteProductReset } from '../redux/deleteProductSlice';
 import Swal from 'sweetalert2';
 
 export default function ProductListScreen() {
-
   const { userInfo } = useSelector((state) => state.signin);
 
   const [searchParams] = useSearchParams();
 
-  const sellerMode =  searchParams.get('sellerMode') === 'true' ? true : false;
-
+  const sellerMode = searchParams.get('/seller') >= 0 ? true : false;
 
   const [alert, setAlert] = useState('');
 
@@ -43,16 +41,24 @@ export default function ProductListScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (successCreate) {
-      navigate(`/product/${product._id}/edit`);
-      dispatch(productCreateReset());
-    }
-    dispatch(fetchProducts({ seller: sellerMode?userInfo._id:''}));
+    dispatch(fetchProducts({ seller: sellerMode ? userInfo._id : '' }));
 
+    if (successCreate) {
+      dispatch(productCreateReset());
+      navigate(`/product/${product._id}/edit`);
+    }
     if (successDelete) {
       dispatch(deleteProductReset());
     }
-  }, [dispatch, successCreate, successDelete, navigate, product, sellerMode, userInfo._id]);
+  }, [
+    dispatch,
+    successCreate,
+    successDelete,
+    navigate,
+    product,
+    sellerMode,
+    userInfo._id,
+  ]);
 
   const deleteHandler = (product) => {
     Swal.fire({

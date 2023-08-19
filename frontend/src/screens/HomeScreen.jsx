@@ -7,7 +7,9 @@ import { fetchProducts } from '../redux/productsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function HomeScreen() {
-  const { error, products, loading } = useSelector((state) => state.productsList);
+  const { error, products, loading } = useSelector(
+    (state) => state.productsList
+  );
 
   const dispatch = useDispatch();
 
