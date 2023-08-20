@@ -30,28 +30,33 @@ export const { orderListRequest, orderListSuccess, orderListFail } =
 
 export default orderListSlice.reducer;
 
-export const listOrders = () => async (dispatch, getState) => {
-  dispatch(orderListRequest());
-  try {
-    const {
-      signin: { userInfo },
-    } = getState();
-    const { data } = await axios.get(
-      import.meta.env.VITE_BACKEND_URL + '/api/orders',
-      {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      }
-    );
-    dispatch(orderListSuccess(data));
-  } catch (error) {
-    dispatch(
-      orderListFail(
-        error.message && error.response.data.msg
-          ? error.response.data.msg
-          : error.message
-      )
-    );
-  }
-};
+export const listOrders =
+  ({ seller = '' }) =>
+  async (dispatch, getState) => {
+    dispatch(orderListRequest());
+    try {
+      const {
+        signin: { userInfo },
+      } = getState();
+      const { data } = await axios.get(
+        import.meta.env.VITE_BACKEND_URL + '/api/orders',
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+          params: {
+            seller: seller,
+          },
+        }
+      );
+      dispatch(orderListSuccess(data));
+    } catch (error) {
+      dispatch(
+        orderListFail(
+          error.message && error.response.data.msg
+            ? error.response.data.msg
+            : error.message
+        )
+      );
+    }
+  };

@@ -3,33 +3,38 @@ import { useDispatch, useSelector } from 'react-redux';
 import { listOrders } from '../redux/orderListSlice';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { deleteOrder, deleteOrderReset } from '../redux/deleteOrderSlice';
 
 export default function OrderListScreen() {
-  const [alert, setAlert] = useState({});
+  const { userInfo } = useSelector((state) => state.signin);
 
+  
   const { orderList, loading, error } = useSelector((state) => state.orderList);
   const { orders } = orderList;
-
+  
+  const [alert, setAlert] = useState({});
+  
   const {
     success: successDelete,
     loading: loadindDelete,
     error: errorDelete,
   } = useSelector((state) => state.orderDelete);
-
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  
+  const [searchParams] = useSearchParams();
+  const sellerMode = searchParams.get('seller') >= 0 ? true : false;
   useEffect(() => {
     dispatch(deleteOrderReset());
-    dispatch(listOrders());
+    dispatch(listOrders({ seller: sellerMode ? userInfo._id : '' }));
 
     if (errorDelete) {
       setAlert({ msg: errorDelete, error: true });
     }
-  }, [dispatch, successDelete, errorDelete]);
+  }, [dispatch, errorDelete, successDelete, userInfo._id, sellerMode]);
 
   const deleteHandler = (order) => {
     Swal.fire({

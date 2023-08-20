@@ -30,16 +30,21 @@ export const { setListProducts, loadingProductsStart, loadingProductsError } =
 
 export default productsSlice.reducer;
 
-export const fetchProducts = ({
-  seller = '',
-}) => async (dispatch) => {
-  dispatch(loadingProductsStart());
-  try {
-    const { data } = await axios.get(
-      import.meta.env.VITE_BACKEND_URL + '/api/products?seller=' + seller,
-    );
-    dispatch(setListProducts(data));
-  } catch (error) {
-    dispatch(loadingProductsError(error.message));
-  }
-};
+export const fetchProducts =
+  ({ seller = '' }) =>
+  async (dispatch) => {
+    dispatch(loadingProductsStart());
+    try {
+      const { data } = await axios.get(
+        import.meta.env.VITE_BACKEND_URL + '/api/products',
+        {
+          params: {
+            seller: seller,
+          },
+        }
+      );
+      dispatch(setListProducts(data));
+    } catch (error) {
+      dispatch(loadingProductsError(error.message));
+    }
+  };

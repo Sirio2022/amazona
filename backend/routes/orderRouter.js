@@ -9,14 +9,15 @@ import {
   updateOrderToDelivered,
 } from '../controllers/orderController.js';
 import adminAuth from '../middleware/adminAuth.js';
+import AdminAuthOrSellerAuth from '../middleware/adminAuthOrSellerAuth.js';
 
 const router = express.Router();
 
 router.post('/', addOrderItems);
 
-router.get('/myorders', getMyOrders);
+router.get('/myorders', AdminAuthOrSellerAuth, getMyOrders);
 
-router.get('/', adminAuth, getOrders );
+router.get('/', AdminAuthOrSellerAuth, getOrders);
 
 router.get('/:id', getOrderById);
 

@@ -7,6 +7,7 @@ const addOrderItems = async (req, res) => {
     });
   } else {
     const order = new Order({
+      seller: req.body.orderItems[0].seller,
       orderItems: req.body.orderItems,
       shippingAddress: req.body.shippingAddress,
       paymentMethod: req.body.paymentMethod,
@@ -27,7 +28,11 @@ const addOrderItems = async (req, res) => {
 };
 
 const getOrders = async (req, res) => {
-  const orders = await Order.find({}).populate('user', 'name');
+  const seller = req.query.seller || '';
+  const sellerFilter = seller ? { seller } : {};
+  const orders = await Order.find({
+    ...sellerFilter,
+  }).populate('user', 'name');
   if (orders) {
     res.json({
       msg: 'Orders found',
@@ -38,7 +43,7 @@ const getOrders = async (req, res) => {
       msg: 'Orders not found',
     });
   }
-};
+ };
 
 const getMyOrders = async (req, res) => {
   const orders = await Order.find().where({ user: req.user._id });

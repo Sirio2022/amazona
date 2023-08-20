@@ -2,7 +2,7 @@ import Product from '../models/productModel.js';
 
 const productList = async (req, res) => {
   const seller = req.query.seller || '';
-  const sellerFilter = seller ? { seller } : '';
+  const sellerFilter = seller ? { seller } : {};
   const products = await Product.find({
     ...sellerFilter,
   });

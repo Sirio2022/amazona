@@ -15,7 +15,7 @@ export default function ProductListScreen() {
 
   const [searchParams] = useSearchParams();
 
-  const sellerMode = searchParams.get('/seller') >= 0 ? true : false;
+  const sellerMode = searchParams.get('seller') >= 0 ? true : false;
 
   const [alert, setAlert] = useState('');
 
