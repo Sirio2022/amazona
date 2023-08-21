@@ -5,7 +5,7 @@ export default function Product(children) {
   const { product } = children;
 
   const { seller } = product;
-  const { seller: sellerName } = seller;
+  const { seller: sellerInfo } = seller;
 
   return (
     <div className="card" key={product._id}>
@@ -22,9 +22,9 @@ export default function Product(children) {
         <div className="row">
           <div className="price">${product.price}</div>
           <div>
-            {sellerName && (
+            {sellerInfo && (
               <Link to={`/seller/${product.seller._id}`}>
-                {sellerName.name}
+                {sellerInfo.name}
               </Link>
             )}
           </div>
