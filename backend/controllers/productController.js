@@ -5,7 +5,7 @@ const productList = async (req, res) => {
   const sellerFilter = seller ? { seller } : {};
   const products = await Product.find({
     ...sellerFilter,
-  });
+  }).populate('seller', 'seller.name seller.logo');
   res.status(200).json(products);
 };
 
