@@ -3,6 +3,13 @@ import generateId from '../helpers/generarId.js';
 import generateJWT from '../helpers/generarJWT.js';
 import { registerEmail, forgotPasswordEmail } from '../helpers/email.js';
 
+const topSellers = async (req, res) => {
+  const topSellers = await User.find({ isSeller: true })
+    .sort({ 'seller.rating': -1 })
+    .limit(3);
+  res.status(200).json(topSellers);
+};
+
 const userRegister = async (req, res) => {
   //Avoiding duplicate emails
   const { email } = req.body;
@@ -241,4 +248,5 @@ export {
   userList,
   userDelete,
   userUpdate,
+  topSellers,
 };

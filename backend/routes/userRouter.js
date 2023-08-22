@@ -14,10 +14,13 @@ import {
   userList,
   userDelete,
   userUpdate,
+  topSellers,
 } from '../controllers/userController.js';
 import adminAuth from '../middleware/adminAuth.js';
 
 // Create, register and login users
+
+router.get('/top-sellers', topSellers); // Get top sellers 
 
 router.post('/', userRegister); // Register a new user
 router.post('/login', userAuthentication); // Login an existing user
