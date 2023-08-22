@@ -1,11 +1,19 @@
 import { Link } from 'react-router-dom';
+import { fetchProductDetails } from '../redux/productSlice';
 import Rating from './Rating';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function Product(children) {
+  const dispatch = useDispatch();
   const { product } = children;
 
   const { seller } = product;
   const { seller: sellerInfo } = seller;
+
+  useEffect(() => {
+    dispatch(fetchProductDetails(product._id));
+  }, [dispatch, product._id]);
 
   return (
     <div className="card" key={product._id}>

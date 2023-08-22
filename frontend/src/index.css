@@ -256,8 +256,8 @@ img.large {
 }
 
 .loading {
-    text-align: center;
-    font-size: 5rem;
+    text-align: left;
+    font-size: 1rem;
 }
 
 /* Form */

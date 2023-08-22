@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 
 export default function ProductScreen() {
   const [alert, setAlert] = useState({});
-  const [preloaded, setPreloaded] = useState(false);
 
   const [qty, setQty] = useState(1);
 
@@ -27,15 +26,12 @@ export default function ProductScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!preloaded) {
-      dispatch(fetchProductDetails(params.id));
-      setPreloaded(true);
-    }
+    dispatch(fetchProductDetails(params.id));
 
     if (error) {
       setAlert({ msg: error, error: true });
     }
-  }, [dispatch, error, loading, params.id, preloaded]);
+  }, [dispatch, params.id, error]);
 
   const addToCartHandler = () => {
     navigate(`/cart/${params.id}?qty=${qty}`);
@@ -45,9 +41,11 @@ export default function ProductScreen() {
 
   return (
     <div>
-      {loading && <LoadingBox />}
-      {msg && <MessageBox alert={alert} />}
-      {preloaded &&  (
+      {loading ? (
+        <LoadingBox />
+      ) : msg ? (
+        <MessageBox alert={alert} />
+      ) : (
         <div>
           <Link to="/">Back to result</Link>
           <div className="row top">
