@@ -57,8 +57,8 @@ export default function Rating(children) {
               : 'fa fa-star-o'
           }
         ></i>
-      </span>
-      <span>{numReviews + 'reviews'}</span>
+      </span>{' '}
+      <span>{numReviews + ' ' + 'reviews'}</span>
     </div>
   );
 }

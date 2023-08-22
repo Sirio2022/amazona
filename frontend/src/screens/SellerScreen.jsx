@@ -4,61 +4,62 @@ import { Link, useParams } from 'react-router-dom';
 import Rating from '../components/Rating';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
+import { detailsUser } from '../redux/userDetailSlice';
 
 export default function SellerScreen() {
+  const { id } = useParams();
+
   const [alert, setAlert] = useState({});
 
   const { user, loading, error } = useSelector((state) => state.userDetails);
+  const { seller } = user;
+
   const {
     products,
     loading: loadingProducts,
     error: errorProducts,
-  } = useSelector((state) => state.productList);
-
-  const { sellerId } = useParams();
+  } = useSelector((state) => state.productsList);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(detailsUser(userId));
-    dispatch(listProducts({ seller: sellerId }));
+    dispatch(detailsUser(id));
+    //dispatch(listProducts({ seller: sellerId }));
 
     if (error) {
       setAlert({ msg: error, error: true });
     }
-  }, [dispatch, sellerId, error]);
+  }, [dispatch, error, id]);
 
   const { msg } = alert;
 
   return (
     <div className="row top">
       <div className="col-1">
-        {loading ? (
-          <LoadingBox />
-        ) : msg ? (
-          <MessageBox alert={alert} />
-        ) : (
+        {loading && <LoadingBox />}
+        {msg && <MessageBox alert={alert} />}
+        {seller && (
           <ul className="card card-body">
             <li>
               <div className="row">
                 <div>
-                  <img src={user.seller.logo} alt={user.seller.name}></img>
+                  <img src={seller.logo} alt={seller.name} className='small'></img>
                 </div>
                 <div>
-                  <h1>{user.seller.name}</h1>
+                  <h1>{seller.name}</h1>
                 </div>
               </div>
             </li>
             <li>
               <Rating
-                value={user.seller.rating}
-                text={`${user.seller.numReviews} reviews`}
+                rating={seller.rating}
+                numReviews={seller.numReviews}
               />
             </li>
             <li>
               <Link to={`mailto:${user.email}}`}>Contact Seller</Link>
             </li>
-            <li>{user.seller.description}</li>
+            <li>{seller.description}</li>
           </ul>
         )}
       </div>
