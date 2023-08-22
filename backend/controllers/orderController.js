@@ -43,7 +43,7 @@ const getOrders = async (req, res) => {
       msg: 'Orders not found',
     });
   }
- };
+};
 
 const getMyOrders = async (req, res) => {
   const orders = await Order.find().where({ user: req.user._id });
