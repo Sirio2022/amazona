@@ -5,6 +5,8 @@ import Rating from '../components/Rating';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { detailsUser } from '../redux/userDetailSlice';
+import Product from '../components/Product';
+import { fetchProducts } from '../redux/productsSlice';
 
 export default function SellerScreen() {
   const { id } = useParams();
@@ -24,12 +26,16 @@ export default function SellerScreen() {
 
   useEffect(() => {
     dispatch(detailsUser(id));
-    //dispatch(listProducts({ seller: sellerId }));
+    dispatch(fetchProducts({ seller: id }));
+
+    if (errorProducts) {
+      setAlert({ msg: errorProducts, error: true });
+    }
 
     if (error) {
       setAlert({ msg: error, error: true });
     }
-  }, [dispatch, error, id]);
+  }, [dispatch, id, error, errorProducts]);
 
   const { msg } = alert;
 
@@ -41,20 +47,21 @@ export default function SellerScreen() {
         {seller && (
           <ul className="card card-body">
             <li>
-              <div className="row">
-                <div>
-                  <img src={seller.logo} alt={seller.name} className='small'></img>
+              <div className="row start">
+                <div className="p-1">
+                  <img
+                    src={seller.logo}
+                    alt={seller.name}
+                    className="small"
+                  ></img>
                 </div>
-                <div>
+                <div className="p-1">
                   <h1>{seller.name}</h1>
                 </div>
               </div>
             </li>
             <li>
-              <Rating
-                rating={seller.rating}
-                numReviews={seller.numReviews}
-              />
+              <Rating rating={seller.rating} numReviews={seller.numReviews} />
             </li>
             <li>
               <Link to={`mailto:${user.email}}`}>Contact Seller</Link>
@@ -63,7 +70,20 @@ export default function SellerScreen() {
           </ul>
         )}
       </div>
-      <div className="col-3"></div>
+      <div className="col-3">
+        {loadingProducts && <LoadingBox />}
+        {msg && <MessageBox alert={alert} />}
+        {errorProducts && <MessageBox alert={alert} />}
+        {products && (
+          <>
+            <div className="row center">
+              {products.map((product) => (
+                <Product product={product} key={product._id} />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

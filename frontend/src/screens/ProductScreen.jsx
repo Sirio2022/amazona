@@ -18,6 +18,9 @@ export default function ProductScreen() {
     (state) => state.productDetails
   );
 
+  const { seller } = product;
+  const { seller: sellerInfo } = seller;
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -62,6 +65,14 @@ export default function ProductScreen() {
             <div className="col-1">
               <div className="card card-body">
                 <ul>
+                  <li>
+                    Seller
+                    <h2>
+                      <Link to={`/seller/${seller._id}`}>
+                        {sellerInfo.name}
+                      </Link>
+                    </h2>
+                  </li>
                   <li>
                     <div className="row">
                       <div>Price</div>

@@ -149,6 +149,10 @@ a.brand {
     align-items: flex-start;
 }
 
+.row.start {
+    justify-content: flex-start;
+}
+
 .col-1 {
     flex: 1 1 25rem;
 }
@@ -157,8 +161,16 @@ a.brand {
     flex: 2 1 50rem;
 }
 
+.col-3 {
+    flex: 3 1 75rem;
+}
+
 .min-30 {
     min-width: 30rem;
+}
+
+.p-1 {
+    padding: 1rem;
 }
 
 /* Image */
@@ -312,16 +324,19 @@ img.large {
 .table {
     width: 100%;
     border-collapse: collapse;
-  }
-  .table tbody tr:nth-of-type(odd) {
+}
+
+.table tbody tr:nth-of-type(odd) {
     background-color: #f4f4f4;
-  }
-  .table td,
-  .table th {
+}
+
+.table td,
+.table th {
     text-align: left;
     border: 0.1rem solid #e4e4e4;
     padding: 0.5rem;
-  }
-  .table button {
+}
+
+.table button {
     margin: 0 0.2rem;
-  }
+}
