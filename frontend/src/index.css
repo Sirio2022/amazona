@@ -343,7 +343,5 @@ img.large {
 
 /* Carousel */
 .carousel .slide img {
-    max-width: 50rem;
+    max-width: 30rem;
 }
-
-
