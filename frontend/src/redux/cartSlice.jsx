@@ -5,6 +5,7 @@ const initialState = {
   cartItems: localStorage.getItem('cartItems')
     ? JSON.parse(localStorage.getItem('cartItems'))
     : [],
+  error: '',
 };
 
 export const cartSlice = createSlice({
@@ -17,6 +18,7 @@ export const cartSlice = createSlice({
       if (existItem) {
         return {
           ...state,
+          error: '',
           cartItems: state.cartItems.map((x) =>
             x.product === existItem.product ? item : x
           ),
@@ -24,6 +26,7 @@ export const cartSlice = createSlice({
       } else {
         return {
           ...state,
+          error: '',
           cartItems: [...state.cartItems, item],
         };
       }
@@ -31,19 +34,28 @@ export const cartSlice = createSlice({
     removeFromCart: (state, action) => {
       return {
         ...state,
+        error: '',
         cartItems: state.cartItems.filter((x) => x.product !== action.payload),
+      };
+    },
+    addToCartFail: (state, action) => {
+      return {
+        ...state,
+        error: action.payload,
       };
     },
     clearItems: (state) => {
       return {
         ...state,
+        error: '',
         cartItems: [],
       };
     },
   },
 });
 
-export const { addToCart, removeFromCart, clearItems } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearItems, addToCartFail } =
+  cartSlice.actions;
 
 export default cartSlice.reducer;
 
@@ -51,17 +63,29 @@ export const addToCartAction = (id, qty) => async (dispatch, getState) => {
   const { data } = await axios.get(
     import.meta.env.VITE_BACKEND_URL + `/api/products/${id}`
   );
-  dispatch(
-    addToCart({
-      product: data._id,
-      name: data.name,
-      image: data.image,
-      price: data.price,
-      countInStock: data.countInStock,
-      seller: data.seller,
-      qty,
-    })
-  );
+  const {
+    cart: { cartItems },
+  } = getState();
+  if (cartItems.length > 0 && data.seller._id !== cartItems[0].seller._id) {
+    dispatch(
+      addToCartFail(
+        ` Can't Add To Cart. Buy only from ${cartItems[0].seller.seller.name} in this order`
+      )
+    );
+  } else {
+    dispatch(
+      addToCart({
+        product: data._id,
+        name: data.name,
+        image: data.image,
+        price: data.price,
+        countInStock: data.countInStock,
+        seller: data.seller,
+        qty,
+      })
+    );
+  }
+
   localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems));
 };
 

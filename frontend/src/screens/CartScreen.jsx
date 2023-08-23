@@ -13,7 +13,7 @@ export default function CartScreen() {
   const [searchParams] = useSearchParams();
   const qty = searchParams.get('qty');
 
-  const { cartItems } = useSelector((state) => state.cart);
+  const { cartItems, error } = useSelector((state) => state.cart);
 
   const dispatch = useDispatch();
 
@@ -35,6 +35,7 @@ export default function CartScreen() {
     <div className="row top">
       <div className="col-2">
         <h1>Shopping Cart</h1>
+        {error && <MessageBox alert={{ msg: error, error: true }} />}
         {cartItems.length === 0 ? (
           <MessageBox
             alert={{
