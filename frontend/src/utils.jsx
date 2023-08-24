@@ -40,7 +40,7 @@ export const ratings = [
     rating: 2,
   },
   {
-    name: '1Stars & up',
+    name: '1Star & up',
     rating: 1,
   },
 ];
