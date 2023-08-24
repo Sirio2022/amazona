@@ -1,5 +1,5 @@
 export default function Rating(children) {
-  const { rating, numReviews } = children;
+  const { rating, numReviews, caption } = children;
 
   return (
     <div className="rating">
@@ -58,7 +58,11 @@ export default function Rating(children) {
           }
         ></i>
       </span>{' '}
-      <span>{numReviews + ' ' + 'reviews'}</span>
+      {caption ? (
+        <span>{caption}</span>
+      ) : (
+        <span>{numReviews + ' ' + 'reviews'}</span>
+      )}
     </div>
   );
 }

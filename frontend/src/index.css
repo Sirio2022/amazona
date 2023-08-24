@@ -149,6 +149,12 @@ a.brand {
     align-items: flex-start;
 }
 
+.row.sort {
+    align-items: center;
+    justify-content: end;
+    gap: 1rem;
+}
+
 .row.start {
     justify-content: flex-start;
 }
@@ -417,4 +423,8 @@ img.large {
 
     max-width: 30rem;
 
+}
+
+.active {
+    font-weight: bold;
 }

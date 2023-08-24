@@ -223,6 +223,10 @@ function App() {
                 path="/search/category/:category/name/:name"
                 element={<SearchScreen />}
               />
+              <Route
+                path="/search/category/:category/name/:name/min/:min/max/:max/rating/:rating/order/:order"
+                element={<SearchScreen />}
+              />
 
               <Route path="/profile/" element={<PrivateRoute />}>
                 <Route index element={<ProfileScreen />} />
