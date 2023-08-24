@@ -343,7 +343,25 @@ img.large {
 
 /* Carousel */
 .carousel .slide img {
-    max-width: 50rem;
+    max-width: 35rem;
 }
 
+/* SearchBox */
+.search button {
 
+
+    border-radius: 0 0.5rem 0.5rem 0;
+    border-right: 0.5rem;
+    margin-right: 05rem;
+}
+
+.search button:hover {
+    background-color: #808080;
+}
+
+.search input {
+
+    border-radius: 0.5rem 0 0 0.5rem;
+    border-right: none;
+    margin-left: 0.5rem;
+}

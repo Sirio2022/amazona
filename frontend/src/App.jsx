@@ -27,7 +27,8 @@ import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import SellerRoute from './components/SellerRoute';
 import SellerScreen from './screens/SellerScreen';
-
+import SearchBox from './components/SearchBox';
+import SearchScreen from './screens/SearchScreen';
 
 function App() {
   const { cartItems } = useSelector((state) => state.cart);
@@ -53,6 +54,10 @@ function App() {
               <Link className="brand" to="/">
                 amazona
               </Link>
+            </div>
+
+            <div>
+              <SearchBox />
             </div>
 
             <div>
@@ -140,6 +145,7 @@ function App() {
               <Route path="/forgot-password/:token" element={<NewPassword />} />
               <Route path="/confirm/:id" element={<AccountConfirm />} />
               <Route path="/orderhistory" element={<OrderHistoryScreen />} />
+              <Route path="/search/name/:name?" element={<SearchScreen />} />
               <Route path="/profile/" element={<PrivateRoute />}>
                 <Route index element={<ProfileScreen />} />
               </Route>
