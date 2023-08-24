@@ -29,6 +29,8 @@ import SellerRoute from './components/SellerRoute';
 import SellerScreen from './screens/SellerScreen';
 import SearchBox from './components/SearchBox';
 import SearchScreen from './screens/SearchScreen';
+import { useEffect } from 'react';
+import { fetchCategories } from './redux/categoryListSlice';
 
 function App() {
   const { cartItems } = useSelector((state) => state.cart);
@@ -40,6 +42,10 @@ function App() {
     dispatch(signout());
     dispatch(clearItems());
   };
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   return (
     <PayPalScriptProvider
@@ -146,6 +152,9 @@ function App() {
               <Route path="/confirm/:id" element={<AccountConfirm />} />
               <Route path="/orderhistory" element={<OrderHistoryScreen />} />
               <Route path="/search/name/:name?" element={<SearchScreen />} />
+              <Route path="/search/category/:category" element={<SearchScreen />} />
+              <Route path="/search/category/:category/name/:name" element={<SearchScreen />} />
+
               <Route path="/profile/" element={<PrivateRoute />}>
                 <Route index element={<ProfileScreen />} />
               </Route>

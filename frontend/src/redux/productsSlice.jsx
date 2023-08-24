@@ -31,7 +31,7 @@ export const { setListProducts, loadingProductsStart, loadingProductsError } =
 export default productsSlice.reducer;
 
 export const fetchProducts =
-  ({ seller = '', name = '' }) =>
+  ({ seller = '', name = '', category = '' }) =>
   async (dispatch) => {
     dispatch(loadingProductsStart());
 
@@ -42,6 +42,7 @@ export const fetchProducts =
           params: {
             seller,
             name,
+            category,
           },
         }
       );

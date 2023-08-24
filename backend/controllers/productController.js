@@ -5,9 +5,12 @@ const productList = async (req, res) => {
   const nameFilter = name ? { name: { $regex: name, $options: 'i' } } : {};
   const seller = req.query.seller || '';
   const sellerFilter = seller ? { seller } : {};
+  const category = req.query.category || '';
+  const categoryFilter = category ? { category } : {};
   const products = await Product.find({
     ...sellerFilter,
     ...nameFilter,
+    ...categoryFilter,
   }).populate(
     'seller',
     'seller.name seller.logo seller.rating seller.numReviews'
@@ -84,10 +87,16 @@ const productDelete = async (req, res) => {
   }
 };
 
+const productCategoryList = async (req, res) => {
+  const categories = await Product.find().distinct('category');
+  res.status(200).json(categories);
+};
+
 export {
   productList,
   productDetails,
   productCreate,
   productUpdate,
   productDelete,
+  productCategoryList,
 };
