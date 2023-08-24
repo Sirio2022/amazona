@@ -418,3 +418,7 @@ img.large {
     max-width: 30rem;
 
 }
+
+.active {
+    font-weight: bold;
+}

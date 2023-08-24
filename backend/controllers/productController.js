@@ -1,6 +1,21 @@
 import Product from '../models/productModel.js';
 
 const productList = async (req, res) => {
+  const min =
+    req.query.min && Number(req.query.min) !== 0 ? Number(req.query.min) : 0;
+  const max =
+    req.query.max && Number(req.query.max) !== 0 ? Number(req.query.max) : 0;
+
+  const priceFilter =
+    min && max
+      ? {
+          price: {
+            $gte: min,
+            $lte: max,
+          },
+        }
+      : {};
+
   const name = req.query.name || '';
   const nameFilter = name ? { name: { $regex: name, $options: 'i' } } : {};
   const seller = req.query.seller || '';
@@ -11,6 +26,7 @@ const productList = async (req, res) => {
     ...sellerFilter,
     ...nameFilter,
     ...categoryFilter,
+    ...priceFilter,
   }).populate(
     'seller',
     'seller.name seller.logo seller.rating seller.numReviews'
