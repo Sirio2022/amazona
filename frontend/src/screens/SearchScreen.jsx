@@ -18,7 +18,7 @@ export default function SearchScreen() {
     min = 0,
     max = 0,
     rating = 0,
-    order = 'newest',
+    order = '',
   } = useParams();
 
   const { products, loading, error } = useSelector(
@@ -152,11 +152,11 @@ export default function SearchScreen() {
             <div className="col-3">
               {loading && <LoadingBox />}
               {msg && <MessageBox alert={alert} />}
-              <div className='row sort'>
+              <div className="row sort">
                 <label htmlFor="order">Sort by</label>
                 <select
-                    name="order"
-                    id="order"
+                  name="order"
+                  id="order"
                   value={order}
                   onChange={(e) => {
                     navigate(getFilterUrl({ order: e.target.value }));
