@@ -34,7 +34,7 @@ export default function SearchScreen() {
       {loading && <LoadingBox />}
       {msg && <MessageBox alert={alert} />}
       {products.length === 0 ? (
-        <MessageBox alert={{ msg: 'No Product Found' }} />
+        <MessageBox alert={{ msg: 'No Products Found' }} />
       ) : (
         <>
           
@@ -50,9 +50,9 @@ export default function SearchScreen() {
               <div className="col-3">
                 {loading && <LoadingBox />}
                 {msg && <MessageBox alert={alert} />}
-                <div className="row center">
+                <div className="row">
                   {products && (
-                    <div className="row center">
+                    <div className="row center ">
                       {products.map((product) => (
                         <Product product={product} key={product._id} />
                       ))}
