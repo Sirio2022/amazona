@@ -10,11 +10,13 @@ import {
   productCreate,
   productUpdate,
   productDelete,
+  productCategoryList,
 } from '../controllers/productController.js';
 
 const router = express.Router();
 
 router.get('/', productList);
+router.get('/categories', productCategoryList )
 router.get('/:id', productDetails);
 router.post('/', checkAuth, AdminAuthOrSellerAuth, productCreate);
 router.put('/:id', checkAuth, AdminAuthOrSellerAuth, productUpdate);

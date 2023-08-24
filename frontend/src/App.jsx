@@ -29,10 +29,30 @@ import SellerRoute from './components/SellerRoute';
 import SellerScreen from './screens/SellerScreen';
 import SearchBox from './components/SearchBox';
 import SearchScreen from './screens/SearchScreen';
+import { useEffect, useState } from 'react';
+import { fetchCategories } from './redux/categoryListSlice';
+import MessageBox from './components/MessageBox';
+import LoadingBox from './components/LoadingBox';
 
 function App() {
+  const [alert, setAlert] = useState({});
+  const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
+
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.signin);
+
+  const {
+    loading: loadingCategories,
+    error: errorCategories,
+    categories,
+  } = useSelector((state) => state.productsCategory);
+
+  if (errorCategories) {
+    setAlert({
+      msg: errorCategories,
+      error: true,
+    });
+  }
 
   const dispatch = useDispatch();
 
@@ -40,6 +60,12 @@ function App() {
     dispatch(signout());
     dispatch(clearItems());
   };
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+
+  const { msg } = alert;
 
   return (
     <PayPalScriptProvider
@@ -51,6 +77,16 @@ function App() {
         <div className="grid-container">
           <header className="row">
             <div>
+              <button
+                type="button"
+                className="open-sidebar"
+                onClick={() => setSidebarIsOpen(true)}
+              >
+                <i
+                  className="fa fa-bars"
+                  onClick={() => setSidebarIsOpen(true)}
+                ></i>
+              </button>
               <Link className="brand" to="/">
                 amazona
               </Link>
@@ -129,6 +165,39 @@ function App() {
             </div>
           </header>
 
+          <aside className={sidebarIsOpen ? 'open' : ''}>
+            <ul className="categories">
+              <li>
+                <strong>Categories</strong>
+                <button
+                  onClick={() => setSidebarIsOpen(false)}
+                  className="close-sidebar"
+                  type="button"
+                >
+                  <i className="fa fa-close">
+                    <Link to="/"></Link>
+                  </i>
+                </button>
+              </li>
+              {loadingCategories && <LoadingBox />}
+              {msg && <MessageBox alert={alert} />}
+              {categories && (
+                <ul>
+                  {categories.map((c) => (
+                    <li key={c}>
+                      <Link
+                        to={`/search/category/${c}`}
+                        onClick={() => setSidebarIsOpen(false)}
+                      >
+                        {c}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </ul>
+          </aside>
+
           <main>
             <Routes>
               <Route path="/seller/:id" element={<SellerScreen />} />
@@ -146,6 +215,15 @@ function App() {
               <Route path="/confirm/:id" element={<AccountConfirm />} />
               <Route path="/orderhistory" element={<OrderHistoryScreen />} />
               <Route path="/search/name/:name?" element={<SearchScreen />} />
+              <Route
+                path="/search/category/:category"
+                element={<SearchScreen />}
+              />
+              <Route
+                path="/search/category/:category/name/:name"
+                element={<SearchScreen />}
+              />
+
               <Route path="/profile/" element={<PrivateRoute />}>
                 <Route index element={<ProfileScreen />} />
               </Route>
