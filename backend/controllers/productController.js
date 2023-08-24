@@ -33,13 +33,13 @@ const productList = async (req, res) => {
     ...categoryFilter,
     ...priceFilter,
     ...ratingFilter,
-    ...sortOrder,
   })
     .populate(
       'seller',
       'seller.name seller.logo seller.rating seller.numReviews'
     )
     .sort(sortOrder);
+
   res.status(200).json(products);
 };
 

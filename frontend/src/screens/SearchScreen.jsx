@@ -71,115 +71,115 @@ export default function SearchScreen() {
       {products.length === 0 ? (
         <MessageBox alert={{ msg: 'No Products Found' }} />
       ) : (
-        <>
-          <div className="row">
-            <div>
-              Sort by{' '}
-              <select
-                value={order}
-                onChange={(e) => {
-                  navigate(getFilterUrl({ order: e.target.value }));
-                }}
-              >
-                <option value="newest">Newest Arrivals</option>
-                <option value="lowest">Price: Low to High</option>
-                <option value="highest">Price: High to Low</option>
-                <option value="toprated">Avg: Customer Reviews</option>
-              </select>
-            </div>
-            <div className="row top">
-              <div className="col-1">
-                <div className="row">{products.length} Results</div>
+        <div>
+          <div className="row top">
+            <div className="col-1">
+              <div className="row">{products.length} Results</div>
 
-                <div>
-                  <h3>Deparment</h3>
-                  <ul>
-                    <li>
-                      {loadingCategories && <LoadingBox />}
-                      {errorCategories && (
-                        <MessageBox alert={{ msg: errorCategories }} />
-                      )}
-                      {categories && (
-                        <ul>
-                          <li>
+              <div>
+                <h3>Deparment</h3>
+                <ul>
+                  <li>
+                    {loadingCategories && <LoadingBox />}
+                    {errorCategories && (
+                      <MessageBox alert={{ msg: errorCategories }} />
+                    )}
+                    {categories && (
+                      <ul>
+                        <li>
+                          <Link
+                            className={'all' === category ? 'active' : ''}
+                            to={getFilterUrl({ category: 'all' })}
+                          >
+                            Any
+                          </Link>
+                        </li>
+                        {categories.map((c) => (
+                          <li key={c}>
                             <Link
-                              className={'all' === category ? 'active' : ''}
-                              to={getFilterUrl({ category: 'all' })}
+                              className={c === category ? 'active' : ''}
+                              to={getFilterUrl({ category: c })}
                             >
-                              Any
+                              {c}
                             </Link>
                           </li>
-                          {categories.map((c) => (
-                            <li key={c}>
-                              <Link
-                                className={c === category ? 'active' : ''}
-                                to={getFilterUrl({ category: c })}
-                              >
-                                {c}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3>Price</h3>
-                  <ul>
-                    {prices.map((p) => (
-                      <li key={p.name}>
-                        <Link
-                          to={getFilterUrl({ min: p.min, max: p.max })}
-                          className={
-                            `${p.name}-${p.max}` === `${min}-${max}`
-                              ? 'active'
-                              : ''
-                          }
-                        >
-                          {p.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div>
-                  <h3>Avg. Customer Review</h3>
-                  <ul>
-                    {ratings.map((r) => (
-                      <li key={r.name}>
-                        <Link
-                          to={getFilterUrl({ rating: r.rating })}
-                          className={
-                            `${r.rating}` === `${rating}` ? 'active' : ''
-                          }
-                        >
-                          <Rating caption={'& up'} rating={r.rating} />
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                </ul>
               </div>
 
-              <div className="col-3">
-                {loading && <LoadingBox />}
-                {msg && <MessageBox alert={alert} />}
-                <div className="row">
-                  {products && (
-                    <div className="row center ">
-                      {products.map((product) => (
-                        <Product product={product} key={product._id} />
-                      ))}
-                    </div>
-                  )}
-                </div>
+              <div>
+                <h3>Price</h3>
+                <ul>
+                  {prices.map((p) => (
+                    <li key={p.name}>
+                      <Link
+                        to={getFilterUrl({ min: p.min, max: p.max })}
+                        className={
+                          `${p.name}-${p.max}` === `${min}-${max}`
+                            ? 'active'
+                            : ''
+                        }
+                      >
+                        {p.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h3>Avg. Customer Review</h3>
+                <ul>
+                  {ratings.map((r) => (
+                    <li key={r.name}>
+                      <Link
+                        to={getFilterUrl({ rating: r.rating })}
+                        className={
+                          `${r.rating}` === `${rating}` ? 'active' : ''
+                        }
+                      >
+                        <Rating caption={'& up'} rating={r.rating} />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="col-3">
+              {loading && <LoadingBox />}
+              {msg && <MessageBox alert={alert} />}
+              <div className='row sort'>
+                <label htmlFor="order">Sort by</label>
+                <select
+                    name="order"
+                    id="order"
+                  value={order}
+                  onChange={(e) => {
+                    navigate(getFilterUrl({ order: e.target.value }));
+                  }}
+                >
+                  <option value="newest">Newest Arrivals</option>
+                  <option value="lowest">Price: Low to High</option>
+                  <option value="highest">Price: High to Low</option>
+                  <option value="toprated">Avg: Customer Reviews</option>
+                </select>
+              </div>
+              <div className="row">
+                {products && (
+                  <div className="row center ">
+                    {products.map((product) => (
+                      <Product product={product} key={product._id} />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
