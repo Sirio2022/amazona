@@ -24,6 +24,8 @@ export default function ProductScreen() {
   const { error, loading, product } = useSelector(
     (state) => state.productDetails
   );
+  const { seller } = product;
+  const { seller: sellerInfo } = seller;
 
   const {
     loading: loadingReview,
@@ -33,9 +35,6 @@ export default function ProductScreen() {
   } = useSelector((state) => state.review);
 
   const { userInfo } = useSelector((state) => state.signin);
-
-  const { seller } = product;
-  const { seller: sellerInfo } = seller;
 
   const dispatch = useDispatch();
 
@@ -48,7 +47,7 @@ export default function ProductScreen() {
       });
     }
     dispatch(reviewReset());
-    dispatch(fetchProductDetails(params.id));
+    dispatch(fetchProductDetails(id));
 
     if (error) {
       setAlert({ msg: error, error: true });
@@ -57,7 +56,7 @@ export default function ProductScreen() {
     if (errorReview) {
       setAlert({ msg: errorReview, error: true });
     }
-  }, [dispatch, params.id, error, successReview, errorReview, review.msg]);
+  }, [dispatch, id, successReview, error, errorReview, review.msg]);
 
   const addToCartHandler = () => {
     navigate(`/cart/${params.id}?qty=${qty}`);
@@ -82,11 +81,9 @@ export default function ProductScreen() {
 
   return (
     <div>
-      {loading ? (
-        <LoadingBox />
-      ) : error ? (
-        <MessageBox alert={alert} />
-      ) : (
+      {loading && <LoadingBox />}
+      {error && <MessageBox alert={{ msg: error, error: true }} />}
+      {userInfo && (
         <div>
           <Link to="/">Back to result</Link>
           <div className="row top">
