@@ -57,7 +57,6 @@ export default function ProductScreen() {
     if (errorReview) {
       setAlert({ msg: errorReview, error: true });
     }
- 
   }, [dispatch, params.id, error, successReview, errorReview, review.msg]);
 
   const addToCartHandler = () => {
@@ -65,7 +64,6 @@ export default function ProductScreen() {
   };
 
   const { msg } = alert;
-  
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -193,7 +191,7 @@ export default function ProductScreen() {
                 </li>
               ))}
               <li>
-                {userInfo ? (
+                {userInfo.name ? (
                   <form onSubmit={submitHandler} className="form">
                     <div>
                       <h2>Write a customer review</h2>
@@ -235,9 +233,11 @@ export default function ProductScreen() {
                 ) : (
                   <div>
                     <MessageBox
-                      alert={{ msg: 'Please, Sign In to write a review' }}
+                      alert={{
+                        msg: 'Please, Sign In to write a review',
+                        link2: true,
+                      }}
                     />
-                    <Link to="/signin">Sign In</Link>
                   </div>
                 )}
               </li>
