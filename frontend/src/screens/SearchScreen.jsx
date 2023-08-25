@@ -13,8 +13,8 @@ export default function SearchScreen() {
   const [alert, setAlert] = useState({});
 
   const {
-    name = 'all',
     category = 'all',
+    name = 'all',
     min = 0,
     max = 0,
     rating = 0,
@@ -35,8 +35,8 @@ export default function SearchScreen() {
   useEffect(() => {
     dispatch(
       fetchProducts({
-        name: name !== 'all' ? name : '',
         category: category !== 'all' ? category : '',
+        name: name !== 'all' ? name : '',
         min,
         max,
         rating,
