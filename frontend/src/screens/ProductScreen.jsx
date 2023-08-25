@@ -48,15 +48,7 @@ export default function ProductScreen() {
     }
     dispatch(reviewReset());
     dispatch(fetchProductDetails(id));
-
-    if (error) {
-      setAlert({ msg: error, error: true });
-    }
-
-    if (errorReview) {
-      setAlert({ msg: errorReview, error: true });
-    }
-  }, [dispatch, id, successReview, error, errorReview, review.msg]);
+  }, [dispatch, id, successReview, review.msg]);
 
   const addToCartHandler = () => {
     navigate(`/cart/${params.id}?qty=${qty}`);
@@ -70,6 +62,9 @@ export default function ProductScreen() {
       dispatch(
         createReviewAction(id, { rating, comment, name: userInfo.name })
       );
+      if (errorReview) {
+        setAlert({ msg: errorReview, error: true });
+      }
     } else {
       Swal.fire({
         icon: 'error',
@@ -81,9 +76,11 @@ export default function ProductScreen() {
 
   return (
     <div>
-      {loading && <LoadingBox />}
-      {error && <MessageBox alert={{ msg: error, error: true }} />}
-      {userInfo && (
+      {loading ? (
+        <LoadingBox />
+      ) : error ? (
+        <MessageBox alert={alert} />
+      ) : (
         <div>
           <Link to="/">Back to result</Link>
           <div className="row top">
