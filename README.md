@@ -4,5 +4,6 @@
 
 1. Vite
 2. React
-3. MongoDB
-4. NodeJS
+3. Redux ToolLKit
+4. MongoDB
+5. NodeJS
