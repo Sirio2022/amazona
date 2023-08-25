@@ -11,15 +11,17 @@ import {
   productUpdate,
   productDelete,
   productCategoryList,
+  productCreateReview,
 } from '../controllers/productController.js';
 
 const router = express.Router();
 
 router.get('/', productList);
-router.get('/categories', productCategoryList )
+router.get('/categories', productCategoryList);
 router.get('/:id', productDetails);
 router.post('/', checkAuth, AdminAuthOrSellerAuth, productCreate);
 router.put('/:id', checkAuth, AdminAuthOrSellerAuth, productUpdate);
 router.delete('/:id', checkAuth, AdminAuthOrSellerAuth, productDelete);
+router.put('/:id/reviews', checkAuth, productCreateReview);
 
 export default router;

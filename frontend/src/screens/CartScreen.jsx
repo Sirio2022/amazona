@@ -41,7 +41,7 @@ export default function CartScreen() {
             alert={{
               msg: 'Cart is empty. Add some products!',
               error: false,
-              link: '/',
+              link: true,
             }}
           />
         ) : (
