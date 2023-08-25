@@ -3,22 +3,36 @@ import Rating from '../components/Rating';
 
 import { fetchProductDetails } from '../redux/productSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { createReviewAction, reviewReset } from '../redux/reviewSlice';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export default function ProductScreen() {
   const [alert, setAlert] = useState({});
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
 
   const [qty, setQty] = useState(1);
 
   const navigate = useNavigate();
   const params = useParams();
+  const { id } = params;
 
   const { error, loading, product } = useSelector(
     (state) => state.productDetails
   );
+
+  const {
+    loading: loadingReview,
+    success: successReview,
+    error: errorReview,
+    review,
+  } = useSelector((state) => state.review);
+
+  const { userInfo } = useSelector((state) => state.signin);
 
   const { seller } = product;
   const { seller: sellerInfo } = seller;
@@ -26,24 +40,53 @@ export default function ProductScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (successReview) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: ` ${review.msg}`,
+      });
+    }
+    dispatch(reviewReset());
     dispatch(fetchProductDetails(params.id));
 
     if (error) {
       setAlert({ msg: error, error: true });
     }
-  }, [dispatch, params.id, error]);
+
+    if (errorReview) {
+      setAlert({ msg: errorReview, error: true });
+    }
+ 
+  }, [dispatch, params.id, error, successReview, errorReview, review.msg]);
 
   const addToCartHandler = () => {
     navigate(`/cart/${params.id}?qty=${qty}`);
   };
 
   const { msg } = alert;
+  
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (comment && rating) {
+      dispatch(
+        createReviewAction(id, { rating, comment, name: userInfo.name })
+      );
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please, comment and rate the product!',
+      });
+    }
+  };
 
   return (
     <div>
       {loading ? (
         <LoadingBox />
-      ) : msg ? (
+      ) : error ? (
         <MessageBox alert={alert} />
       ) : (
         <div>
@@ -134,6 +177,71 @@ export default function ProductScreen() {
                 </ul>
               </div>
             </div>
+          </div>
+          <div>
+            <h2 id="reviews">Reviews</h2>
+            {!product.reviews.length && (
+              <MessageBox alert={{ msg: 'No Reviews' }} />
+            )}
+            <ul>
+              {product.reviews.map((review) => (
+                <li key={review._id}>
+                  <strong>{review.name}</strong>
+                  <Rating rating={review.rating} caption=" " />
+                  <p>{review.createdAt.substring(0, 10)}</p>
+                  <p>{review.comment}</p>
+                </li>
+              ))}
+              <li>
+                {userInfo ? (
+                  <form onSubmit={submitHandler} className="form">
+                    <div>
+                      <h2>Write a customer review</h2>
+                    </div>
+                    <div>
+                      <label htmlFor="rating">Rating</label>
+                      <select
+                        id="rating"
+                        value={rating}
+                        onChange={(e) => setRating(e.target.value)}
+                      >
+                        <option value="">Select...</option>
+                        <option value="1">1- Poor</option>
+                        <option value="2">2- Fair</option>
+                        <option value="3">2 -Good</option>
+                        <option value="4">3 - Very Good</option>
+                        <option value="5">4 - Excellent</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="comment">Coment</label>
+                      <textarea
+                        id="comment"
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                      ></textarea>
+                    </div>
+                    <div>
+                      <label />
+                      <button className="primary" type="submit">
+                        Submit
+                      </button>
+                    </div>
+                    <div>
+                      {loadingReview && <LoadingBox />}
+                      {msg && <MessageBox alert={alert} />}
+                    </div>
+                  </form>
+                ) : (
+                  <div>
+                    <MessageBox
+                      alert={{ msg: 'Please, Sign In to write a review' }}
+                    />
+                    <Link to="/signin">Sign In</Link>
+                  </div>
+                )}
+              </li>
+            </ul>
           </div>
         </div>
       )}

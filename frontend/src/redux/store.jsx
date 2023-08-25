@@ -22,6 +22,7 @@ import deleteUserReducer from './deleteUserSlice';
 import updateUserReducer from './updateUserSlice';
 import topSellersReducer from './topSellersSlice';
 import productsCategoryReducer from './categoryListSlice';
+import reviewReducer from './reviewSlice';
 
 export const store = configureStore({
   reducer: {
@@ -49,5 +50,6 @@ export const store = configureStore({
     userUpdated: updateUserReducer,
     topSellers: topSellersReducer,
     productsCategory: productsCategoryReducer,
+    review: reviewReducer,
   },
 });

@@ -117,6 +117,34 @@ const productCategoryList = async (req, res) => {
   res.status(200).json(categories);
 };
 
+const productCreateReview = async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (product.reviews.find((x) => x.name === req.user.name)) {
+    const error = new Error('You already submitted a review');
+    return res.status(400).json({ msg: error.message });
+  } else {
+    if (!product) {
+      const error = new Error('Product not found');
+      return res.status(404).json({ msg: error.message });
+    }
+    const review = {
+      name: req.user.name,
+      rating: Number(req.body.rating),
+      comment: req.body.comment,
+    };
+    product.reviews.push(review);
+    product.numReviews = product.reviews.length;
+    product.rating =
+      product.reviews.reduce((c, a) => a.rating + c, 0) /
+      product.reviews.length;
+    const updatedProduct = await product.save();
+    res.status(201).json({
+      msg: 'Review created successfully',
+      review: updatedProduct.reviews[updatedProduct.reviews.length - 1],
+    });
+  }
+};
+
 export {
   productList,
   productDetails,
@@ -124,4 +152,5 @@ export {
   productUpdate,
   productDelete,
   productCategoryList,
+  productCreateReview,
 };
