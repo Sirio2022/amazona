@@ -81,7 +81,7 @@ export default function ProductScreen() {
       ) : error ? (
         <MessageBox alert={alert} />
       ) : (
-        <>
+        <div>
           <Link to="/">Back to result</Link>
           <div className="row top">
             <div className="col-2">
@@ -170,7 +170,6 @@ export default function ProductScreen() {
               </div>
             </div>
           </div>
-
           <div>
             <h2 id="reviews">Reviews</h2>
             {!product.reviews.length && (
@@ -239,9 +238,6 @@ export default function ProductScreen() {
             </ul>
           </div>
         </div>
-
-        </>
-
       )}
     </div>
   );
