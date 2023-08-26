@@ -43,7 +43,7 @@ export default function MapScreen() {
   return (
     <>
       <GoogleMap
-        zoom={10}
+        zoom={8}
         center={center}
         mapContainerClassName="full-container"
         onLoad={handleMapLoad}

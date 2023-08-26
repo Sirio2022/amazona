@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 export default function ShippingAddressScreen() {
   const { userInfo } = useSelector((state) => state.signin);
   const { shippingAddress } = useSelector((state) => state.shippingAddress);
-  const { address: addressMap } = useSelector((state) => state.map);
+  //const { address: addressMap } = useSelector((state) => state.map);
 
   const [fullName, setFullName] = useState(shippingAddress.fullName || '');
   const [address, setAddress] = useState(shippingAddress.address || '');
