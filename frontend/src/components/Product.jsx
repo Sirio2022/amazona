@@ -1,10 +1,9 @@
-import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
+import { Link } from 'react-router-dom';
 import Rating from './Rating';
 
-export default function Product(children) {
-  const { product } = children;
-
+export default function Product({ product }) {
   return (
     <div className="card" key={product._id}>
       <Link to={`/product/${product._id}`}>
@@ -31,3 +30,7 @@ export default function Product(children) {
     </div>
   );
 }
+
+Product.propTypes = {
+  product: PropTypes.object.isRequired,
+};
