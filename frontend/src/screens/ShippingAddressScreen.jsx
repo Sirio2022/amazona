@@ -4,10 +4,12 @@ import MessageBox from '../components/MessageBox';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveShippingAddress } from '../redux/shippingAddressSlice';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export default function ShippingAddressScreen() {
   const { userInfo } = useSelector((state) => state.signin);
   const { shippingAddress } = useSelector((state) => state.shippingAddress);
+  const { address: addressMap } = useSelector((state) => state.map);
 
   const [fullName, setFullName] = useState(shippingAddress.fullName || '');
   const [address, setAddress] = useState(shippingAddress.address || '');
@@ -16,6 +18,8 @@ export default function ShippingAddressScreen() {
     shippingAddress.postalCode || ''
   );
   const [country, setCountry] = useState(shippingAddress.country || '');
+  const [lat, setLat] = useState(shippingAddress.lat || '');
+  const [lng, setLng] = useState(shippingAddress.lng || '');
   const [alert, setAlert] = useState({});
 
   const dispatch = useDispatch();
@@ -30,6 +34,47 @@ export default function ShippingAddressScreen() {
   const submitHandler = (e) => {
     e.preventDefault();
 
+    const newLat = addressMap ? addressMap.lat : lat;
+    const newLng = addressMap ? addressMap.lng : lng;
+
+    if (addressMap) {
+      setLat(newLat);
+      setLng(newLng);
+    } else {
+      if (!lat || !lng) {
+        setAlert({
+          msg: 'Please select your address on map',
+          error: true,
+        });
+        setTimeout(() => {
+          setAlert({});
+        }, 3000);
+        return;
+      }
+    }
+
+    let moveOn = true;
+    if (!newLat || !newLng) {
+      moveOn = Swal.fire({
+        title: 'Are you sure?',
+        text: 'You have not selected your address on map',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, I want to continue',
+        cancelButtonText: 'No, I want to select my address on map',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+      if (moveOn) {
+        navigate('/payment');
+      }
+    }
+
     if ([fullName, address, city, postalCode, country].includes('')) {
       setAlert({
         msg: 'All fields are required',
@@ -42,9 +87,32 @@ export default function ShippingAddressScreen() {
     }
 
     dispatch(
-      saveShippingAddress({ fullName, address, city, postalCode, country })
+      saveShippingAddress({
+        fullName,
+        address,
+        city,
+        postalCode,
+        country,
+        lat: newLat,
+        lng: newLng,
+      })
     );
     navigate('/payment');
+  };
+
+  const chooseOnMap = () => {
+    dispatch(
+      saveShippingAddress({
+        fullName,
+        address,
+        city,
+        postalCode,
+        country,
+        lat,
+        lng,
+      })
+    );
+    navigate('/map');
   };
 
   return (
@@ -104,6 +172,12 @@ export default function ShippingAddressScreen() {
             value={country}
             onChange={(e) => setCountry(e.target.value)}
           />
+        </div>
+        <div>
+          <label htmlFor="chooseOnMap">Location</label>
+          <button type="button" onClick={chooseOnMap}>
+            Choose On Map
+          </button>
         </div>
         <div>
           <label />

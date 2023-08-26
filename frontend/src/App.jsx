@@ -33,6 +33,7 @@ import { useEffect, useState } from 'react';
 import { fetchCategories } from './redux/categoryListSlice';
 import MessageBox from './components/MessageBox';
 import LoadingBox from './components/LoadingBox';
+import MapScreen from './screens/MapScreen';
 
 function App() {
   const [alert, setAlert] = useState({});
@@ -230,6 +231,9 @@ function App() {
 
               <Route path="/profile/" element={<PrivateRoute />}>
                 <Route index element={<ProfileScreen />} />
+              </Route>
+              <Route path="/map" element={<PrivateRoute />}>
+                <Route index element={<MapScreen />} />
               </Route>
               {/* Admin Routes*/}
               <Route path="/productlist" element={<AdminRoute />}>
