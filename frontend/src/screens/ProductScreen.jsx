@@ -21,11 +21,9 @@ export default function ProductScreen() {
   const params = useParams();
   const { id } = params;
 
-  const { error, loading, product } = useSelector(
+  const { error, loading, product, seller } = useSelector(
     (state) => state.productDetails
   );
-  const { seller } = product;
-  const { seller: sellerInfo } = seller;
 
   const {
     loading: loadingReview,
@@ -80,6 +78,8 @@ export default function ProductScreen() {
         <LoadingBox />
       ) : error ? (
         <MessageBox alert={alert} />
+      ) : !product || !review || !seller ? (
+        <MessageBox alert={{ msg: 'Product not found' }} />
       ) : (
         <div>
           <Link to="/">Back to result</Link>
@@ -111,9 +111,7 @@ export default function ProductScreen() {
                   <li>
                     Seller
                     <h2>
-                      <Link to={`/seller/${seller._id}`}>
-                        {sellerInfo.name}
-                      </Link>
+                      <Link to={`/seller/${seller._id}`}>{seller.name}</Link>
                     </h2>
                   </li>
                   <li>
@@ -172,70 +170,71 @@ export default function ProductScreen() {
           </div>
           <div>
             <h2 id="reviews">Reviews</h2>
-            {!product.reviews.length && (
+            {!product.reviews || !product.reviews.length === 0 ? (
               <MessageBox alert={{ msg: 'No Reviews' }} />
-            )}
-            <ul>
-              {product.reviews.map((review) => (
-                <li key={review._id}>
-                  <strong>{review.name}</strong>
-                  <Rating rating={review.rating} caption=" " />
-                  <p>{review.createdAt.substring(0, 10)}</p>
-                  <p>{review.comment}</p>
+            ) : (
+              <ul>
+                {product.reviews.map((review) => (
+                  <li key={review._id}>
+                    <strong>{review.name}</strong>
+                    <Rating rating={review.rating} caption=" " />
+                    <p>{review.createdAt.substring(0, 10)}</p>
+                    <p>{review.comment}</p>
+                  </li>
+                ))}
+                <li>
+                  {userInfo.name ? (
+                    <form onSubmit={submitHandler} className="form">
+                      <div>
+                        <h2>Write a customer review</h2>
+                      </div>
+                      <div>
+                        <label htmlFor="rating">Rating</label>
+                        <select
+                          id="rating"
+                          value={rating}
+                          onChange={(e) => setRating(e.target.value)}
+                        >
+                          <option value="">Select...</option>
+                          <option value="1">1- Poor</option>
+                          <option value="2">2- Fair</option>
+                          <option value="3">2 -Good</option>
+                          <option value="4">3 - Very Good</option>
+                          <option value="5">4 - Excellent</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label htmlFor="comment">Coment</label>
+                        <textarea
+                          id="comment"
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                        ></textarea>
+                      </div>
+                      <div>
+                        <label />
+                        <button className="primary" type="submit">
+                          Submit
+                        </button>
+                      </div>
+                      <div>
+                        {loadingReview && <LoadingBox />}
+                        {msg && <MessageBox alert={alert} />}
+                      </div>
+                    </form>
+                  ) : (
+                    <div>
+                      <MessageBox
+                        alert={{
+                          msg: 'Please, Sign In to write a review',
+                          link2: true,
+                        }}
+                      />
+                    </div>
+                  )}
                 </li>
-              ))}
-              <li>
-                {userInfo.name ? (
-                  <form onSubmit={submitHandler} className="form">
-                    <div>
-                      <h2>Write a customer review</h2>
-                    </div>
-                    <div>
-                      <label htmlFor="rating">Rating</label>
-                      <select
-                        id="rating"
-                        value={rating}
-                        onChange={(e) => setRating(e.target.value)}
-                      >
-                        <option value="">Select...</option>
-                        <option value="1">1- Poor</option>
-                        <option value="2">2- Fair</option>
-                        <option value="3">2 -Good</option>
-                        <option value="4">3 - Very Good</option>
-                        <option value="5">4 - Excellent</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label htmlFor="comment">Coment</label>
-                      <textarea
-                        id="comment"
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                      ></textarea>
-                    </div>
-                    <div>
-                      <label />
-                      <button className="primary" type="submit">
-                        Submit
-                      </button>
-                    </div>
-                    <div>
-                      {loadingReview && <LoadingBox />}
-                      {msg && <MessageBox alert={alert} />}
-                    </div>
-                  </form>
-                ) : (
-                  <div>
-                    <MessageBox
-                      alert={{
-                        msg: 'Please, Sign In to write a review',
-                        link2: true,
-                      }}
-                    />
-                  </div>
-                )}
-              </li>
-            </ul>
+              </ul>
+            )}
           </div>
         </div>
       )}

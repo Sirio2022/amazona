@@ -5,6 +5,7 @@ const initialState = {
   loading: false,
   error: false,
   product: {},
+  seller: {},
 };
 
 export const productDetailsSlice = createSlice({
@@ -21,6 +22,8 @@ export const productDetailsSlice = createSlice({
     productDetails: (state, action) => {
       state.product = action.payload;
       state.loading = false;
+      state.error = false;
+      state.seller = action.payload.seller;
     },
   },
 });
