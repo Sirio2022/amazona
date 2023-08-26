@@ -1,6 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
 import Rating from '../components/Rating';
-
 import { fetchProductDetails } from '../redux/productSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { createReviewAction, reviewReset } from '../redux/reviewSlice';
@@ -21,7 +20,7 @@ export default function ProductScreen() {
   const params = useParams();
   const { id } = params;
 
-  const { error, loading, product, seller } = useSelector(
+  const { error, loading, product } = useSelector(
     (state) => state.productDetails
   );
 
@@ -44,6 +43,9 @@ export default function ProductScreen() {
         text: ` ${review.msg}`,
       });
     }
+    setRating(0);
+    setComment('');
+
     dispatch(reviewReset());
     dispatch(fetchProductDetails(id));
   }, [dispatch, id, successReview, review.msg]);
@@ -78,7 +80,7 @@ export default function ProductScreen() {
         <LoadingBox />
       ) : error ? (
         <MessageBox alert={alert} />
-      ) : !product || !review || !seller ? (
+      ) : !product || !review || !product.seller ? (
         <MessageBox alert={{ msg: 'Product not found' }} />
       ) : (
         <div>
@@ -111,7 +113,9 @@ export default function ProductScreen() {
                   <li>
                     Seller
                     <h2>
-                      <Link to={`/seller/${seller._id}`}>{seller.name}</Link>
+                      <Link to={`/seller/${product.seller._id}`}>
+                        {product.seller.seller.name}
+                      </Link>
                     </h2>
                   </li>
                   <li>
@@ -170,9 +174,11 @@ export default function ProductScreen() {
           </div>
           <div>
             <h2 id="reviews">Reviews</h2>
-            {!product.reviews || !product.reviews.length === 0 ? (
-              <MessageBox alert={{ msg: 'No Reviews' }} />
-            ) : (
+            {!product.reviews ||
+              (!product.reviews.length && (
+                <MessageBox alert={{ msg: 'No Reviews' }} />
+              ))}
+            {product.reviews && (
               <ul>
                 {product.reviews.map((review) => (
                   <li key={review._id}>
