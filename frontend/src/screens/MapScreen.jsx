@@ -27,7 +27,7 @@ export default function MapScreen() {
 
   useEffect(() => {
     if (selected && map) {
-      map.panTo(selected, { duration: 2000 }, { animation: true });
+      map.panTo(selected, { animation: 'smooth' });
       map.setZoom(14);
     }
   }, [selected, map]);
