@@ -46,20 +46,18 @@ const productList = async (req, res) => {
     .skip(pageSize * (page - 1))
     .limit(pageSize);
 
-  const totalProducts = await Product.countDocuments({
-    ...sellerFilter,
-    ...nameFilter,
-    ...categoryFilter,
-    ...priceFilter,
-    ...ratingFilter,
-  });
-
-  const totalPages = Math.ceil(totalProducts / pageSize);
-
   res.status(200).json({
     products,
     page,
-    pages: totalPages,
+    pages: Math.ceil(
+      (await Product.countDocuments({
+        ...sellerFilter,
+        ...nameFilter,
+        ...categoryFilter,
+        ...priceFilter,
+        ...ratingFilter,
+      })) / pageSize
+    ),
   });
 };
 
