@@ -75,6 +75,7 @@ export default function MapScreen() {
 
   const onConfirm = () => {
     const places = placeRef.current.getPlaces() || [{}];
+    console.log(places);
     dispatch(
       saveShippingAddressMapLocationAction({
         lat: location.lat,
@@ -82,7 +83,7 @@ export default function MapScreen() {
         address: places[0].formatted_address,
         name: places[0].name,
         vicinity: places[0].vicinity,
-        googleAddressId: places[0].id,
+        googleAddressId: places[0].place_id,
       })
     );
 
@@ -98,7 +99,7 @@ export default function MapScreen() {
           id="sample-map"
           mapContainerStyle={{ height: '100%', width: '100%' }}
           center={center}
-          zoom={15}
+          zoom={18}
           onLoad={onLoad}
           onIdle={onIdle}
         >

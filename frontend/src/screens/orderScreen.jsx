@@ -77,6 +77,16 @@ export default function OrderScreen() {
                           {order.shippingAddress.postalCode},{' '}
                           {order.shippingAddress.country}
                         </strong>
+                        &nbsp;
+                        {order.shippingAddress.location &&
+                          order.shippingAddress.location.lat && (
+                            <Link
+                              target='_blank'
+                              to={`https://www.google.com/maps/place/${order.shippingAddress.location.lat},${order.shippingAddress.location.lng}`}
+                            >
+                              Show on Map
+                            </Link>
+                          )}
                       </p>
                       {order.isDelivered ? (
                         <MessageBox
