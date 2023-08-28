@@ -217,15 +217,15 @@ function App() {
               <Route path="/orderhistory" element={<OrderHistoryScreen />} />
               <Route path="/search/name/:name?" element={<SearchScreen />} />
               <Route
-                path="/search/category/:category"
+                path="/search/category/:category?"
                 element={<SearchScreen />}
               />
               <Route
-                path="/search/category/:category/name/:name"
+                path="/search/category/:category?/name/:name?"
                 element={<SearchScreen />}
               />
               <Route
-                path="/search/category/:category?/name/:name?/min/:min?/max/:max?/rating/:rating?/order/:order?"
+                path="/search/category/:category?/name/:name?/min/:min?/max/:max?/rating/:rating?/order/:order?/pageNumber/:pageNumber?"
                 element={<SearchScreen />}
               />
 

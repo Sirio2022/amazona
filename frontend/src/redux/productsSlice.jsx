@@ -12,7 +12,9 @@ export const productsSlice = createSlice({
   initialState,
   reducers: {
     setListProducts: (state, action) => {
-      state.products = action.payload;
+      (state.products = action.payload.products),
+        (state.pages = action.payload.pages),
+        (state.page = action.payload.page);
       state.loading = false;
     },
     loadingProductsStart: (state) => {
@@ -32,6 +34,7 @@ export default productsSlice.reducer;
 
 export const fetchProducts =
   ({
+    pageNumber = '',
     seller = '',
     name = '',
     category = '',
@@ -48,6 +51,7 @@ export const fetchProducts =
         import.meta.env.VITE_BACKEND_URL + '/api/products',
         {
           params: {
+            pageNumber,
             seller,
             name,
             category,
