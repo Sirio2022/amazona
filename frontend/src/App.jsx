@@ -239,6 +239,9 @@ function App() {
               <Route path="/productlist" element={<AdminRoute />}>
                 <Route index element={<ProductListScreen />} />
               </Route>
+              <Route path="/productlist/pageNumber/:pageNumber" element={<AdminRoute />}>
+                <Route index element={<ProductListScreen />} />
+              </Route>
               <Route path="/orderlist" element={<AdminRoute />}>
                 <Route index element={<OrderListScreen />} />
               </Route>

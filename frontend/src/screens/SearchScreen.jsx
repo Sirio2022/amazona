@@ -171,15 +171,16 @@ export default function SearchScreen() {
                   <option value="toprated">Avg: Customer Reviews</option>
                 </select>
               </div>
-              <div className="row">
+              <div>
                 {products && (
-                  <div className="row center ">
+                  <div className="row center">
                     {products.map((product) => (
                       <Product product={product} key={product._id} />
                     ))}
                   </div>
                 )}
-                <div>
+
+                <div className="pagination row center">
                   {[...Array(pages).keys()].map((x) => (
                     <Link
                       className={x + 1 === page ? 'active' : ''}
