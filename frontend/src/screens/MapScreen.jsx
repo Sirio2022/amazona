@@ -1,231 +1,131 @@
-import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
-import LoadingBox from '../components/LoadingBox';
-import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch} from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import { setSelectedAddressAndLocation } from '../redux/mapSlice';
-
-import usePlacesAutocomplete, {
-  getGeocode,
-  getLatLng,
-} from 'use-places-autocomplete';
 import {
-  Combobox,
-  ComboboxInput,
-  ComboboxPopover,
-  ComboboxList,
-  ComboboxOption,
-} from '@reach/combobox';
+  GoogleMap,
+  LoadScript,
+  Marker,
+  StandaloneSearchBox,
+} from '@react-google-maps/api';
+import { saveShippingAddressMapLocationAction } from '../redux/shippingAddressSlice';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+
+const defaultLocation = { lat: 6.1993998, lng: -75.5625925 };
+const libs = ['places'];
 
 export default function MapScreen() {
-  const center = useMemo(() => ({ lat: 6.2120627, lng: -75.5575222 }), []);
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_API_KEY,
-    libraries: ['places'],
-  });
+  const [googleApiKey, setGoogleApiKey] = useState('');
+  const [center, setCenter] = useState(defaultLocation);
+  const [location, setLocation] = useState(center);
 
-  const [selected, setSelected] = useState(null);
-  const [map, setMap] = useState(null);
+ 
 
-  const [selectedAddress, setSelectedAddress] = useState('');
-  const [currentLocation, setCurrentLocation] = useState(null);
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const storedSelected = localStorage.getItem('selected');
-    if (storedSelected) {
-      setSelected(JSON.parse(storedSelected));
+  const mapRef = useRef(null);
+  const placeRef = useRef(null);
+  const markerRef = useRef(null);
+
+  const getUserCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation os not supported by this browser');
+    } else {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setCenter({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      });
     }
+  };
+
+  useEffect(() => {
+    const fetchGoogleApiKey = async () => {
+      const { data } = await axios.get(
+        import.meta.env.VITE_BACKEND_URL + '/api/config/google'
+      );
+
+      setGoogleApiKey(data);
+      getUserCurrentLocation();
+    };
+    fetchGoogleApiKey();
   }, []);
 
-  useEffect(() => {
-    if (selected) {
-      localStorage.setItem('selected', JSON.stringify(selected));
-    } else {
-      localStorage.removeItem('selected');
-    }
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setCurrentLocation({ lat: latitude, lng: longitude });
-        },
-        (error) => {
-          console.error('Error getting current location:', error);
-        }
-      );
-    } else {
-      console.error('Geolocation is not supported by this browser.');
-    }
-
-    if (selected && map) {
-      map.panTo(center, { animation: 'smooth' });
-      map.setZoom(18);
-    }
-    if (selected || selectedAddress) {
-      dispatch(
-        setSelectedAddressAndLocation({
-          address: selectedAddress,
-          location: selected,
-        })
-      );
-    }
-  }, [selected, map, dispatch, selectedAddress, center]);
-
-  const handleMapLoad = (map) => {
-    setMap(map);
+  const onLoad = (map) => {
+    mapRef.current = map;
   };
 
-  if (!isLoaded) {
-    return <LoadingBox />;
-  }
-
-  return (
-    <>
-     <GoogleMap
-        zoom={18}
-        center={center}
-        mapContainerClassName="full-container"
-        onLoad={handleMapLoad}
-        onClick={(e) => {
-          const lat = e.latLng.lat();
-          const lng = e.latLng.lng();
-          setSelected({ lat, lng });
-        }}
-      >
-        {isLoaded && currentLocation && (
-          <Marker
-            position={currentLocation}
-            icon={{
-              url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-            }}
-            draggable={true}
-            onDragEnd={(e) => {
-              const lat = e.latLng.lat();
-              const lng = e.latLng.lng();
-              setSelected({ lat, lng });
-            }}
-            visible={true}
-          />
-        )}
-        {isLoaded && selected && (
-          <Marker
-            position={selected}
-            icon={{
-              url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
-            }}
-            draggable={true}
-            onDragEnd={(e) => {
-              const lat = e.latLng.lat();
-              const lng = e.latLng.lng();
-              setSelected({ lat, lng });
-            }}
-            visible={true}
-          />
-        )}
-        <div>
-          <PlacesAutocomplete
-            setSelected={setSelected}
-            setSelectedAddress={setSelectedAddress}
-            selectedAddress={selectedAddress}
-            selected={selected}
-          />
-        </div>
-      </GoogleMap>
-    </>
-  );
-}
-
-function PlacesAutocomplete({
-  setSelected,
-  setSelectedAddress,
-  selectedAddress,
-  selected,
-}) {
-  const navigate = useNavigate();
-  const {
-    ready,
-    value,
-    suggestions: { status, data },
-    setValue,
-    clearSuggestions,
-  } = usePlacesAutocomplete();
-
-  const handleSelect = async (address) => {
-    setValue(address, false);
-    clearSuggestions();
-
-    const results = await getGeocode({ address });
-    const { lat, lng } = getLatLng(results[0]);
-    setSelected({ lat, lng });
-    setSelectedAddress(address);
-    if (address || selectedAddress || selected) {
-      Swal.fire({
-        title: 'Address selected',
-        text: 'Do you want to continue?',
-        icon: 'success',
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate('/shipping');
-        }
-      });
-    }
+  const onIdle = () => {
+    setLocation({
+      lat: mapRef.current.center.lat(),
+      lng: mapRef.current.center.lng(),
+    });
   };
 
-  useEffect(() => {
-    if (selected || selectedAddress) {
-      Swal.fire({
-        title: 'Dirección seleccionada',
-        text: '¿Deseas continuar?',
-        icon: 'success',
-        showCancelButton: true,
-        confirmButtonText: 'Sí',
-        cancelButtonText: 'No',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate('/shipping');
-        }
-      });
-    }
-  }, [selected, selectedAddress, navigate]);
+  const onLoadPlaces = (place) => {
+    placeRef.current = place;
+  };
+
+  const onMarkerLoad = (marker) => {
+    markerRef.current = marker;
+  };
+
+  const onPlacesChanged = () => {
+    const place = placeRef.current.getPlaces()[0].geometry.location;
+    setCenter({ lat: place.lat(), lng: place.lng() });
+    setLocation({ lat: place.lat(), lng: place.lng() });
+  };
+
+  const onConfirm = () => {
+    const places = placeRef.current.getPlaces() || [{}];
+    dispatch(
+      saveShippingAddressMapLocationAction({
+        lat: location.lat,
+        lng: location.lng,
+        address: places[0].formatted_address,
+        name: places[0].name,
+        vicinity: places[0].vicinity,
+        googleAddressId: places[0].id,
+      })
+    );
+
+    navigate('/shipping');
+  };
 
   return (
-    <Combobox onSelect={handleSelect}>
-      <ComboboxInput
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
-        }}
-        disabled={!ready}
-        placeholder="Enter an address"
-        className="map-input-box"
-      />
-      <ComboboxPopover>
-        <ComboboxList className="combobox-list">
-          {status === 'OK' &&
-            data.map(({ place_id, description }) => (
-              <ComboboxOption
-                key={place_id}
-                value={description}
-                className="combobox-option"
-              />
-            ))}
-        </ComboboxList>
-      </ComboboxPopover>
-    </Combobox>
+    <div className="full-container">
+      {googleApiKey && (
+        <LoadScript googleMapsApiKey={googleApiKey} libraries={libs}>
+          <GoogleMap
+            id="sample-map"
+            mapContainerStyle={{ height: '100%', width: '100%' }}
+            center={center}
+            zoom={15}
+            onLoad={onLoad}
+            onIdle={onIdle}
+          >
+            <StandaloneSearchBox
+              onLoad={onLoadPlaces}
+              onPlacesChanged={onPlacesChanged}
+            >
+              <div className="map-input-box">
+                <input type="text" placeholder="Enter your address" />
+                <button type="button" className="primary" onClick={onConfirm}>
+                  Confirm
+                </button>
+              </div>
+            </StandaloneSearchBox>
+
+            <Marker position={location} onLoad={onMarkerLoad}></Marker>
+          </GoogleMap>
+        </LoadScript>
+      )}
+    </div>
   );
 }
-
-PlacesAutocomplete.propTypes = {
-  setSelected: PropTypes.func.isRequired,
-  setSelectedAddress: PropTypes.func.isRequired,
-  selectedAddress: PropTypes.string.isRequired,
-  selected: PropTypes.object,
-};

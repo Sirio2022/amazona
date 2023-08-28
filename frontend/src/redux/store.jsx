@@ -23,7 +23,7 @@ import updateUserReducer from './updateUserSlice';
 import topSellersReducer from './topSellersSlice';
 import productsCategoryReducer from './categoryListSlice';
 import reviewReducer from './reviewSlice';
-import mapReducer from './mapSlice';
+
 
 export const store = configureStore({
   reducer: {
@@ -52,6 +52,6 @@ export const store = configureStore({
     topSellers: topSellersReducer,
     productsCategory: productsCategoryReducer,
     review: reviewReducer,
-    map: mapReducer,
+ 
   },
 });

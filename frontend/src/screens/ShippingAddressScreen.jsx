@@ -2,14 +2,12 @@ import { useEffect, useState } from 'react';
 import CheckoutSteps from '../components/CheckoutSteps';
 import MessageBox from '../components/MessageBox';
 import { useDispatch, useSelector } from 'react-redux';
-import { saveShippingAddress } from '../redux/shippingAddressSlice';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
+import { saveShippingAddress } from '../redux/shippingAddressSlice';
 
 export default function ShippingAddressScreen() {
   const { userInfo } = useSelector((state) => state.signin);
   const { shippingAddress } = useSelector((state) => state.shippingAddress);
-  //const { address: addressMap } = useSelector((state) => state.map);
 
   const [fullName, setFullName] = useState(shippingAddress.fullName || '');
   const [address, setAddress] = useState(shippingAddress.address || '');
@@ -18,8 +16,7 @@ export default function ShippingAddressScreen() {
     shippingAddress.postalCode || ''
   );
   const [country, setCountry] = useState(shippingAddress.country || '');
-  const [lat, setLat] = useState(shippingAddress.lat || '');
-  const [lng, setLng] = useState(shippingAddress.lng || '');
+
   const [alert, setAlert] = useState({});
 
   const dispatch = useDispatch();
@@ -31,49 +28,9 @@ export default function ShippingAddressScreen() {
       navigate('/signin');
     }
   }, [userInfo, navigate]);
+
   const submitHandler = (e) => {
     e.preventDefault();
-
-    const newLat = addressMap ? addressMap.lat : lat;
-    const newLng = addressMap ? addressMap.lng : lng;
-
-    if (addressMap) {
-      setLat(newLat);
-      setLng(newLng);
-    } else {
-      if (!lat || !lng) {
-        setAlert({
-          msg: 'Please select your address on map',
-          error: true,
-        });
-        setTimeout(() => {
-          setAlert({});
-        }, 3000);
-        return;
-      }
-    }
-
-    let moveOn = true;
-    if (!newLat || !newLng) {
-      moveOn = Swal.fire({
-        title: 'Are you sure?',
-        text: 'You have not selected your address on map',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, I want to continue',
-        cancelButtonText: 'No, I want to select my address on map',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-
-      if (moveOn) {
-        navigate('/payment');
-      }
-    }
 
     if ([fullName, address, city, postalCode, country].includes('')) {
       setAlert({
@@ -85,7 +42,6 @@ export default function ShippingAddressScreen() {
       }, 3000);
       return;
     }
-
     dispatch(
       saveShippingAddress({
         fullName,
@@ -93,26 +49,21 @@ export default function ShippingAddressScreen() {
         city,
         postalCode,
         country,
-        lat: newLat,
-        lng: newLng,
+        location: shippingAddress.location,
       })
     );
-    navigate('/payment');
-  };
-
-  const chooseOnMap = () => {
-    dispatch(
-      saveShippingAddress({
+    localStorage.setItem(
+      'shippingAddress',
+      JSON.stringify({
         fullName,
         address,
         city,
         postalCode,
         country,
-        lat,
-        lng,
+        location: shippingAddress.location,
       })
-    );
-    navigate('/map');
+    ),
+      navigate('/payment');
   };
 
   return (
@@ -175,10 +126,18 @@ export default function ShippingAddressScreen() {
         </div>
         <div>
           <label htmlFor="chooseOnMap">Location</label>
-          <button type="button" onClick={chooseOnMap}>
+          <button type="button" onClick={() => navigate('/map')}>
             Choose On Map
           </button>
         </div>
+        {shippingAddress.location && shippingAddress.location.lat ? (
+          <div>
+            LAT: {shippingAddress.location.lat}
+            LNG: {shippingAddress.location.lng}
+          </div>
+        ) : (
+          <div>Location not set</div>
+        )}
         <div>
           <label />
           <button className="primary" type="submit">

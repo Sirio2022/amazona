@@ -31,7 +31,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-
 //Configuring routes
 app.use('/api/uploads', checkAuth, uploadRouter);
 
@@ -42,7 +41,9 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', checkAuth, orderRoutes);
 
 app.get('/api/config/google', (req, res) => {
-  res.send(process.env.GOOGLE_API_KEY || '');
+  res.send({
+    key: process.env.GOOGLE_API_KEY || '',
+  });
 });
 
 const __dirname = path.resolve();
