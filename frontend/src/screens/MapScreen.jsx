@@ -1,25 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   GoogleMap,
-  LoadScript,
-  Marker,
+  useLoadScript,
+  MarkerF,
   StandaloneSearchBox,
 } from '@react-google-maps/api';
 import { saveShippingAddressMapLocationAction } from '../redux/shippingAddressSlice';
-import axios from 'axios';
-import Swal from 'sweetalert2';
 
 const defaultLocation = { lat: 6.1993998, lng: -75.5625925 };
-const libs = ['places'];
 
 export default function MapScreen() {
-  const [googleApiKey, setGoogleApiKey] = useState('');
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+    libraries: ['places'],
+  });
+
   const [center, setCenter] = useState(defaultLocation);
   const [location, setLocation] = useState(center);
-
- 
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -46,15 +45,7 @@ export default function MapScreen() {
   };
 
   useEffect(() => {
-    const fetchGoogleApiKey = async () => {
-      const { data } = await axios.get(
-        import.meta.env.VITE_BACKEND_URL + '/api/config/google'
-      );
-
-      setGoogleApiKey(data);
-      getUserCurrentLocation();
-    };
-    fetchGoogleApiKey();
+    getUserCurrentLocation();
   }, []);
 
   const onLoad = (map) => {
@@ -100,31 +91,31 @@ export default function MapScreen() {
 
   return (
     <div className="full-container">
-      {googleApiKey && (
-        <LoadScript googleMapsApiKey={googleApiKey} libraries={libs}>
-          <GoogleMap
-            id="sample-map"
-            mapContainerStyle={{ height: '100%', width: '100%' }}
-            center={center}
-            zoom={15}
-            onLoad={onLoad}
-            onIdle={onIdle}
+      {!isLoaded && <div>Loading...</div>}
+      {loadError && <div>Error loading maps</div>}
+      {isLoaded && (
+        <GoogleMap
+          id="sample-map"
+          mapContainerStyle={{ height: '100%', width: '100%' }}
+          center={center}
+          zoom={15}
+          onLoad={onLoad}
+          onIdle={onIdle}
+        >
+          <StandaloneSearchBox
+            onLoad={onLoadPlaces}
+            onPlacesChanged={onPlacesChanged}
           >
-            <StandaloneSearchBox
-              onLoad={onLoadPlaces}
-              onPlacesChanged={onPlacesChanged}
-            >
-              <div className="map-input-box">
-                <input type="text" placeholder="Enter your address" />
-                <button type="button" className="primary" onClick={onConfirm}>
-                  Confirm
-                </button>
-              </div>
-            </StandaloneSearchBox>
+            <div className="map-input-box">
+              <input type="text" placeholder="Enter your address" />
+              <button type="button" className="primary" onClick={onConfirm}>
+                Confirm
+              </button>
+            </div>
+          </StandaloneSearchBox>
 
-            <Marker position={location} onLoad={onMarkerLoad}></Marker>
-          </GoogleMap>
-        </LoadScript>
+          <MarkerF position={location} onLoad={onMarkerLoad}></MarkerF>
+        </GoogleMap>
       )}
     </div>
   );
