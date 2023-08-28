@@ -33,6 +33,7 @@ import { useEffect, useState } from 'react';
 import { fetchCategories } from './redux/categoryListSlice';
 import MessageBox from './components/MessageBox';
 import LoadingBox from './components/LoadingBox';
+import MapScreen from './screens/MapScreen';
 
 function App() {
   const [alert, setAlert] = useState({});
@@ -216,23 +217,29 @@ function App() {
               <Route path="/orderhistory" element={<OrderHistoryScreen />} />
               <Route path="/search/name/:name?" element={<SearchScreen />} />
               <Route
-                path="/search/category/:category"
+                path="/search/category/:category?"
                 element={<SearchScreen />}
               />
               <Route
-                path="/search/category/:category/name/:name"
+                path="/search/category/:category?/name/:name?"
                 element={<SearchScreen />}
               />
               <Route
-                path="/search/category/:category?/name/:name?/min/:min?/max/:max?/rating/:rating?/order/:order?"
+                path="/search/category/:category?/name/:name?/min/:min?/max/:max?/rating/:rating?/order/:order?/pageNumber/:pageNumber?"
                 element={<SearchScreen />}
               />
 
               <Route path="/profile/" element={<PrivateRoute />}>
                 <Route index element={<ProfileScreen />} />
               </Route>
+              <Route path="/map" element={<PrivateRoute />}>
+                <Route index element={<MapScreen />} />
+              </Route>
               {/* Admin Routes*/}
               <Route path="/productlist" element={<AdminRoute />}>
+                <Route index element={<ProductListScreen />} />
+              </Route>
+              <Route path="/productlist/pageNumber/:pageNumber" element={<AdminRoute />}>
                 <Route index element={<ProductListScreen />} />
               </Route>
               <Route path="/orderlist" element={<AdminRoute />}>

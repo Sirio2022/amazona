@@ -24,6 +24,7 @@ import topSellersReducer from './topSellersSlice';
 import productsCategoryReducer from './categoryListSlice';
 import reviewReducer from './reviewSlice';
 
+
 export const store = configureStore({
   reducer: {
     // Define a top-level state field named `productsList`, handled by `productsReducer`
@@ -51,5 +52,6 @@ export const store = configureStore({
     topSellers: topSellersReducer,
     productsCategory: productsCategoryReducer,
     review: reviewReducer,
+ 
   },
 });

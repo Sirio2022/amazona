@@ -1,6 +1,9 @@
 import Product from '../models/productModel.js';
 
 const productList = async (req, res) => {
+  const pageSize = 3;
+  const page = Number(req.query.pageNumber) || 1;
+
   const name = req.query.name || '';
   const category = req.query.category || '';
   const seller = req.query.seller || '';
@@ -27,6 +30,7 @@ const productList = async (req, res) => {
       : order === 'toprated'
       ? { rating: -1 }
       : { _id: -1 };
+
   const products = await Product.find({
     ...sellerFilter,
     ...nameFilter,
@@ -38,9 +42,23 @@ const productList = async (req, res) => {
       'seller',
       'seller.name seller.logo seller.rating seller.numReviews'
     )
-    .sort(sortOrder);
+    .sort(sortOrder)
+    .skip(pageSize * (page - 1))
+    .limit(pageSize);
 
-  res.status(200).json(products);
+  res.status(200).json({
+    products,
+    page,
+    pages: Math.ceil(
+      (await Product.countDocuments({
+        ...sellerFilter,
+        ...nameFilter,
+        ...categoryFilter,
+        ...priceFilter,
+        ...ratingFilter,
+      })) / pageSize
+    ),
+  });
 };
 
 const productDetails = async (req, res) => {

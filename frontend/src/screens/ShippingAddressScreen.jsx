@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import CheckoutSteps from '../components/CheckoutSteps';
 import MessageBox from '../components/MessageBox';
 import { useDispatch, useSelector } from 'react-redux';
-import { saveShippingAddress } from '../redux/shippingAddressSlice';
 import { useNavigate } from 'react-router-dom';
+import { saveShippingAddress } from '../redux/shippingAddressSlice';
 
 export default function ShippingAddressScreen() {
   const { userInfo } = useSelector((state) => state.signin);
@@ -16,6 +16,7 @@ export default function ShippingAddressScreen() {
     shippingAddress.postalCode || ''
   );
   const [country, setCountry] = useState(shippingAddress.country || '');
+
   const [alert, setAlert] = useState({});
 
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ export default function ShippingAddressScreen() {
       navigate('/signin');
     }
   }, [userInfo, navigate]);
+
   const submitHandler = (e) => {
     e.preventDefault();
 
@@ -40,11 +42,28 @@ export default function ShippingAddressScreen() {
       }, 3000);
       return;
     }
-
     dispatch(
-      saveShippingAddress({ fullName, address, city, postalCode, country })
+      saveShippingAddress({
+        fullName,
+        address,
+        city,
+        postalCode,
+        country,
+        location: shippingAddress.location,
+      })
     );
-    navigate('/payment');
+    localStorage.setItem(
+      'shippingAddress',
+      JSON.stringify({
+        fullName,
+        address,
+        city,
+        postalCode,
+        country,
+        location: shippingAddress.location,
+      })
+    ),
+      navigate('/payment');
   };
 
   return (
@@ -105,6 +124,20 @@ export default function ShippingAddressScreen() {
             onChange={(e) => setCountry(e.target.value)}
           />
         </div>
+        <div>
+          <label htmlFor="chooseOnMap">Location</label>
+          <button type="button" onClick={() => navigate('/map')}>
+            Choose On Map
+          </button>
+        </div>
+        {shippingAddress.location && shippingAddress.location.lat ? (
+          <div>
+            LAT: {shippingAddress.location.lat}
+            LNG: {shippingAddress.location.lng}
+          </div>
+        ) : (
+          <div>Location not set</div>
+        )}
         <div>
           <label />
           <button className="primary" type="submit">
