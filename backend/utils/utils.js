@@ -37,23 +37,23 @@ export const payOrderEmailTemplate = (order) => {
         </tr>
 
         <tr>
-        <td colspan="2">Items Price:</td>
+        <td colspan="2">Tax Price:</td>
         <td align="right"> $${order.taxPrice.toFixed(2)}</td>
         </tr>
 
         <tr>
-        <td colspan="2">Items Price:</td>
+        <td colspan="2">Shipping Price:</td>
         <td align="right"> $${order.shippingPrice.toFixed(2)}</td>
         </tr>
 
         <tr>
-        <td colspan="2">Items Price:</td>
+        <td colspan="2">Total Price:</td>
         <td align="right"> $${order.totalPrice.toFixed(2)}</td>
         </tr>
 
         <tr>
-        <td colspan="2">Items Price:</td>
-        <td align="right"> $${order.paymentMethod}</td>
+        <td colspan="2">Payment Method:</td>
+        <td align="right"> ${order.paymentMethod}</td>
         </tr>  
     </tfoot>
     </table>
