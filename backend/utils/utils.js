@@ -53,7 +53,7 @@ export const payOrderEmailTemplate = (order) => {
 
         <tr>
         <td colspan="2">Payment Method:</td>
-        <td align="right"> ${order.paymentMethod}</td>
+        <td align="right"> <strong> ${order.paymentMethod}</strong></td>
         </tr>  
     </tfoot>
     </table>
