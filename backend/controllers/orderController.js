@@ -1,3 +1,4 @@
+import { orderEmail } from '../helpers/email.js';
 import Order from '../models/orderModel.js';
 
 const addOrderItems = async (req, res) => {
@@ -69,7 +70,10 @@ const getOrderById = async (req, res) => {
 };
 
 const updateOrderToPaid = async (req, res) => {
-  const order = await Order.findById(req.params.id);
+  const order = await Order.findById(req.params.id).populate(
+    'user',
+    'email name'
+  );
 
   if (order) {
     order.isPaid = true;
@@ -81,6 +85,11 @@ const updateOrderToPaid = async (req, res) => {
       email_address: req.body.email_address,
     };
     const updatedOrder = await order.save();
+    orderEmail({
+      name: order.user.name,
+      email: order.user.email,
+      order: order,
+    });
     res.status(200).json({
       msg: 'Order paid',
       order: updatedOrder,
