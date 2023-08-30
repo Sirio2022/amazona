@@ -10,5 +10,6 @@
 6. Cloudinary
 7. NodeMailer
 8. GoogleMaps
-9. HTML5
-10. CSS3
+9. Google Charts
+10. HTML5
+11. CSS3
