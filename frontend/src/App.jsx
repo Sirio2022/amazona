@@ -35,6 +35,8 @@ import MessageBox from './components/MessageBox';
 import LoadingBox from './components/LoadingBox';
 import MapScreen from './screens/MapScreen';
 import DashBoardScreen from './screens/DashBoardScreen';
+import SupportScreen from './screens/SupportScreen';
+import ChatBox from './components/ChatBox';
 
 function App() {
   const [alert, setAlert] = useState({});
@@ -161,6 +163,9 @@ function App() {
                     <li>
                       <Link to="userList">Users</Link>
                     </li>
+                    <li>
+                      <Link to="/support">Support</Link>
+                    </li>
                   </ul>
                 </div>
               )}
@@ -258,6 +263,9 @@ function App() {
               <Route path="/dashboard" element={<AdminRoute />}>
                 <Route index element={<DashBoardScreen />} />
               </Route>
+              <Route path="/support" element={<AdminRoute />}>
+                <Route index element={<SupportScreen />} />
+              </Route>
               {/* End of Admin Routes*/}
 
               {/* Seller Routes*/}
@@ -273,7 +281,13 @@ function App() {
             </Routes>
           </main>
 
-          <footer className="row center">All rights reserved 2023.</footer>
+          <footer className="row center">
+            <div>
+
+            {userInfo && !userInfo.isAdmin && <ChatBox userInfo={userInfo} />}
+            </div>
+            <div>All rights reserved 2023. </div>
+          </footer>
         </div>
       </BrowserRouter>
     </PayPalScriptProvider>
