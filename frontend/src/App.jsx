@@ -34,6 +34,7 @@ import { fetchCategories } from './redux/categoryListSlice';
 import MessageBox from './components/MessageBox';
 import LoadingBox from './components/LoadingBox';
 import MapScreen from './screens/MapScreen';
+import DashBoardScreen from './screens/DashBoardScreen';
 
 function App() {
   const [alert, setAlert] = useState({});
@@ -239,7 +240,10 @@ function App() {
               <Route path="/productlist" element={<AdminRoute />}>
                 <Route index element={<ProductListScreen />} />
               </Route>
-              <Route path="/productlist/pageNumber/:pageNumber" element={<AdminRoute />}>
+              <Route
+                path="/productlist/pageNumber/:pageNumber"
+                element={<AdminRoute />}
+              >
                 <Route index element={<ProductListScreen />} />
               </Route>
               <Route path="/orderlist" element={<AdminRoute />}>
@@ -250,6 +254,9 @@ function App() {
               </Route>
               <Route path="/user/:id/edit" element={<AdminRoute />}>
                 <Route index element={<UserEditScreen />} />
+              </Route>
+              <Route path="/dashboard" element={<AdminRoute />}>
+                <Route index element={<DashBoardScreen />} />
               </Route>
               {/* End of Admin Routes*/}
 

@@ -494,3 +494,39 @@ img.large {
     color: #ffffff;
     font-weight: bold;
 }
+
+/* DashBoard */
+.summary > li {
+    border: 0.1rem #c0c0c0 solid;
+    border-radius: 0.5rem;
+    background-color: #f8f8f8;
+    margin: 2rem;
+    padding: 1rem;
+    flex: 1 1 25rem;
+}
+
+.summary-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 1rem;
+}
+
+.summary-body {
+    font-size: 3rem;
+    text-align: center;
+    padding: 1rem;
+    font-weight: bold;
+}
+
+.summary-title.color1 {
+    color: #60a060;
+}
+
+.summary-title.color2 {
+    color: #e06060;
+}
+
+.summary-title.color3 {
+    color: #f0c040;
+}
