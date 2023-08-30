@@ -24,7 +24,7 @@ export default function SupportScreen() {
 
   useEffect(() => {
     if (uiMessagesRef.current) {
-      uiMessagesRef.current.scroll({
+      uiMessagesRef.current.scrollBy({
         top: uiMessagesRef.current.scrollHeight,
         left: 0,
         behavior: 'smooth',
@@ -80,7 +80,7 @@ export default function SupportScreen() {
   const selectUser = (user) => {
     allSelectedUser = user;
     setSelectedUser(allSelectedUser);
-    const existUser = allUsers.find((x) => x._id === user._id);
+    const existUser = allUsers.map((x) => x._id === user._id);
     if (existUser) {
       allUsers = allUsers.find((x) =>
         x._id === user._id ? { ...x, unread: undefined } : x
