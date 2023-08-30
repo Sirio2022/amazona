@@ -74,11 +74,12 @@ const orderSummary = async (req, res) => {
         sales: { $sum: '$totalPrice' },
       },
     },
+    { $sort: { _id: 1 } },
   ]);
   const productCategories = await Product.aggregate([
     {
       $group: {
-        _id: '$orderItems.category',
+        _id: '$category',
         count: { $sum: 1 },
       },
     },
