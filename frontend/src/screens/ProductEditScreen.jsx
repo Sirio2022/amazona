@@ -95,7 +95,7 @@ export default function ProductEditScreen() {
     setLoadingUpload(true);
     try {
       const { data } = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + '/api/uploads',
+        import.meta.env.VITE_BACKEND_URL + '/api/uploads/cdn',
         bodyFormData,
         {
           headers: {
@@ -104,8 +104,7 @@ export default function ProductEditScreen() {
           },
         }
       );
-
-      setImage(data);
+      setImage(data.url);
       setLoadingUpload(false);
     } catch (error) {
       setAlert({ msg: error.message, error: true });
