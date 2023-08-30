@@ -9,3 +9,4 @@
 5. NodeJS
 6. Cloudinary
 7. NodeMailer
+8. GoogleMaps
