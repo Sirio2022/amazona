@@ -1,5 +1,7 @@
 import { orderEmail } from '../helpers/email.js';
 import Order from '../models/orderModel.js';
+import Product from '../models/productModel.js';
+import Users from '../models/userModel.js';
 
 const addOrderItems = async (req, res) => {
   if (req.body.orderItems.length === 0) {
@@ -44,6 +46,49 @@ const getOrders = async (req, res) => {
       msg: 'Orders not found',
     });
   }
+};
+
+const orderSummary = async (req, res) => {
+  const orders = await Order.aggregate([
+    {
+      $group: {
+        _id: null,
+        numOrders: { $sum: 1 },
+        totalSales: { $sum: '$totalPrice' },
+      },
+    },
+  ]);
+  const users = await Users.aggregate([
+    {
+      $group: {
+        _id: null,
+        numUsers: { $sum: 1 },
+      },
+    },
+  ]);
+  const dailyOrders = await Order.aggregate([
+    {
+      $group: {
+        _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+        orders: { $sum: 1 },
+        sales: { $sum: '$totalPrice' },
+      },
+    },
+  ]);
+  const productCategories = await Product.aggregate([
+    {
+      $group: {
+        _id: '$orderItems.category',
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+  res.json({
+    orders: orders.length === 0 ? 0 : orders[0].numOrders,
+    users: users.length === 0 ? 0 : users[0].numUsers,
+    dailyOrders: dailyOrders,
+    productCategories: productCategories,
+  });
 };
 
 const getMyOrders = async (req, res) => {
@@ -141,4 +186,5 @@ export {
   getOrders,
   deleteOrder,
   updateOrderToDelivered,
+  orderSummary,
 };

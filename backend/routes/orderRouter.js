@@ -7,6 +7,7 @@ import {
   getOrders,
   deleteOrder,
   updateOrderToDelivered,
+  orderSummary,
 } from '../controllers/orderController.js';
 import adminAuth from '../middleware/adminAuth.js';
 import AdminAuthOrSellerAuth from '../middleware/adminAuthOrSellerAuth.js';
@@ -14,6 +15,8 @@ import AdminAuthOrSellerAuth from '../middleware/adminAuthOrSellerAuth.js';
 const router = express.Router();
 
 router.post('/', addOrderItems);
+
+router.get('/summary', adminAuth, orderSummary);
 
 router.get('/myorders', AdminAuthOrSellerAuth, getMyOrders);
 
