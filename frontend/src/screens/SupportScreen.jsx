@@ -18,13 +18,12 @@ export default function SupportScreen() {
   const [messageBody, setMessageBody] = useState('');
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
-
   const { userInfo } = useSelector((state) => state.signin);
-  
+
   useEffect(() => {
     if (uiMessagesRef.current) {
       uiMessagesRef.current.scrollBy({
-        top: uiMessagesRef.current.scrollHeight,
+        top: uiMessagesRef.current.clientHeight,
         left: 0,
         behavior: 'smooth',
       });
@@ -39,10 +38,10 @@ export default function SupportScreen() {
         if (allSelectedUser._id === data._id) {
           allMessages = [...allMessages, data];
         } else {
-          const existUser = allUsers.find((x) => x._id === data._id);
+          const existUser = allUsers.find((user) => user._id === data._id);
           if (existUser) {
-            allUsers = allUsers.map((x) =>
-              x._id === existUser._id ? { ...x, unread: true } : x
+            allUsers = allUsers.map((user) =>
+              user._id === existUser._id ? { ...user, unread: true } : user
             );
             setUsers(allUsers);
           }
@@ -50,10 +49,10 @@ export default function SupportScreen() {
         setMessages(allMessages);
       });
       socketIO.on('updateUser', (updatedUser) => {
-        const existUser = allUsers.find((x) => x._id === updatedUser._id);
+        const existUser = allUsers.find((user) => user._id === updatedUser._id);
         if (existUser) {
-          allUsers = allUsers.map((x) =>
-            x._id === existUser._id ? updatedUser : x
+          allUsers = allUsers.map((user) =>
+            user._id === existUser._id ? updatedUser : user
           );
           setUsers(allUsers);
         } else {
@@ -70,7 +69,7 @@ export default function SupportScreen() {
         setMessages(socketIO);
       });
     }
-  }, [userInfo._id, userInfo.name, userInfo.isAdmin]);
+  }, [userInfo._id, userInfo.name, userInfo.isAdmin, messages, messageBody]);
 
   const selectUser = (user) => {
     allSelectedUser = user;
@@ -110,42 +109,50 @@ export default function SupportScreen() {
     }
   };
 
+  const filteredUsers = () => {
+    if (Array.isArray(users) && users.length > 0) {
+      return users.filter((user) => user._id !== userInfo._id);
+    }
+    return [];
+  };
+
+  const filteredUserList = filteredUsers();
+
+  const filteredMessages = () => {
+    if (Array.isArray(messages) && messages.length > 0) {
+      return messages.filter((msg) => msg._id === selectedUser._id);
+    }
+    return [];
+  };
+
+  const filteredMessageList = filteredMessages();
+
   return (
     <div className="row top full-container">
       <div className="col-1 support-users">
-        {users.filter((user) => user._id !== userInfo._id).length === 0 && (
-          <MessageBox
-            alert={{
-              msg: 'No Online Users',
-              error: true,
-            }}
-          />
-        )}
-        {users && users.length > 0 && (
-          <MessageBox alert={{ msg: 'Online Users', error: false }} />
+        {filteredUserList.length === 0 && (
+          <MessageBox alert={{ msg: 'No user found', error: true }} />
         )}
         <ul>
-          {users
-            .filter((user) => user._id !== userInfo._id)
-            .map((user) => (
-              <li
-                key={user._id}
-                className={user._id === selectedUser._id ? 'selected' : ''}
+          {filteredUserList.map((user) => (
+            <li
+              key={user._id}
+              className={user._id === selectedUser._id ? 'selected' : ''}
+            >
+              <button
+                type="button"
+                className="block"
+                onClick={() => selectUser(user)}
               >
-                <button
-                  type="button"
-                  className="block"
-                  onClick={() => selectUser(user)}
-                >
-                  {user.name}
-                </button>
-                <span
-                  className={
-                    user.unread ? 'unread' : user.online ? 'online' : 'offline'
-                  }
-                ></span>
-              </li>
-            ))}
+                {user.name}
+              </button>
+              <span
+                className={
+                  user.unread ? 'unread' : user.online ? 'online' : 'offline'
+                }
+              />
+            </li>
+          ))}
         </ul>
       </div>
 
@@ -158,8 +165,8 @@ export default function SupportScreen() {
           <div className="row">
             <strong>Chat with {selectedUser.name}</strong>
             <ul ref={uiMessagesRef}>
-              {messages.length === 0 && <li>No message</li>}
-              {messages.map((msg, index) => (
+              {filteredMessageList.length === 0 && <li>No message</li>}
+              {filteredMessageList.map((msg, index) => (
                 <li key={index}>
                   <strong>{msg.name}</strong>
                   <p>{msg.body}</p>

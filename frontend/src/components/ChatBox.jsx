@@ -8,7 +8,6 @@ const socketIO = io('http://127.0.0.1:8000', {
 export default function ChatBox(children) {
   const { userInfo } = children;
 
- 
   const uiMessageRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [messageBody, setMessageBody] = useState('');
@@ -18,8 +17,8 @@ export default function ChatBox(children) {
 
   useEffect(() => {
     if (uiMessageRef.current) {
-      uiMessageRef.current.scroll({
-        top: uiMessageRef.current.scrollHeight,
+      uiMessageRef.current.scrollBy({
+        top: uiMessageRef.current.clientHeight,
         left: 0,
         behavior: 'smooth',
       });
@@ -34,11 +33,17 @@ export default function ChatBox(children) {
         setMessages([...messages, { body: data.body, name: data.name }]);
       });
     }
-  }, [messages, userInfo._id, userInfo.name, userInfo.isAdmin]);
+  }, [
+    messages,
+    isOpen,
+    userInfo._id,
+    userInfo.name,
+    userInfo.isAdmin,
+    messageBody,
+  ]);
 
   const supportHandler = () => {
     setIsOpen(true);
-    
   };
 
   const submitHandler = (e) => {
@@ -55,7 +60,7 @@ export default function ChatBox(children) {
           isAdmin: userInfo.isAdmin,
           _id: userInfo._id,
         });
-      }, 1000);
+      }, 500);
     }
   };
 
