@@ -88,7 +88,13 @@ app.post('/api/uploads/cdn', upload.single('image'), (req, res) => {
 });
 
 const httpServer = http.Server(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {
+  cors: {
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
 const users = [];
 
 io.on('connection', (socket) => {

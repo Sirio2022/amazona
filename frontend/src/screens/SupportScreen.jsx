@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import socketIOClient from 'socket.io-client';
+import { io } from 'socket.io-client';
 import MessageBox from '../components/MessageBox';
 import { useSelector } from 'react-redux';
 
@@ -7,21 +7,20 @@ let allUsers = []; // all users
 let allMessages = []; // all messages
 let allSelectedUser = {}; // selected user
 
-const ENDPOINT =
-  window.location.host.indexOf('localhost') >= 0
-    ? 'http://127.0.0.1:8000'
-    : window.location.host;
+const socketIO = io('http://127.0.0.1:8000', {
+  transports: ['websocket', 'polling', 'flashsocket'],
+});
 
 export default function SupportScreen() {
   const [selectedUser, setSelectedUser] = useState({});
-  const [socket, setSocket] = useState(null);
+
   const uiMessagesRef = useRef(null);
   const [messageBody, setMessageBody] = useState('');
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
 
   const { userInfo } = useSelector((state) => state.signin);
-
+  
   useEffect(() => {
     if (uiMessagesRef.current) {
       uiMessagesRef.current.scrollBy({
@@ -29,53 +28,49 @@ export default function SupportScreen() {
         left: 0,
         behavior: 'smooth',
       });
-
-      if (!socket) {
-        const sk = socketIOClient(ENDPOINT);
-        setSocket(sk);
-
-        sk.emit('onLogin', {
-          _id: userInfo._id,
-          name: userInfo.name,
-          isAdmin: userInfo.isAdmin,
-        });
-        sk.on('message', (data) => {
-          if (allSelectedUser._id === data._id) {
-            allMessages = [...allMessages, data];
-          } else {
-            const existUser = allUsers.find((x) => x._id === data._id);
-            if (existUser) {
-              allUsers = allUsers.map((x) =>
-                x._id === existUser._id ? { ...x, unread: true } : x
-              );
-              setUsers(allUsers);
-            }
-          }
-          setMessages(allMessages);
-        });
-        sk.on('updateUser', (updatedUser) => {
-          const existUser = allUsers.find((x) => x._id === updatedUser._id);
+    }
+    if (socketIO) {
+      socketIO.emit('onLogin', {
+        _id: userInfo._id,
+        name: userInfo.name,
+        isAdmin: userInfo.isAdmin,
+      });
+      socketIO.on('message', (data) => {
+        if (allSelectedUser._id === data._id) {
+          allMessages = [...allMessages, data];
+        } else {
+          const existUser = allUsers.find((x) => x._id === data._id);
           if (existUser) {
             allUsers = allUsers.map((x) =>
-              x._id === existUser._id ? updatedUser : x
+              x._id === existUser._id ? { ...x, unread: true } : x
             );
             setUsers(allUsers);
-          } else {
-            allUsers = [...allUsers, updatedUser];
-            setUsers(allUsers);
           }
-        });
-        sk.on('listUsers', (updatedUsers) => {
-          allUsers = updatedUsers;
+        }
+        setMessages(allMessages);
+      });
+      socketIO.on('updateUser', (updatedUser) => {
+        const existUser = allUsers.find((x) => x._id === updatedUser._id);
+        if (existUser) {
+          allUsers = allUsers.map((x) =>
+            x._id === existUser._id ? updatedUser : x
+          );
           setUsers(allUsers);
-        });
-        sk.on('selectUser', (user) => {
-          allMessages = user.messages;
-          setMessages(sk);
-        });
-      }
+        } else {
+          allUsers = [...allUsers, updatedUser];
+          setUsers(allUsers);
+        }
+      });
+      socketIO.on('listUsers', (updatedUsers) => {
+        allUsers = updatedUsers;
+        setUsers(allUsers);
+      });
+      socketIO.on('selectUser', (user) => {
+        allMessages = user.messages;
+        setMessages(socketIO);
+      });
     }
-  }, [socket, messages, users, selectedUser, messageBody, userInfo]);
+  }, [userInfo._id, userInfo.name, userInfo.isAdmin]);
 
   const selectUser = (user) => {
     allSelectedUser = user;
@@ -87,7 +82,7 @@ export default function SupportScreen() {
       );
       setUsers(allUsers);
     }
-    socket.emit('onUserSelected', user);
+    socketIO.emit('onUserSelected', user);
   };
 
   const submitHandler = (e) => {
@@ -105,7 +100,7 @@ export default function SupportScreen() {
       setMessages(allMessages);
       setMessageBody('');
       setTimeout(() => {
-        socket.emit('onMessage', {
+        socketIO.emit('onMessage', {
           body: messageBody,
           name: userInfo.name,
           isAdmin: userInfo.isAdmin,
@@ -125,6 +120,9 @@ export default function SupportScreen() {
               error: true,
             }}
           />
+        )}
+        {users && users.length > 0 && (
+          <MessageBox alert={{ msg: 'Online Users', error: false }} />
         )}
         <ul>
           {users
