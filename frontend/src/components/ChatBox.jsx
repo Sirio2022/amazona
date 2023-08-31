@@ -1,16 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import socketIOClient from 'socket.io-client';
+import { io } from 'socket.io-client';
 
-const ENDPOINT =
-  window.location.host.indexOf('localhost') >= 0
-    ? 'http://localhost:8000'
-    : window.location.host;
-    
+const socketIO = io('http://127.0.0.1:8000', {
+  transports: ['websocket', 'polling', 'flashsocket'],
+});
 
 export default function ChatBox(children) {
   const { userInfo } = children;
 
-  const [socket, setSocket] = useState(null);
   const uiMessageRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [messageBody, setMessageBody] = useState('');
@@ -20,28 +17,33 @@ export default function ChatBox(children) {
 
   useEffect(() => {
     if (uiMessageRef.current) {
-      uiMessageRef.current.scroll({
-        top: uiMessageRef.current.scrollHeight,
+      uiMessageRef.current.scrollBy({
+        top: uiMessageRef.current.clientHeight,
         left: 0,
         behavior: 'smooth',
       });
     }
-    if (socket) {
-      socket.emit('onLogin', {
+    if (socketIO) {
+      socketIO.emit('onLogin', {
         _id: userInfo._id,
         name: userInfo.name,
         isAdmin: userInfo.isAdmin,
       });
-      socket.on('message', (data) => {
+      socketIO.on('message', (data) => {
         setMessages([...messages, { body: data.body, name: data.name }]);
       });
     }
-  }, [messages, socket, userInfo._id, userInfo.isAdmin, userInfo.name]);
+  }, [
+    messages,
+    isOpen,
+    userInfo._id,
+    userInfo.name,
+    userInfo.isAdmin,
+    messageBody,
+  ]);
 
   const supportHandler = () => {
     setIsOpen(true);
-    const sk = socketIOClient(ENDPOINT);
-    setSocket(sk);
   };
 
   const submitHandler = (e) => {
@@ -52,13 +54,13 @@ export default function ChatBox(children) {
       setMessages([...messages, { body: messageBody, name: userInfo.name }]);
       setMessageBody('');
       setTimeout(() => {
-        socket.emit('onMessage', {
+        socketIO.emit('onMessage', {
           body: messageBody,
           name: userInfo.name,
           isAdmin: userInfo.isAdmin,
           _id: userInfo._id,
         });
-      }, 1000);
+      }, 500);
     }
   };
 

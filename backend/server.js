@@ -87,44 +87,57 @@ app.post('/api/uploads/cdn', upload.single('image'), (req, res) => {
   }
 });
 
+//SOCKET
+
 const httpServer = http.Server(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
+
 const users = [];
 
 io.on('connection', (socket) => {
   console.log('connected');
   socket.on('disconnect', () => {
     const user = users.find((x) => x.socketId === socket.id);
+
     if (user) {
       user.online = false;
       console.log('Offline', user.name);
       const admin = users.find((x) => x.isAdmin && x.online);
       if (admin) {
-        io.to(admin.socketId).emit('ipdateUser', user);
+        io.to(admin.socketId).emit('updateUser', user);
       }
     }
   });
-  socket.on('onLogin', (user) => {
+  socket.on('onLogin', ({ _id, name, isAdmin }) => {
     const updatedUser = {
-      ...user,
+      _id,
+      name,
+      isAdmin,
       online: true,
       socketId: socket.id,
       messages: [],
     };
-    const existUser = users.find((x) => x._id === updatedUser._id);
-    if (existUser) {
-      existUser.socketId = socket.id;
-      existUser.onLine = true;
+
+    const existUserIndex = users.findIndex((x) => x._id === updatedUser._id);
+    if (existUserIndex !== -1) {
+      users[existUserIndex] = updatedUser;
     } else {
       users.push(updatedUser);
     }
-    console.log('Online', user.name);
+
+    console.log('Online', name);
     const admin = users.find((x) => x.isAdmin && x.online);
     if (admin) {
       io.to(admin.socketId).emit('updateUser', updatedUser);
     }
-    if (updatedUser.isAdmin) {
-      io.to(updatedUser.socketId).emit('listUsers', users);
+    if (isAdmin) {
+      io.to(socket.id).emit('listUsers', users);
     }
   });
   socket.on('onUserSelected', (user) => {
