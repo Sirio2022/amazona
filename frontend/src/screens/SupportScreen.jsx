@@ -1,16 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { io } from 'socket.io-client';
+import io from 'socket.io-client';
 import MessageBox from '../components/MessageBox';
 import { useSelector } from 'react-redux';
-
-const socketIO = io('http://127.0.0.1:8000', {
-  transports: ['websocket', 'polling', 'flashsocket'],
-});
 
 let allMessages = [];
 let allUsers = [];
 let allSelectedUser = {};
 
+let socketIO;
 
 export default function SupportScreen() {
   const [selectedUser, setSelectedUser] = useState({});
@@ -20,8 +17,11 @@ export default function SupportScreen() {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const { userInfo } = useSelector((state) => state.signin);
-  
+  console.log(users);
+
   useEffect(() => {
+    socketIO = io(import.meta.env.VITE_BACKEND_URL);
+
     if (uiMessagesRef.current) {
       uiMessagesRef.current.scrollBy({
         top: uiMessagesRef.current.clientHeight,
@@ -51,7 +51,7 @@ export default function SupportScreen() {
       const allUsers = updatedUsers;
       setUsers(allUsers);
     });
-    
+
     socketIO.on('selectUser', (user) => {
       const allMessages = user.messages;
       setMessages(allMessages);
@@ -71,7 +71,6 @@ export default function SupportScreen() {
       }
       setMessages(allMessages);
     });
-  
   }, [messages, userInfo._id, userInfo.name, userInfo.isAdmin]);
 
   const selectUser = (user) => {
@@ -109,21 +108,22 @@ export default function SupportScreen() {
       }, 1000);
     }
   };
-  
+
+  const isAdminUserPrensent = users.find((user) => user.isAdmin);
+
+  const usersFilter = users.filter(
+    (user) => user._id !== socketIO.Id && !user.isAdmin
+  );
+  console.log(usersFilter);
 
   return (
     <div className="row top full-container">
       <div className="col-1 support-users">
-        {users.filter(
-          (x) =>
-            (x._id !== userInfo._id).length === 0 && (
-              <MessageBox alert={{ msg: 'No user found', error: true }} />
-            )
-        )}
-        <ul>
-          {users
-            .filter((user) => user._id !== socketIO.Id && !user.isAdmin)
-            .map((user) => (
+        {users.name && isAdminUserPrensent ? (
+          <MessageBox alert={{ msg: 'No user found', error: true }} />
+        ) : (
+          <ul>
+            {usersFilter.map((user) => (
               <li
                 key={user._id}
                 className={user._id === selectedUser._id ? 'selected' : ''}
@@ -142,7 +142,8 @@ export default function SupportScreen() {
                 />
               </li>
             ))}
-        </ul>
+          </ul>
+        )}
       </div>
 
       <div className="col-3 support-messages">
