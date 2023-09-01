@@ -29,8 +29,18 @@ export default function ChatBox(children) {
         name: userInfo.name,
         isAdmin: userInfo.isAdmin,
       });
+      socketIO.on('message', (data) => {
+        setMessages([...messages, { body: data.body, name: data.name }]);
+      });
     }
-  }, [isOpen, userInfo._id, userInfo.name, userInfo.isAdmin, messageBody]);
+  }, [
+    messages,
+    isOpen,
+    userInfo._id,
+    userInfo.name,
+    userInfo.isAdmin,
+    messageBody,
+  ]);
 
   const supportHandler = () => {
     setIsOpen(true);
@@ -40,9 +50,6 @@ export default function ChatBox(children) {
     e.preventDefault();
     if (!messageBody.trim()) {
       alert('Error. Please type messaage.');
-      socketIO.once('message', (data) => {
-        setMessages([...messages, { body: data.body, name: data.name }]);
-      });
     } else {
       setMessages([...messages, { body: messageBody, name: userInfo.name }]);
       setMessageBody('');
