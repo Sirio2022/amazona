@@ -3,23 +3,23 @@ import { io } from 'socket.io-client';
 import MessageBox from '../components/MessageBox';
 import { useSelector } from 'react-redux';
 
-let allUsers = []; // all users
-let allMessages = []; // all messages
-let allSelectedUser = {}; // selected user
-
 const socketIO = io('http://127.0.0.1:8000', {
   transports: ['websocket', 'polling', 'flashsocket'],
 });
+
+let allMessages = [];
+let allUsers = [];
+let allSelectedUser = {};
 
 export default function SupportScreen() {
   const [selectedUser, setSelectedUser] = useState({});
 
   const uiMessagesRef = useRef(null);
-  const [messageBody, setMessageBody] = useState('');
+
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const { userInfo } = useSelector((state) => state.signin);
-
+console.log(messages);
   useEffect(() => {
     if (uiMessagesRef.current) {
       uiMessagesRef.current.scrollBy({
@@ -40,7 +40,7 @@ export default function SupportScreen() {
         } else {
           const existUser = allUsers.find((user) => user._id === data._id);
           if (existUser) {
-            allUsers = allUsers.map((user) =>
+            allUsers.map((user) =>
               user._id === existUser._id ? { ...user, unread: true } : user
             );
             setUsers(allUsers);
@@ -51,33 +51,33 @@ export default function SupportScreen() {
       socketIO.on('updateUser', (updatedUser) => {
         const existUser = allUsers.find((user) => user._id === updatedUser._id);
         if (existUser) {
-          allUsers = allUsers.map((user) =>
+          allUsers.map((user) =>
             user._id === existUser._id ? updatedUser : user
           );
           setUsers(allUsers);
         } else {
-          allUsers = [...allUsers, updatedUser];
+          const allUsers = [...allUsers, updatedUser];
           setUsers(allUsers);
         }
       });
       socketIO.on('listUsers', (updatedUsers) => {
-        allUsers = updatedUsers;
+        const allUsers = updatedUsers;
         setUsers(allUsers);
       });
       socketIO.on('selectUser', (user) => {
-        allMessages = user.messages;
-        setMessages(socketIO);
+        const allMessages = user.messages;
+        setMessages(allMessages);
       });
     }
-  }, [userInfo._id, userInfo.name, userInfo.isAdmin, messages, messageBody]);
+  }, [userInfo._id, userInfo.isAdmin, userInfo.name, messages]);
 
   const selectUser = (user) => {
-    allSelectedUser = user;
+     allSelectedUser = user;
     setSelectedUser(allSelectedUser);
     const existUser = allUsers.map((x) => x._id === user._id);
     if (existUser) {
-      allUsers = allUsers.find((x) =>
-        x._id === user._id ? { ...x, unread: undefined } : x
+       allUsers.find((x) =>
+        x._id === user._id ? { ...x, unread: false } : x
       );
       setUsers(allUsers);
     }
@@ -86,21 +86,21 @@ export default function SupportScreen() {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    if (!messageBody.trim()) {
+    if (messages.length === 0) {
       alert('Error. Please type message.');
     } else {
-      allMessages = [
+       allMessages = [
         ...allMessages,
         {
-          body: messageBody,
+          body: messages,
           name: userInfo.name,
         },
       ];
       setMessages(allMessages);
-      setMessageBody('');
+      
       setTimeout(() => {
         socketIO.emit('onMessage', {
-          body: messageBody,
+          body: messages,
           name: userInfo.name,
           isAdmin: userInfo.isAdmin,
           _id: selectedUser._id,
@@ -109,32 +109,17 @@ export default function SupportScreen() {
     }
   };
 
-  const filteredUsers = () => {
-    if (Array.isArray(users) && users.length > 0) {
-      return users.filter((user) => user._id !== userInfo._id);
-    }
-    return [];
-  };
-
-  const filteredUserList = filteredUsers();
-
-  const filteredMessages = () => {
-    if (Array.isArray(messages) && messages.length > 0) {
-      return messages.filter((msg) => msg._id === selectedUser._id);
-    }
-    return [];
-  };
-
-  const filteredMessageList = filteredMessages();
-
   return (
     <div className="row top full-container">
       <div className="col-1 support-users">
-        {filteredUserList.length === 0 && (
-          <MessageBox alert={{ msg: 'No user found', error: true }} />
+        {users.filter(
+          (x) =>
+            (x._id !== userInfo._id).length === 0 && (
+              <MessageBox alert={{ msg: 'No user found', error: true }} />
+            )
         )}
         <ul>
-          {filteredUserList.map((user) => (
+          {users.map((user) => (
             <li
               key={user._id}
               className={user._id === selectedUser._id ? 'selected' : ''}
@@ -165,8 +150,8 @@ export default function SupportScreen() {
           <div className="row">
             <strong>Chat with {selectedUser.name}</strong>
             <ul ref={uiMessagesRef}>
-              {filteredMessageList.length === 0 && <li>No message</li>}
-              {filteredMessageList.map((msg, index) => (
+              {allMessages.length === 0 && <li>No message</li>}
+              {allMessages.map((msg, index) => (
                 <li key={index}>
                   <strong>{msg.name}</strong>
                   <p>{msg.body}</p>
@@ -177,8 +162,8 @@ export default function SupportScreen() {
               <form onSubmit={submitHandler} className="row">
                 <input
                   type="text"
-                  value={messageBody}
-                  onChange={(e) => setMessageBody(e.target.value)}
+                  value={messages.body}
+                  onChange={(e) => setMessages(e.target.value)}
                   placeholder="type message"
                 />
                 <button type="submit">Send</button>
