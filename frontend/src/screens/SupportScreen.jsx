@@ -16,7 +16,7 @@ export default function SupportScreen() {
 
   const uiMessagesRef = useRef(null);
 
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState({ body: '' });
   const [users, setUsers] = useState([]);
   const { userInfo } = useSelector((state) => state.signin);
   console.log(users);
@@ -91,7 +91,7 @@ export default function SupportScreen() {
       allMessages = [
         ...allMessages,
         {
-          body: messages,
+          body: messages.body,
           name: userInfo.name,
         },
       ];
@@ -99,7 +99,7 @@ export default function SupportScreen() {
 
       setTimeout(() => {
         socketIO.emit('onMessage', {
-          body: messages,
+          body: messages.body,
           name: userInfo.name,
           isAdmin: userInfo.isAdmin,
           _id: selectedUser._id,
@@ -164,7 +164,7 @@ export default function SupportScreen() {
                 <input
                   type="text"
                   value={messages.body}
-                  onChange={(e) => setMessages(e.target.value)}
+                  onChange={(e) => setMessages({ body: e.target.value })}
                   placeholder="type message"
                 />
                 <button type="submit">Send</button>
