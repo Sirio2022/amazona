@@ -11,6 +11,7 @@ let allMessages = [];
 let allUsers = [];
 let allSelectedUser = {};
 
+
 export default function SupportScreen() {
   const [selectedUser, setSelectedUser] = useState({});
 
@@ -34,21 +35,6 @@ export default function SupportScreen() {
       name: userInfo.name,
       isAdmin: userInfo.isAdmin,
     });
-
-    socketIO.on('message', (data) => {
-      if (allSelectedUser._id === data._id) {
-        allMessages = [...allMessages, data];
-      } else {
-        const existUser = allUsers.find((user) => user._id === data._id);
-        if (existUser) {
-          allUsers.map((user) =>
-            user._id === existUser._id ? { ...user, unread: true } : user
-          );
-          setUsers(allUsers);
-        }
-      }
-      setMessages(allMessages);
-    });
     socketIO.on('updateUser', (updatedUser) => {
       const existUser = allUsers.find((user) => user._id === updatedUser._id);
       if (existUser) {
@@ -65,10 +51,27 @@ export default function SupportScreen() {
       const allUsers = updatedUsers;
       setUsers(allUsers);
     });
+    
     socketIO.on('selectUser', (user) => {
       const allMessages = user.messages;
       setMessages(allMessages);
     });
+
+    socketIO.on('message', (data) => {
+      if (allSelectedUser._id === data._id) {
+        allMessages = [...allMessages, data];
+      } else {
+        const existUser = allUsers.find((user) => user._id === data._id);
+        if (existUser) {
+          allUsers.map((user) =>
+            user._id === existUser._id ? { ...user, unread: true } : user
+          );
+          setUsers(allUsers);
+        }
+      }
+      setMessages(allMessages);
+    });
+  
   }, [messages, userInfo._id, userInfo.name, userInfo.isAdmin]);
 
   const selectUser = (user) => {
@@ -106,6 +109,7 @@ export default function SupportScreen() {
       }, 1000);
     }
   };
+  
 
   return (
     <div className="row top full-container">
