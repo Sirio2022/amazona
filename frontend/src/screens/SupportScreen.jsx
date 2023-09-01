@@ -19,7 +19,8 @@ export default function SupportScreen() {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const { userInfo } = useSelector((state) => state.signin);
-console.log(messages);
+  console.log(users);
+
   useEffect(() => {
     if (uiMessagesRef.current) {
       uiMessagesRef.current.scrollBy({
@@ -28,57 +29,55 @@ console.log(messages);
         behavior: 'smooth',
       });
     }
-    if (socketIO) {
-      socketIO.emit('onLogin', {
-        _id: userInfo._id,
-        name: userInfo.name,
-        isAdmin: userInfo.isAdmin,
-      });
-      socketIO.on('message', (data) => {
-        if (allSelectedUser._id === data._id) {
-          allMessages = [...allMessages, data];
-        } else {
-          const existUser = allUsers.find((user) => user._id === data._id);
-          if (existUser) {
-            allUsers.map((user) =>
-              user._id === existUser._id ? { ...user, unread: true } : user
-            );
-            setUsers(allUsers);
-          }
-        }
-        setMessages(allMessages);
-      });
-      socketIO.on('updateUser', (updatedUser) => {
-        const existUser = allUsers.find((user) => user._id === updatedUser._id);
+
+    socketIO.emit('onLogin', {
+      _id: userInfo._id,
+      name: userInfo.name,
+      isAdmin: userInfo.isAdmin,
+    });
+
+    socketIO.on('message', (data) => {
+      if (allSelectedUser._id === data._id) {
+        allMessages = [...allMessages, data];
+      } else {
+        const existUser = allUsers.find((user) => user._id === data._id);
         if (existUser) {
           allUsers.map((user) =>
-            user._id === existUser._id ? updatedUser : user
+            user._id === existUser._id ? { ...user, unread: true } : user
           );
           setUsers(allUsers);
-        } else {
-          const allUsers = [...allUsers, updatedUser];
-          setUsers(allUsers);
         }
-      });
-      socketIO.on('listUsers', (updatedUsers) => {
-        const allUsers = updatedUsers;
+      }
+      setMessages(allMessages);
+    });
+    socketIO.on('updateUser', (updatedUser) => {
+      const existUser = allUsers.find((user) => user._id === updatedUser._id);
+      if (existUser) {
+        allUsers.map((user) =>
+          user._id === existUser._id ? updatedUser : user
+        );
         setUsers(allUsers);
-      });
-      socketIO.on('selectUser', (user) => {
-        const allMessages = user.messages;
-        setMessages(allMessages);
-      });
-    }
-  }, [userInfo._id, userInfo.isAdmin, userInfo.name, messages]);
+      } else {
+        const allUsers = [...allUsers, updatedUser];
+        setUsers(allUsers);
+      }
+    });
+    socketIO.on('listUsers', (updatedUsers) => {
+      const allUsers = updatedUsers;
+      setUsers(allUsers);
+    });
+    socketIO.on('selectUser', (user) => {
+      const allMessages = user.messages;
+      setMessages(allMessages);
+    });
+  }, [messages, userInfo._id, userInfo.name, userInfo.isAdmin]);
 
   const selectUser = (user) => {
-     allSelectedUser = user;
+    allSelectedUser = user;
     setSelectedUser(allSelectedUser);
     const existUser = allUsers.map((x) => x._id === user._id);
     if (existUser) {
-       allUsers.find((x) =>
-        x._id === user._id ? { ...x, unread: false } : x
-      );
+      allUsers.find((x) => (x._id === user._id ? { ...x, unread: false } : x));
       setUsers(allUsers);
     }
     socketIO.emit('onUserSelected', user);
@@ -89,7 +88,7 @@ console.log(messages);
     if (messages.length === 0) {
       alert('Error. Please type message.');
     } else {
-       allMessages = [
+      allMessages = [
         ...allMessages,
         {
           body: messages,
@@ -97,7 +96,7 @@ console.log(messages);
         },
       ];
       setMessages(allMessages);
-      
+
       setTimeout(() => {
         socketIO.emit('onMessage', {
           body: messages,
@@ -119,25 +118,27 @@ console.log(messages);
             )
         )}
         <ul>
-          {users.map((user) => (
-            <li
-              key={user._id}
-              className={user._id === selectedUser._id ? 'selected' : ''}
-            >
-              <button
-                type="button"
-                className="block"
-                onClick={() => selectUser(user)}
+          {users
+            .filter((user) => user._id !== socketIO.Id && !user.isAdmin)
+            .map((user) => (
+              <li
+                key={user._id}
+                className={user._id === selectedUser._id ? 'selected' : ''}
               >
-                {user.name}
-              </button>
-              <span
-                className={
-                  user.unread ? 'unread' : user.online ? 'online' : 'offline'
-                }
-              />
-            </li>
-          ))}
+                <button
+                  type="button"
+                  className="block"
+                  onClick={() => selectUser(user)}
+                >
+                  {user.name}
+                </button>
+                <span
+                  className={
+                    user.unread ? 'unread' : user.online ? 'online' : 'offline'
+                  }
+                />
+              </li>
+            ))}
         </ul>
       </div>
 
