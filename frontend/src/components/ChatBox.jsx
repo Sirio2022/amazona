@@ -32,6 +32,11 @@ export default function ChatBox(children) {
         setMessages([...messages, { body: data.body, name: data.name }]);
       });
     }
+    return () => {
+      if (socketIO) {
+        socketIO.disconnect();
+      }
+    };
   }, [
     messages,
     isOpen,
@@ -64,10 +69,7 @@ export default function ChatBox(children) {
   };
 
   const closeHandler = () => {
-    if (isOpen) {
-      setIsOpen(false);
-      socketIO.disconnect();
-    }
+    setIsOpen(false);
   };
 
   return (

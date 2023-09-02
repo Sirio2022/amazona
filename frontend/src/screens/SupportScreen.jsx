@@ -17,7 +17,7 @@ export default function SupportScreen() {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const { userInfo } = useSelector((state) => state.signin);
-
+  console.log(users);
 
   useEffect(() => {
     socketIO = io(import.meta.env.VITE_BACKEND_URL);
@@ -35,6 +35,10 @@ export default function SupportScreen() {
       name: userInfo.name,
       isAdmin: userInfo.isAdmin,
     });
+    socketIO.on('listUsers', (updatedUsers) => {
+      setUsers(updatedUsers);
+    });
+
     socketIO.on('updateUser', (updatedUser) => {
       const existUser = allUsers.find((user) => user._id === updatedUser._id);
       if (existUser) {
@@ -46,10 +50,6 @@ export default function SupportScreen() {
         const allUsers = [...allUsers, updatedUser];
         setUsers(allUsers);
       }
-    });
-    socketIO.on('listUsers', (updatedUsers) => {
-      const allUsers = updatedUsers;
-      setUsers(allUsers);
     });
 
     socketIO.on('selectUser', (user) => {
@@ -71,7 +71,7 @@ export default function SupportScreen() {
       }
       setMessages(allMessages);
     });
-  }, [messages, userInfo._id, userInfo.name, userInfo.isAdmin, users]);
+  }, [messages, userInfo._id, userInfo.name, userInfo.isAdmin]);
 
   const selectUser = (user) => {
     allSelectedUser = user;
@@ -97,6 +97,7 @@ export default function SupportScreen() {
         },
       ];
       setMessages(allMessages);
+      setMessages('');
 
       setTimeout(() => {
         socketIO.emit('onMessage', {
@@ -109,17 +110,16 @@ export default function SupportScreen() {
     }
   };
 
-  const isAdminUserPrensent = users.find((user) => user.isAdmin);
+  // const isAdminUserPrensent = users.find((user) => user.isAdmin);
 
   const usersFilter = users.filter(
     (user) => user._id !== socketIO.Id && !user.isAdmin
   );
-  console.log(usersFilter);
 
   return (
     <div className="row top full-container">
       <div className="col-1 support-users">
-        {isAdminUserPrensent ? (
+        {users && users.length === 2 ? (
           <MessageBox alert={{ msg: 'No user found', error: true }} />
         ) : (
           <ul>
