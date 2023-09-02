@@ -17,7 +17,7 @@ export default function SupportScreen() {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const { userInfo } = useSelector((state) => state.signin);
-  console.log(users);
+
 
   useEffect(() => {
     socketIO = io(import.meta.env.VITE_BACKEND_URL);
@@ -71,7 +71,7 @@ export default function SupportScreen() {
       }
       setMessages(allMessages);
     });
-  }, [messages, userInfo._id, userInfo.name, userInfo.isAdmin]);
+  }, [messages, userInfo._id, userInfo.name, userInfo.isAdmin, users]);
 
   const selectUser = (user) => {
     allSelectedUser = user;
@@ -119,7 +119,7 @@ export default function SupportScreen() {
   return (
     <div className="row top full-container">
       <div className="col-1 support-users">
-        {users.name && isAdminUserPrensent ? (
+        {isAdminUserPrensent ? (
           <MessageBox alert={{ msg: 'No user found', error: true }} />
         ) : (
           <ul>

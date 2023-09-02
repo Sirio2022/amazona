@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 
-const socketIO = io('http://127.0.0.1:8000', {
-  transports: ['websocket', 'polling', 'flashsocket'],
-});
+let socketIO;
 
 export default function ChatBox(children) {
   const { userInfo } = children;
@@ -16,6 +14,7 @@ export default function ChatBox(children) {
   ]);
 
   useEffect(() => {
+    socketIO = io(import.meta.env.VITE_BACKEND_URL);
     if (uiMessageRef.current) {
       uiMessageRef.current.scrollBy({
         top: uiMessageRef.current.clientHeight,
@@ -65,7 +64,10 @@ export default function ChatBox(children) {
   };
 
   const closeHandler = () => {
-    setIsOpen(false);
+    if (isOpen) {
+      setIsOpen(false);
+      socketIO.disconnect();
+    }
   };
 
   return (
