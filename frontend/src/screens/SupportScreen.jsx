@@ -111,25 +111,30 @@ export default function SupportScreen() {
           <MessageBox alert={{ msg: 'No user found', error: true }} />
         ) : (
           <ul>
-            {usersFilter.map((user) => (
-              <li
-                key={user._id}
-                className={user._id === selectedUser._id ? 'selected' : ''}
-              >
-                <button
-                  type="button"
-                  className="block"
-                  onClick={() => selectUser(user)}
+            {users &&
+              usersFilter.map((user) => (
+                <li
+                  key={user._id}
+                  className={user._id === selectedUser._id ? 'selected' : ''}
                 >
-                  {user.name}
-                </button>
-                <span
-                  className={
-                    user.unread ? 'unread' : user.online ? 'online' : 'offline'
-                  }
-                />
-              </li>
-            ))}
+                  <button
+                    type="button"
+                    className="block"
+                    onClick={() => selectUser(user)}
+                  >
+                    {user.name}
+                  </button>
+                  <span
+                    className={
+                      user.unread
+                        ? 'unread'
+                        : user.online
+                        ? 'online'
+                        : 'offline'
+                    }
+                  />
+                </li>
+              ))}
           </ul>
         )}
       </div>
@@ -143,27 +148,33 @@ export default function SupportScreen() {
           <div>
             <div className="row">
               <div>
-                <strong>Chat with {selectedUser.name}</strong>
-              </div>
-              <ul ref={uiMessagesRef}>
-                {allMessages.length === 0 && <li>No message</li>}
-                {allMessages.map((msg, index) => (
-                  <li key={index}>
-                    <strong>{msg.name}</strong>
-                    <p>{msg.body}</p>
-                  </li>
-                ))}
-              </ul>
-              <div>
-                <form onSubmit={submitHandler} className="row">
-                  <input
-                    type="text"
-                    value={messages.body}
-                    onChange={(e) => setMessages(e.target.value)}
-                    placeholder="type message"
-                  />
-                  <button type="submit">Send</button>
-                </form>
+                <div>
+                  <strong>Chat with {selectedUser.name}</strong>
+                </div>
+                <ul ref={uiMessagesRef}>
+                  {allMessages.length === 0 && <li>No message</li>}
+                  {allMessages.map((msg, index) => (
+                    <li key={index}>
+                      <strong>{msg.name}</strong>
+                      <p>{msg.body}</p>
+                    </li>
+                  ))}
+                </ul>
+                
+                  <form
+                    onSubmit={submitHandler}
+                    className="row
+                "
+                  >
+                    <input
+                      type="text"
+                      value={messages.body}
+                      onChange={(e) => setMessages(e.target.value)}
+                      placeholder="type message"
+                    />
+                    <button type="submit">Send</button>
+                  </form>
+               
               </div>
             </div>
           </div>
