@@ -87,33 +87,25 @@ app.post('/api/uploads/cdn', upload.single('image'), (req, res) => {
   }
 });
 
-//SOCKET
+const PORT = process.env.PORT || 8000;
+const servidor = app.listen(PORT, () => {
+  console.log(`Server is runnig at http://localhost:${PORT}`);
+});
 
-const httpServer = http.Server(app);
-const io = new Server(httpServer, {
+// Configuring Socket.io
+
+const io = new Server(servidor, {
+  pingTimeout: 60000,
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST'],
-    credentials: true,
+    origin: process.env.FRONTEND_URL, // or "http://localhost:5173"
   },
 });
 
 const users = [];
 
 io.on('connection', (socket) => {
-  console.log('connected');
-  socket.on('disconnect', () => {
-    const user = users.find((x) => x.socketId === socket.id);
+  console.log('Connected to socket.io');
 
-    if (user) {
-      user.online = false;
-      console.log('Offline', user.name);
-      const admin = users.find((x) => x.isAdmin && x.online);
-      if (admin) {
-        io.to(admin.socketId).emit('updateUser', user);
-      }
-    }
-  });
   socket.on('onLogin', ({ _id, name, isAdmin }) => {
     const updatedUser = {
       _id,
@@ -147,6 +139,7 @@ io.on('connection', (socket) => {
       io.to(admin.socketId).emit('selectUser', existUser);
     }
   });
+
   socket.on('onMessage', (message) => {
     if (message.isAdmin) {
       const user = users.find((x) => x._id === message._id && x.online);
@@ -168,14 +161,16 @@ io.on('connection', (socket) => {
       }
     }
   });
-});
+  socket.on('disconnect', () => {
+    const user = users.find((x) => x.socketId === socket.id);
 
-const port = process.env.PORT || 8000;
-httpServer.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+    if (user) {
+      user.online = false;
+      console.log('Offline', user.name);
+      const admin = users.find((x) => x.isAdmin && x.online);
+      if (admin) {
+        io.to(admin.socketId).emit('updateUser', user);
+      }
+    }
+  });
 });
-
-// const port = process.env.PORT || 8000;
-// app.listen(port, () => {
-//   console.log(`Server is runnig at http://localhost:${port}`);
-// });

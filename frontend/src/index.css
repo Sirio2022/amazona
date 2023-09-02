@@ -558,6 +558,7 @@ img.large {
 }
 
 .support-users li {
+    margin: 0;
     background-color: #f8f8f8f8;
     border-bottom: 0.1rem #c0c0c0c0 solid;
 }
